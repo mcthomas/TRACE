@@ -1,5 +1,7 @@
 # TRACE
 
+<img src="trace.png" width="600"/>
+
 ### Contents
 
   - [Problem Description](#Problem-Description "Problem Description")
