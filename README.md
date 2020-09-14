@@ -27,8 +27,10 @@ The system would be tested frequently amongst a consistent group of users most i
 Luckily, the concept of Trace primarily consists of back-end functionality, as the UI would be maximally minimal, and there aren’t any original graphics or assets required of it. Furthermore, development in Xcode with Swift won’t present any extraneous challenges beyond the inclusion of optional libraries to ease the development timeline. More than half the team could focus on the breakdown of algorithms and APIs for implementing the three primary tools for Trace, while the rest could be tasked with implementing and refining the application’s I/O and quality control for the user. Prototypes can be continuously deployed from Xcode on a designated iOS device for the purpose of demoing. Users’ own devices can also host the prototypes for multi-day trial feedback.
 
 ## Concept Images:
-⃞♢ = cues 
+⃞♢ = cues
+
 ⊠ = alerts
+
 Colors indicate tasks
 
 <img src="ci_main_screen.png"/>
