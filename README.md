@@ -33,7 +33,7 @@ Luckily, the concept of Trace primarily consists of back-end functionality, as t
 
 Colors indicate tasks
 
-<img src="ci_main_screen.png width=300"/>
+<img src="ci_main_screen.png" width="300"/>
 
 Task expanded view:
 
