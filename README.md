@@ -1,6 +1,6 @@
 # TRACE
 
-<img src="trace.png" width="300"/>
+<img src="/trace.png" width="600"/>
 
 ### Contents
 
