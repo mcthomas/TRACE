@@ -36,9 +36,20 @@ struct HomePage: View {
                 .ignoresSafeArea()
                 .overlay(
                     VStack {
-                        // TO-DO: Navigation Bar for Menu & Notifications
+                        // TO-DO: Navigation Bar for Menu & Notifications?
                         
                         // TO-DO: Digital Clock Here
+                        HStack {
+                            Text("6:30")
+                            .font(Font.custom("Comfortaa-Light", size: 60))
+                            .foregroundColor(.white)
+                            
+                            
+                            Text("pm")
+                                .font(Font.custom("Comfortaa-Light", size: 20))
+                                .foregroundColor(.white)
+                                .offset(x: -5, y: 10)
+                        }.offset(x: 16, y: 16)
                         
                         // Circular Timeline ZStack
                         ZStack {
@@ -47,18 +58,18 @@ struct HomePage: View {
                             // Should have colored arcs for separate events
                             Circle()
                                 .strokeBorder(Color.white, lineWidth: 8)
-                                .frame(width: UIScreen.main.bounds.size.width - 55)
+                                .frame(width: UIScreen.main.bounds.size.width - 40)
                             
                             // Inner circle
                             // Color of the current task
                             Circle()
-                                .foregroundColor(Color(rgb: LIME))
-                                .frame(width: UIScreen.main.bounds.size.width - 125)
+                                .foregroundColor(Color(rgb: ORANGE))
+                                .frame(width: UIScreen.main.bounds.size.width - 105)
                             
                             // Subject Text
                             // Bounded to not overflow inner circle dimensions
-                            Text("CS 506: Complete Iteration 1. Then Iteration 2.")
-                                .font(Font.custom("Comfortaa-Light", size: 35))
+                            Text("CS 506")
+                                .font(Font.custom("Comfortaa-Light", size: 40))
                                 .padding()
                                 .foregroundColor(Color(rgb: DARK_GREY))
                                 .frame(width: UIScreen.main.bounds.size.width - 145, height: UIScreen.main.bounds.size.width - 160, alignment: .center)
@@ -68,39 +79,62 @@ struct HomePage: View {
                         }
                         
                         // TO-DO: Peek Next Event
-                        
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 15.0)
+                                .foregroundColor(Color(rgb: RED))
+                                .padding()
+                                .frame(width: UIScreen.main.bounds.size.width * 0.88, height: 125, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                            VStack{
+                                Text("Next:\nWork Shift")
+                                    .font(Font.custom("Comfortaa-Regular", size: 22))
+                                    .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
+                                    .multilineTextAlignment(.center)
+                                
+                                Text("8:30pm - 10:30pm")
+                                    .font(Font.custom("Comfortaa-Regular", size: 18))
+                                    .foregroundColor(.white)
+                                    .multilineTextAlignment(.center)
+                                    
+                            }.frame(width: UIScreen.main.bounds.size.width * 0.75, height: 80, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        }.padding()
+                        .offset(y: -10)
+
                         // +/- Button HStack
                         HStack {
                             
                             // Add button
-                            // Should take user to the AddPage
+                            // Should take user to the AddPage (use NavigationLink)
                             Button(action: {print("Add")}) {
                                 ZStack {
                                     Circle()
-                                        .foregroundColor(Color(rgb: LIME))
-                                        .frame(width: UIScreen.main.bounds.size.width / 4)
+                                        .foregroundColor(Color(rgb: ORANGE))
+                                        .frame(width: UIScreen.main.bounds.size.width / 4, height: UIScreen.main.bounds.size.width / 4, alignment: .center)
                                     Text("+")
-                                        .font(Font.custom("Comfortaa-Regular", size: 60))
+                                        .font(Font.custom("Comfortaa-Regular", size: 70))
                                         .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
-                                        .offset(y: 5)
+                                        .offset(y: 6)
                                 }
                             }.padding(.horizontal, 50)
                             
                             // Delete button
-                            // Changes the view to the deleteView
+                            // Changes the view to the deleteView (use NavigationLink)
                             Button(action: {print("Delete")}) {
                                 ZStack {
                                     Circle()
-                                        .foregroundColor(Color(rgb: LIME))
-                                        .frame(width: UIScreen.main.bounds.size.width / 4)
+                                        .foregroundColor(Color(rgb: ORANGE))
+                                        .frame(width: UIScreen.main.bounds.size.width / 4, height: UIScreen.main.bounds.size.width / 4, alignment: .center)
                                     Text("-")
-                                        .font(Font.custom("Comfortaa-Regular", size: 60))
+                                        .font(Font.custom("Comfortaa-Regular", size: 70))
                                         .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
+                                        .offset(x: 1)
                                 }
                                 
                             }.padding(.horizontal, 50)
                         }
+                        Spacer()
                     }
+                    .navigationBarHidden(true)// end of VStack
+                    
                 ) // end of overlay
         }
         
