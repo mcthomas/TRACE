@@ -133,7 +133,8 @@ struct HomePage: View {
                         }
                         Spacer()
                     }
-                    .navigationBarHidden(true)// end of VStack
+                    .navigationBarHidden(true)
+                    .preferredColorScheme(/*@START_MENU_TOKEN@*/.dark/*@END_MENU_TOKEN@*/)// end of VStack
                     
                 ) // end of overlay
         }
