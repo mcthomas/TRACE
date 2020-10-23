@@ -21,6 +21,7 @@ struct ContentView: View {
     var body: some View {
         HomePage()
     }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
@@ -30,26 +31,91 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 struct HomePage: View {
+    @State var currentDate = Date()
+    @State var notificationsNum = 0
+    
+    // Functions and variables used to create a functioning digital clock
+    // Resource: https://medium.com/iu-women-in-computing/intro-to-swiftui-digital-clock-d0a60e05d394
+    var timeFormat: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
+        return formatter
+    }
+    func timeToString(date: Date) -> String {
+         let time = timeFormat.string(from: date)
+         return time
+    }
+    var updateTimer: Timer {
+                 Timer.scheduledTimer(withTimeInterval: 1, repeats: true,
+                                      block: {_ in
+                                         self.currentDate = Date()
+                                       })
+    }
+    
     var body: some View {
         NavigationView {
             Color(rgb: DARK_GREY)
                 .ignoresSafeArea()
                 .overlay(
                     VStack {
-                        // TO-DO: Navigation Bar for Menu & Notifications?
-                        
-                        // TO-DO: Digital Clock Here
+                        // Digital Clock, Menu, and Notifications
                         HStack {
-                            Text("6:30")
-                            .font(Font.custom("Comfortaa-Light", size: 60))
-                            .foregroundColor(.white)
+                            // Sketchy menu icon made from 2 Images
+                            HStack {
+                                Image("menu_icon")
+                                    .resizable()
+                                    .frame(width: 30, height: 40)
+                                    .foregroundColor(.white)
+                                    .offset(x: 0, y: 13)
+                                Image("menu_arrow")
+                                    .resizable()
+                                    .frame(width: 10, height: 10)
+                                    .foregroundColor(.white)
+                                    .offset(x: -12, y: 6)
+                                    .rotationEffect(Angle(degrees: 270), anchor: .bottomLeading)
+                            }
                             
-                            
-                            Text("pm")
-                                .font(Font.custom("Comfortaa-Light", size: 20))
+                            // Digital Clock
+                            HStack {
+                                // Time will always result in "h:mm a" format, therefore
+                                // time[0] - h:mm
+                                // time[1] - AM/PM
+                                let time = timeToString(date: currentDate).components(separatedBy: " ")
+                                Text("\(time[0])")
+                                    .onAppear(perform: {
+                                        let _ = self.updateTimer
+                                    })
+                                .font(Font.custom("Comfortaa-Light", size: 60))
                                 .foregroundColor(.white)
-                                .offset(x: -5, y: 10)
-                        }.offset(x: 16, y: 16)
+                                
+                                
+                                Text("\(time[1].lowercased())")
+                                    .font(Font.custom("Comfortaa-Light", size: 20))
+                                    .foregroundColor(.white)
+                                    .offset(x: -5, y: 10)
+                            }.offset(x: 9, y: 16)
+                            .padding(.horizontal, 10)
+                            .frame(width: 230, height: 55)
+                            .fixedSize()
+                            
+                            // Notifications
+                            ZStack {
+                                Image("notifications_bell")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                    .foregroundColor(.white)
+                                    .offset(x: 0, y: 14)
+                                
+                                // if there are notifications
+                                if notificationsNum >= 0 {
+                                    Circle()
+                                        .frame(width: 10, height: 10, alignment: .trailing)
+                                        .foregroundColor(Color(rgb: RED))
+                                        .offset(x: 10, y: 5)
+                                }
+                            }
+                            
+                        }
                         
                         // Circular Timeline ZStack
                         ZStack {
@@ -86,22 +152,22 @@ struct HomePage: View {
                                 .frame(width: UIScreen.main.bounds.size.width * 0.88, height: 125, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                             VStack{
                                 Text("Next:\nWork Shift")
-                                    .font(Font.custom("Comfortaa-Regular", size: 22))
+                                    .font(Font.custom("Comfortaa-Regular", size: 18))
                                     .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                                     .multilineTextAlignment(.center)
                                 
                                 Text("8:30pm - 10:30pm")
-                                    .font(Font.custom("Comfortaa-Regular", size: 18))
-                                    .foregroundColor(.white)
+                                    .font(Font.custom("Comfortaa-Regular", size: 16))
+                                    .foregroundColor(Color(rgb: DARK_GREY))
                                     .multilineTextAlignment(.center)
+                                    .padding(.top, 1)
                                     
                             }.frame(width: UIScreen.main.bounds.size.width * 0.75, height: 80, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                         }.padding()
-                        .offset(y: -10)
+                        .offset(y: -20)
 
                         // +/- Button HStack
                         HStack {
-                            
                             // Add button
                             // Should take user to the AddPage (use NavigationLink)
                             Button(action: {print("Add")}) {
@@ -130,16 +196,18 @@ struct HomePage: View {
                                 }
                                 
                             }.padding(.horizontal, 50)
-                        }
+                        }.offset(y: -20)
                         Spacer()
                     }
                     .navigationBarHidden(true)
-                    .preferredColorScheme(/*@START_MENU_TOKEN@*/.dark/*@END_MENU_TOKEN@*/)// end of VStack
+                    .preferredColorScheme(/*@START_MENU_TOKEN@*/.dark/*@END_MENU_TOKEN@*/)
+                    // end of VStack
                     
                 ) // end of overlay
         }
         
     }
+    
 }
 
 // rgba color picker
