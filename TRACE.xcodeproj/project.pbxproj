@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6051CD7425461791005DEBDB /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6051CD7325461791005DEBDB /* Settings.swift */; };
 		C36DF8EE25B85782103EFC08 /* libPods-TRACE.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D7645146B0F83F9BD6CAF85 /* libPods-TRACE.a */; };
 		C95478D42544F6BA00880166 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C95478D32544F6BA00880166 /* GoogleService-Info.plist */; };
 		C9665A9A2541053700880166 /* TRACEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9665A992541053700880166 /* TRACEApp.swift */; };
@@ -18,6 +19,7 @@
 /* Begin PBXFileReference section */
 		0D7645146B0F83F9BD6CAF85 /* libPods-TRACE.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TRACE.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1781D1CCB8002728CA3772A2 /* Pods-TRACE.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRACE.release.xcconfig"; path = "Target Support Files/Pods-TRACE/Pods-TRACE.release.xcconfig"; sourceTree = "<group>"; };
+		6051CD7325461791005DEBDB /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		6CCBC6C6682B89CE217716EF /* Pods-TRACE.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRACE.debug.xcconfig"; path = "Target Support Files/Pods-TRACE/Pods-TRACE.debug.xcconfig"; sourceTree = "<group>"; };
 		C95478D32544F6BA00880166 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C9665A962541053700880166 /* TRACE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TRACE.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,6 +86,7 @@
 				C9665A9D2541053800880166 /* Assets.xcassets */,
 				C9665AA22541053800880166 /* Info.plist */,
 				C9665A9F2541053800880166 /* Preview Content */,
+				6051CD7325461791005DEBDB /* Settings.swift */,
 			);
 			path = TRACE;
 			sourceTree = "<group>";
@@ -192,6 +195,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6051CD7425461791005DEBDB /* Settings.swift in Sources */,
 				C9665A9C2541053700880166 /* ContentView.swift in Sources */,
 				C9665A9A2541053700880166 /* TRACEApp.swift in Sources */,
 			);
