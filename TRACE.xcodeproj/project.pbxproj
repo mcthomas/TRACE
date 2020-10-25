@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C36DF8EE25B85782103EFC08 /* libPods-TRACE.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D7645146B0F83F9BD6CAF85 /* libPods-TRACE.a */; };
+		C95478D42544F6BA00880166 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C95478D32544F6BA00880166 /* GoogleService-Info.plist */; };
 		C9665A9A2541053700880166 /* TRACEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9665A992541053700880166 /* TRACEApp.swift */; };
 		C9665A9C2541053700880166 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9665A9B2541053700880166 /* ContentView.swift */; };
 		C9665A9E2541053800880166 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9665A9D2541053800880166 /* Assets.xcassets */; };
@@ -18,6 +19,7 @@
 		0D7645146B0F83F9BD6CAF85 /* libPods-TRACE.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TRACE.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1781D1CCB8002728CA3772A2 /* Pods-TRACE.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRACE.release.xcconfig"; path = "Target Support Files/Pods-TRACE/Pods-TRACE.release.xcconfig"; sourceTree = "<group>"; };
 		6CCBC6C6682B89CE217716EF /* Pods-TRACE.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRACE.debug.xcconfig"; path = "Target Support Files/Pods-TRACE/Pods-TRACE.debug.xcconfig"; sourceTree = "<group>"; };
+		C95478D32544F6BA00880166 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C9665A962541053700880166 /* TRACE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TRACE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9665A992541053700880166 /* TRACEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TRACEApp.swift; sourceTree = "<group>"; };
 		C9665A9B2541053700880166 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 		C9665A982541053700880166 /* TRACE */ = {
 			isa = PBXGroup;
 			children = (
+				C95478D32544F6BA00880166 /* GoogleService-Info.plist */,
 				C9665A992541053700880166 /* TRACEApp.swift */,
 				C9665A9B2541053700880166 /* ContentView.swift */,
 				C9665A9D2541053800880166 /* Assets.xcassets */,
@@ -153,6 +156,7 @@
 			files = (
 				C9665AA12541053800880166 /* Preview Assets.xcassets in Resources */,
 				C9665A9E2541053800880166 /* Assets.xcassets in Resources */,
+				C95478D42544F6BA00880166 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -3,6 +3,7 @@ target 'TRACE' do
 platform :ios, '14.1'
 workspace '/Users/Matt/Projects/Workspace/TRACE'
 
+pod ‘Firebase’
 pod 'Firebase/Analytics'
 pod 'Firebase/Core'
 pod 'Firebase/Auth'

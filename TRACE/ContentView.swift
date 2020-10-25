@@ -16,8 +16,17 @@ let HOT_PINK = [250,75,212]
 
 
 import SwiftUI
+import Firebase
+
+var ref: DatabaseReference!
+
+var writeChild: Void {
+    
+    return
+}
 
 struct ContentView: View {
+    
     var body: some View {
         HomePage()
     }
@@ -34,9 +43,12 @@ struct HomePage: View {
     @State var currentDate = Date()
     @State var notificationsNum = 0
     
+    
     // Functions and variables used to create a functioning digital clock
     // Resource: https://medium.com/iu-women-in-computing/intro-to-swiftui-digital-clock-d0a60e05d394
     var timeFormat: DateFormatter {
+        ref = Database.database().reference()
+        ref.child("odd nums").setValue(13579)
         let formatter = DateFormatter()
         formatter.dateFormat = "h:mm a"
         return formatter
