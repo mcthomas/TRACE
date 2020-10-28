@@ -7,6 +7,15 @@
 
 import Foundation
 
+//Only instantiate ONCE
 class CalView {
-    
+    var tasks = [Task]()
+    var alerts = [Alert]()
+    var cues = [Cue]()
+    draw {
+        
+    }
+    arrangeChrono {
+        
+    }
 }
