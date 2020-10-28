@@ -34,7 +34,8 @@ struct ContentView: View {
     @State var areNotifications = true      // if there are notifications
     @State var time24hr = false             // 24 format toggle (default: 12)
     @State var darkMode = true              // Dark mode toggle (default: dark)
-    @State var showMenu = false
+    @State var showMenu = false             // Toggle Menu View
+    @State var editMode = false
     
     var body: some View {
         let drag = DragGesture()
@@ -53,14 +54,21 @@ struct ContentView: View {
         
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
-                HomePage(time24hr: self.$time24hr, darkMode: self.$darkMode, showMenu: self.$showMenu, currentDate: self.$currentDate, areNotifications: self.$areNotifications)
+                HomePage(time24hr: self.$time24hr, darkMode: self.$darkMode, showMenu: self.$showMenu, editMode: self.$editMode, currentDate: self.$currentDate, areNotifications: self.$areNotifications)
                     .frame(width: geometry.size.width, height: geometry.size.height)
-                    //.disabled(self.showMenu ? true : false)
+                    .disabled(self.editMode ? true : false)
+                    .blur(radius: self.editMode ? 10 : 0)
                     .gesture(drag)
                 if self.showMenu {
                     Menu(showMenu: self.$showMenu, darkMode: self.$darkMode, time24hr: self.$time24hr)
                         .transition(.move(edge: .leading))
                         .animation(.spring())
+                        .gesture(drag)
+                }
+                
+                if self.editMode {
+                    EditView(editMode: self.$editMode)
+                        .animation(.easeOut(duration: 1.5))
                 }
             }
         }
@@ -79,6 +87,7 @@ struct HomePage: View {
     @Binding var time24hr: Bool             // 24 format toggle (default: 12)
     @Binding var darkMode: Bool             // Dark mode toggle (default: dark)
     @Binding var showMenu: Bool             // Menu toggleable  (default: don't show)
+    @Binding var editMode: Bool
     @Binding var currentDate: Date
     @Binding var areNotifications: Bool
 
@@ -247,14 +256,15 @@ struct HomePage: View {
                                 
                                 // Delete button
                                 // Changes the view to the deleteView (use NavigationLink)
-                                Button(action: {print("Delete")}) {
+                                Button(action: {
+                                        withAnimation{self.editMode.toggle() }}) {
                                     ZStack {
                                         Circle()
                                             .foregroundColor(Color(rgb: ORANGE))
                                             .frame(width: UIScreen.main.bounds.size.width / 4, height: UIScreen.main.bounds.size.width / 4, alignment: .center)
-                                        Text("-")
-                                            .font(Font.custom("Comfortaa-Regular", size: 70))
+                                        Image("edit_icon")
                                             .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
+                                            .scaleEffect(1.8)
                                             .offset(x: 1)
                                     }
                                     
