@@ -12,6 +12,7 @@ class Circle {
     var tasks = [Task]()
     var alerts = [Alert]()
     var cues = [Cue]()
+    var colors = ["ff0000", ]
     
     draw {
         
@@ -35,7 +36,7 @@ class Circle {
     }
     func assignColors () {
         for i in tasks {
-            i.set_colorHex(by: "")
+            i.set_colorHex(by: )
         }
     }
     scale {
