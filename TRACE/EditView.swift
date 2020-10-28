@@ -29,7 +29,7 @@ struct EditView : View {
                 // Events List
                 TabView(selection: self.$index) {
                         ForEach(0...50, id: \.self) {index in
-                            CircleView(index: self.index)
+                            InfoView(index: self.index)
                                 .padding(.horizontal, 5)
                                 .scaleEffect(self.index == index ? 1.0 : 0.3)
                                 .tag(index)
@@ -60,7 +60,7 @@ struct EditView : View {
     }
 }
 
-struct CircleView : View {
+struct InfoView : View {
     let index: Int
     
     init(index: Int) {
