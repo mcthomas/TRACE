@@ -14,6 +14,13 @@
 		C9665A9C2541053700880166 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9665A9B2541053700880166 /* ContentView.swift */; };
 		C9665A9E2541053800880166 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9665A9D2541053800880166 /* Assets.xcassets */; };
 		C9665AA12541053800880166 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9665AA02541053800880166 /* Preview Assets.xcassets */; };
+		C9899C8E2548C16A00880166 /* Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9899C8D2548C16A00880166 /* Circle.swift */; };
+		C9899C912548C17200880166 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9899C902548C17200880166 /* Line.swift */; };
+		C9899C942548C17900880166 /* CalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9899C932548C17900880166 /* CalView.swift */; };
+		C9899C972548C18400880166 /* Overlays.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9899C962548C18400880166 /* Overlays.swift */; };
+		C9899C9A2548C47E00880166 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9899C992548C47E00880166 /* Task.swift */; };
+		C9899C9D2548C48200880166 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9899C9C2548C48200880166 /* Alert.swift */; };
+		C9899CA02548C48700880166 /* Cue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9899C9F2548C48700880166 /* Cue.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +35,13 @@
 		C9665A9D2541053800880166 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C9665AA02541053800880166 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C9665AA22541053800880166 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C9899C8D2548C16A00880166 /* Circle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Circle.swift; sourceTree = "<group>"; };
+		C9899C902548C17200880166 /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
+		C9899C932548C17900880166 /* CalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalView.swift; sourceTree = "<group>"; };
+		C9899C962548C18400880166 /* Overlays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Overlays.swift; sourceTree = "<group>"; };
+		C9899C992548C47E00880166 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		C9899C9C2548C48200880166 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
+		C9899C9F2548C48700880166 /* Cue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cue.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +97,13 @@
 				C95478D32544F6BA00880166 /* GoogleService-Info.plist */,
 				C9665A992541053700880166 /* TRACEApp.swift */,
 				C9665A9B2541053700880166 /* ContentView.swift */,
+				C9899C8D2548C16A00880166 /* Circle.swift */,
+				C9899C992548C47E00880166 /* Task.swift */,
+				C9899C9F2548C48700880166 /* Cue.swift */,
+				C9899C9C2548C48200880166 /* Alert.swift */,
+				C9899C902548C17200880166 /* Line.swift */,
+				C9899C932548C17900880166 /* CalView.swift */,
+				C9899C962548C18400880166 /* Overlays.swift */,
 				C9665A9D2541053800880166 /* Assets.xcassets */,
 				C9665AA22541053800880166 /* Info.plist */,
 				C9665A9F2541053800880166 /* Preview Content */,
@@ -195,9 +216,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9899C9D2548C48200880166 /* Alert.swift in Sources */,
+				C9899CA02548C48700880166 /* Cue.swift in Sources */,
+				C9899C9A2548C47E00880166 /* Task.swift in Sources */,
 				6051CD7425461791005DEBDB /* Settings.swift in Sources */,
+				C9899C972548C18400880166 /* Overlays.swift in Sources */,
+				C9899C942548C17900880166 /* CalView.swift in Sources */,
+				C9899C8E2548C16A00880166 /* Circle.swift in Sources */,
 				C9665A9C2541053700880166 /* ContentView.swift in Sources */,
 				C9665A9A2541053700880166 /* TRACEApp.swift in Sources */,
+				C9899C912548C17200880166 /* Line.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
