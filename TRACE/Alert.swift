@@ -60,11 +60,11 @@ class Alert {
     }
     
     func get_task_name () -> String {
-        return self.task_name
+        return self.alert_name
     }
     
     func set_task_name (by task_name: String) {
-        self.task_name = task_name
+        self.alert_name = task_name
         return
     }
     

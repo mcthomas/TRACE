@@ -12,10 +12,7 @@ class LineView {
     var tasks = [Task]()
     var alerts = [Alert]()
     var cues = [Cue]()
-    
-    draw {
-        
-    }
+
     
     func arrangeChrono () {
         tasks.sort {
@@ -28,14 +25,5 @@ class LineView {
             $0.start_time < $1.start_time
         }
     }
-    
-    allocateLengths {
-        
-    }
-    assignColors {
-        
-    }
-    scale {
-        
-    }
+
 }

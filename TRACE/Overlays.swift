@@ -9,22 +9,5 @@ import Foundation
 
 //Only instantiate ONCE
 class Overlays {
-    masterAdd {
-        
-    }
-    masterRemove {
-        
-    }
-    viewCal {
-        
-    }
-    viewSettings {
-        
-    }
-    viewNotifications {
-        
-    }
-    viewTicks {
-        
-    }
+
 }

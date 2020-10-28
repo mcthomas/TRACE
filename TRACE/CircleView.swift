@@ -14,9 +14,7 @@ class CircleView {
     var cues = [Cue]()
     var colors = ["ff0000", ]
     
-    draw {
-        
-    }
+
     
     func arrangeChrono () {
         tasks.sort {
@@ -34,12 +32,5 @@ class CircleView {
         
         //Now set to color segment graphic length?
     }
-    func assignColors () {
-        for i in tasks {
-            i.set_colorHex(by: )
-        }
-    }
-    scale {
-        
-    }
+
 }
