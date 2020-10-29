@@ -43,6 +43,7 @@ struct ContentView: View {
     @State var darkMode = true              // Dark mode toggle (default: dark)
     @State var showMenu = false             // Toggle Menu View
     @State var editMode = false
+    @State var loggedIn = false
     
     @State private var email: String = ""
     @State private var isPresentingSheet = false
@@ -55,93 +56,95 @@ struct ContentView: View {
     
     var body: some View {
 
-        
-        NavigationView {
-              VStack(alignment: .leading) {
-                Text("Authenticate users with only their email, no password required!")
-                  .padding(.bottom, 60)
-
-                CustomStyledTextField(
-                  text: $email, placeholder: "Email", symbolName: "person.circle.fill"
-                )
-
-                CustomStyledButton(title: "Send Sign In Link", action: sendSignInLink)
-                  .disabled(email.isEmpty)
-
-                Spacer()
-              }
-              .padding()
-              .navigationBarTitle("Passwordless Login")
-            }
-            .onOpenURL { url in
-              let link = url.absoluteString
-              if Auth.auth().isSignIn(withEmailLink: link) {
-                passwordlessSignIn(email: email, link: link) { result in
-                  switch result {
-                  case let .success(user):
-                    isPresentingSheet = user?.isEmailVerified ?? false
-                  case let .failure(error):
-                    isPresentingSheet = false
-                    alertItem = AlertItem(
-                      title: "An authentication error occurred.",
-                      message: error.localizedDescription
-                    )
-                  }
-                }
-              }
-            }
-            .sheet(isPresented: $isPresentingSheet) {
-              SuccessView(email: email)
-                
-            }
-        
-        
-        
-        .alert(item: $alertItem) { alert in
-            SwiftUI.Alert(
-                title: Text(alert.title),
-                message: Text(alert.message)
-            )
-        }
-        
+        ZStack {
+            //Segment()
+            let drag = DragGesture()
+                        .onEnded {
+                            if $0.translation.width > 50 {
+                                withAnimation {
+                                    self.showMenu = true
+                                }
+                            }
+                            if $0.translation.width < -50 {
+                                withAnimation {
+                                    self.showMenu = false
+                                }
+                            }
+                        }
             
-        //Segment()
-        let drag = DragGesture()
-                    .onEnded {
-                        if $0.translation.width > 50 {
-                            withAnimation {
-                                self.showMenu = true
-                            }
-                        }
-                        if $0.translation.width < -50 {
-                            withAnimation {
-                                self.showMenu = false
-                            }
-                        }
-                    }
-        
-        GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                HomePage(time24hr: self.$time24hr, darkMode: self.$darkMode, showMenu: self.$showMenu, editMode: self.$editMode, currentDate: self.$currentDate, areNotifications: self.$areNotifications)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .disabled(self.editMode ? true : false)
-                    .blur(radius: self.editMode ? 10 : 0)
-                    .gesture(drag)
-                if self.showMenu {
-                    Menu(showMenu: self.$showMenu, darkMode: self.$darkMode, time24hr: self.$time24hr)
-                        .transition(.move(edge: .leading))
-                        .animation(.spring())
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    HomePage(time24hr: self.$time24hr, darkMode: self.$darkMode, showMenu: self.$showMenu, editMode: self.$editMode, currentDate: self.$currentDate, areNotifications: self.$areNotifications)
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .disabled(self.editMode ? true : false)
+                        .blur(radius: self.editMode ? 10 : 0)
                         .gesture(drag)
-                }
-                
-                if self.editMode {
-                    EditView(editMode: self.$editMode)
-                        .animation(.easeOut(duration: 1.5))
+                    if self.showMenu {
+                        Menu(showMenu: self.$showMenu, darkMode: self.$darkMode, time24hr: self.$time24hr)
+                            .transition(.move(edge: .leading))
+                            .animation(.spring())
+                            .gesture(drag)
+                    }
+                    
+                    if self.editMode {
+                        EditView(editMode: self.$editMode)
+                            .animation(.easeOut(duration: 1.5))
+                    }
                 }
             }
+            if !loggedIn {
+                NavigationView {
+                      VStack(alignment: .leading) {
+                        Spacer()
+                        Text("Authenticate users with only their email, no password required!")
+                          .padding(.bottom, 60)
+                        CustomStyledTextField(
+                          text: $email, placeholder: "Email", symbolName: "person.circle.fill"
+                        )
+
+                        CustomStyledButton(title: "Send Sign In Link", action: sendSignInLink)
+                          .disabled(email.isEmpty)
+
+                        Spacer()
+                      }
+                      .padding()
+                      .navigationBarTitle("Passwordless Login")
+                    }
+                
+                    .onOpenURL { url in
+                      let link = url.absoluteString
+                      if Auth.auth().isSignIn(withEmailLink: link) {
+                        passwordlessSignIn(email: email, link: link) { result in
+                          switch result {
+                          case let .success(user):
+                            isPresentingSheet = user?.isEmailVerified ?? false
+                          case let .failure(error):
+                            isPresentingSheet = false
+                            alertItem = AlertItem(
+                              title: "An authentication error occurred.",
+                              message: error.localizedDescription
+                            )
+                          }
+                        }
+                      }
+                    }
+                    .sheet(isPresented: $isPresentingSheet, onDismiss:
+                            { self.loggedIn = true }) {
+                      SuccessView(email: email)
+                        
+                    }
+                
+                
+                
+                .alert(item: $alertItem) { alert in
+                    SwiftUI.Alert(
+                        title: Text(alert.title),
+                        message: Text(alert.message)
+                    )
+                }
+            } // end of if statement
         }
     }
-    
     
     
     private func sendSignInLink() {
