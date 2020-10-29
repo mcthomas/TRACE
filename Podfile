@@ -3,12 +3,22 @@ target 'TRACE' do
 platform :ios, '14.1'
 workspace '/Users/Matt/Projects/Workspace/TRACE'
 
-pod ‘Firebase’
+pod 'Firebase'
+pod 'FirebaseUI'
+pod 'Firebase/Auth'
+pod 'GoogleSignIn'
 pod 'Firebase/Analytics'
 pod 'Firebase/Core'
+pod 'FirebaseUI/Auth'
+pod 'FirebaseUI/Email'
+pod 'FirebaseUI'
+pod 'FirebaseUI/Auth'
+pod 'FirebaseUI/OAuth'
 pod 'Firebase/Auth'
 pod 'Firebase/Storage'
 pod 'Firebase/Database'
+pod 'FirebaseUI/OAuth'
+
 
 end
 
