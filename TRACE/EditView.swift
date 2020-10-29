@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+/*struct Segment : Shape {
+    func path(in rect: CGRect) -> Path {
+        var p = Path()
+
+        p.addArc(center: CGPoint(x: 100, y:100), radius: 50, startAngle: .degrees(0), endAngle: .degrees(90), clockwise: true)
+
+        return p.strokedPath(.init(lineWidth: 3, dash: [5, 3], dashPhase: 10))
+    }
+}*/
+
 struct EditView : View {
     
 
@@ -68,6 +78,7 @@ struct InfoView : View {
         UIScrollView.appearance().bounces = false
     }
     
+    
     var body : some View {
         VStack {
             // Circle Subject Matter
@@ -87,6 +98,7 @@ struct InfoView : View {
                         .fixedSize()
                         //.offset(y: 5)
                 }
+                
             }
             .padding(.bottom, 70)
             
@@ -105,6 +117,7 @@ struct InfoView : View {
             }
             
         }
+        
     }
 }
 

@@ -12,7 +12,7 @@ class CircleView {
     var tasks = [Task]()
     var alerts = [Alert]()
     var cues = [Cue]()
-    var colors = ["ff0000", ]
+    var colors = ["#ff0000", "#56cfda", "#31b941", "#dcb832", "#eb56c1"]
     
 
     
@@ -28,9 +28,27 @@ class CircleView {
         }
     }
     
+    func assignColors () {
+        for i in tasks {
+            i.set_colorHex(by: colors[tasks.count % 5])
+        }
+        for i in alerts {
+            i.set_colorHex(by: colors[tasks.count % 5])
+        }
+        for i in cues {
+            i.set_colorHex(by: colors[tasks.count % 5])
+        }
+    }
+    
     func allocateLengths () {
         
         //Now set to color segment graphic length?
+    }
+    
+    
+    
+    func scale () {
+        
     }
 
 }

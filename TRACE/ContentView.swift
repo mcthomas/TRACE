@@ -38,6 +38,7 @@ struct ContentView: View {
     @State var editMode = false
     
     var body: some View {
+        //Segment()
         let drag = DragGesture()
                     .onEnded {
                         if $0.translation.width > 50 {
