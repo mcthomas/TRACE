@@ -1,0 +1,6 @@
+module Pods_TRACE {
+  umbrella header "Pods-TRACE-umbrella.h"
+
+  export *
+  module * { export * }
+}
