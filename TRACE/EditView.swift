@@ -21,7 +21,6 @@ struct EditView : View {
     @State var data = ["CS506", "Second item", "Third Item", "Complete iteration 1 we got this", "fix index oob error"]
     @Binding var editMode: Bool
     @State var index = 0
-    
     @State var amountDragged = CGSize.zero
 
     var body : some View {
@@ -32,14 +31,14 @@ struct EditView : View {
             .onEnded {
                 if $0.translation.height < -100 {
                     withAnimation {
-                        
-                        if self.data.count > 0 && self.data.count > self.index {
+                        if data.count > 0 {
                             self.data.remove(at: self.index)
+                            if self.index >= self.data.count {
+                                self.index = self.data.count - 1
+                            }
+                            print("After remove, size is \(self.data.count)")
                         }
                         self.amountDragged = .zero
-                        print(self.data)
-                        print(self.data.count)
-                        print(self.index)
                     }
                 } else {
                     self.amountDragged = .zero
@@ -63,13 +62,13 @@ struct EditView : View {
                     if self.data.count > 0 {
                         // Events List
                         TabView(selection: self.$index) {
-                            ForEach(0..<self.data.count, id: \.self) {index in
-                                InfoView(index: self.index, mockData: self.data[self.index])
+                            ForEach(0..<data.count, id: \.self) {item in
+                                InfoView(index: self.index, mockData: self.data[item])
                                     .padding(.horizontal, 5)
-                                    .scaleEffect(self.index == index ? 1.0 : 0.3)
-                                    .tag(index)
+                                    .scaleEffect(self.index == item ? 1.0 : 0.3)
                                     .offset(y: amountDragged.height < 0 ? 10 + amountDragged.height : 10)
-                                    .disabled(amountDragged.height < -100 ? true : false)
+                                    .disabled(amountDragged.height < -30 ? true : false)
+                                    .tag(self.index)
                                     .gesture(drag)
                                 }
                         }
