@@ -23,11 +23,6 @@ import GoogleSignIn
 
  var ref: DatabaseReference!
 
-var writeChild: Void {
-    
-    return
-}
-
 
 //if user.isLoggedIn {
 //        MainView()
@@ -47,6 +42,8 @@ struct ContentView: View {
     
     @State private var email: String = ""
     @State private var isPresentingSheet = false
+    
+    
 
       /// This property will cause an alert view to display when it has a non-null value.
     
@@ -100,6 +97,18 @@ struct ContentView: View {
                           .padding(.bottom, 60)
                         CustomStyledTextField(
                           text: $email, placeholder: "Email", symbolName: "person.circle.fill"
+                            //if()
+                        
+                        
+//                        ref.child("user_id").child("child").setValue(123456)
+//                        //ref.child("odd nums").child.setValue(13579)
+//
+//                        ref.child("odd nums").observeSingleEvent(of: .value, with: { (snapshot) in
+//                        if let id = snapshot.value as? Int {
+//                        print("The value from the database: \(id)")
+//                        }
+//                        })
+                        
                         )
 
                         CustomStyledButton(title: "Send Sign In Link", action: sendSignInLink)
@@ -131,7 +140,7 @@ struct ContentView: View {
                     .sheet(isPresented: $isPresentingSheet, onDismiss:
                             { self.loggedIn = true }) {
                       SuccessView(email: email)
-                        
+
                     }
                 
                 
@@ -143,23 +152,46 @@ struct ContentView: View {
                     )
                 }
             } // end of if statement
+            
         }
     }
-    
+
     
     private func sendSignInLink() {
+        var validEmail = true
+        var validAcct = false
+        var pEmail = email.replacingOccurrences(of: "@", with: "", options: NSString.CompareOptions.literal, range: nil)
+        pEmail = pEmail.replacingOccurrences(of: ".", with: "", options: NSString.CompareOptions.literal, range: nil)
+        
+        ref.child(pEmail).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let id = snapshot.value as? Int {
+                if (id == 1) {
+                    validAcct = true
+                    self.loggedIn = true
+                }
+            }
+            })
+        
         let actionCodeSettings = ActionCodeSettings()
         actionCodeSettings.url = URL(string: "https://matt.page.link/vAA2")
         actionCodeSettings.handleCodeInApp = true
         actionCodeSettings.setIOSBundleID(Bundle.main.bundleIdentifier!)
-
+        
         Auth.auth().sendSignInLink(toEmail: email, actionCodeSettings: actionCodeSettings) { error in
           if let error = error {
             alertItem = AlertItem(
               title: "The sign in link could not be sent.",
               message: error.localizedDescription
             )
+            validEmail = false
           }
+            if(validEmail) {
+                if(!validAcct) {
+                    ref.child(pEmail).setValue(1)
+                }
+                //POPULATE OBJECTS
+            }
+          
         }
       }
     
@@ -237,7 +269,6 @@ struct CustomStyledButton: View {
 /// Displayed when a user successfuly logs in.
 struct SuccessView: View {
   let email: String
-
   var body: some View {
     /// The first view in this `ZStack` is a `Color` view that expands
     /// to set the background color of the `SucessView`.
@@ -266,7 +297,10 @@ struct SuccessView: View {
       .foregroundColor(.white)
     }
   }
+
 }
+
+
 
 
 struct ContentView_Previews: PreviewProvider {
@@ -293,13 +327,6 @@ struct HomePage: View {
          
         ///////// DB TEST
         ref = Database.database().reference()
-        ref.child("odd nums").setValue(13579)
-        
-        ref.child("odd nums").observeSingleEvent(of: .value, with: { (snapshot) in
-        if let id = snapshot.value as? Int {
-        print("The value from the database: \(id)")
-        }
-        })
         ///////// DB TEST
 
         
@@ -380,6 +407,7 @@ struct HomePage: View {
                                     // time[1] - AM/PM
                                     // Otherwise, if 24hr format, only time[0]
                                     let time = timeToString(date: currentDate).components(separatedBy: " ")
+                                    
                                     Text("\(time[0])")
                                         .onAppear(perform: {
                                             let _ = self.updateTimer
