@@ -17,7 +17,6 @@ let HOT_PINK = [250,75,212]
 let SETTINGS = ["Dark Mode", "24 Hour Format", "Colorblind Mode"]
 let SETTINGS_ICONS = ["darkmode_icon", "24hr_icon", "colorblind_icon"]
 
-
 import SwiftUI
 // import Firebase
 
@@ -27,6 +26,8 @@ var writeChild: Void {
     
     return
 }
+
+
 
 struct ContentView: View {
     // Should probably put these in the environment using EnvironmentObject
@@ -91,6 +92,10 @@ struct HomePage: View {
     @Binding var editMode: Bool
     @Binding var currentDate: Date
     @Binding var areNotifications: Bool
+    @State var taskAngles = CircleView.allocateAngles()
+    @State var tasks = CircleView.tasks
+    @State var colors = [Color.blue, Color.red, Color.orange, Color.green, Color.yellow, Color.purple]
+    
 
     // Functions and variables used to create a functioning digital clock
     // Resource: https://medium.com/iu-women-in-computing/intro-to-swiftui-digital-clock-d0a60e05d394
@@ -115,6 +120,24 @@ struct HomePage: View {
                                          self.currentDate = Date()
                                        })
     }
+    
+    struct Arc: Shape {
+        var startAngle: Angle
+        var endAngle: Angle
+        var clockwise: Bool
+        
+        func path(in rect: CGRect) -> Path {
+            let rotationAdjustment = Angle.degrees(90)
+            let modifiedStart = startAngle - rotationAdjustment
+            let modifiedEnd = endAngle - rotationAdjustment
+            
+            var path = Path()
+            path.addArc(center: CGPoint(x: rect.midX, y: rect.midY), radius: rect.width / 2, startAngle: modifiedStart, endAngle: modifiedEnd, clockwise: !clockwise)
+            
+            return path
+        }
+        
+            }
     
     var body: some View {
         NavigationView {
@@ -199,6 +222,14 @@ struct HomePage: View {
                                     .strokeBorder(self.darkMode ? Color.white : Color(rgb: DARK_GREY, alpha: 0.9), lineWidth: 8)
                                     .frame(width: UIScreen.main.bounds.size.width / 1.1)
                                 
+                                // Arcs
+                                // Should also rotate with time
+                                ForEach(0 ..< taskAngles.count) { i in
+                                    Arc(startAngle: taskAngles[i][0], endAngle: taskAngles[i][1], clockwise: true)
+                                        .stroke(colors[i % colors.count], lineWidth: 20)
+                                        .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
+                                }
+                                
                                 // Inner circle
                                 // Color of the current task
                                 Circle()
@@ -215,6 +246,10 @@ struct HomePage: View {
                                     .multilineTextAlignment(.center)
                                     .fixedSize()
                                     .offset(y: 5)
+                                
+                                
+                                
+                                
                             }
                             
                             // TO-DO: Peek Next Event

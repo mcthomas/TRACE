@@ -28,7 +28,7 @@ class LineView {
     
     func assignColors () {
         for i in tasks {
-            i.set_colorHex(by: colors[tasks.count % 5])
+            i.set_colorHex(by: [1, 2, 3])
         }
         for i in alerts {
             i.set_colorHex(by: colors[tasks.count % 5])

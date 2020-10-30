@@ -13,10 +13,10 @@ class Task {
     var subject: String
     var start_time: Int
     var end_time: Int
-    var colorHex: String
+    var colorHex: [Int]
     var task_name: String
     
-    init (fromSubject subject: String, fromStart_time start_time: Int, fromEnd_time end_time: Int, fromColorHex colorHex: String, fromTask_name task_name: String) {
+    init (fromSubject subject: String, fromStart_time start_time: Int, fromEnd_time end_time: Int, fromColorHex colorHex: [Int], fromTask_name task_name: String) {
         self.subject = subject
         self.start_time = start_time
         self.end_time = end_time
@@ -51,11 +51,11 @@ class Task {
         return
     }
     
-    func get_colorHex () -> String {
+    func get_colorHex () -> [Int] {
         return self.colorHex
     }
     
-    func set_colorHex (by colorHex: String) {
+    func set_colorHex (by colorHex: [Int]) {
         self.colorHex = colorHex
         return
     }

@@ -11,7 +11,7 @@ import Firebase
 @main
 struct TRACEApp: App {
     init() {
-        FirebaseApp.configure()
+        //FirebaseApp.configure()
       }
     var body: some Scene {
         WindowGroup {
