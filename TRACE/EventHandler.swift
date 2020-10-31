@@ -100,8 +100,6 @@ struct EventHandler: View {
 //                    Text("Please pick a time..")
                     DatePicker("", selection: $selectedDate).accentColor(.green)
                     if self.taskToggled {
-                                             DatePicker("End time (Task only)", selection: $selectedEndDate, displayedComponents: .hourAndMinute).accentColor(.green)
-                                         }
 //                            Text("Your selected date: \(selectedDate)")
                 }.padding()
                 HStack{
