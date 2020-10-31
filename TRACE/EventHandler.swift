@@ -18,29 +18,6 @@ struct EventHandler: View {
 @State var description = " "
 @State var selectedDate = Date()
     var body : some View {
- /*
-    let drag = DragGesture()
-        .onChanged {
-            self.amountDragged = $0.translation
-        }
-        .onEnded {
-            if $0.translation.height < -100 {
-                withAnimation {
-                    if data.count > 0 {
-                        self.data.remove(at: self.index)
-                        if self.index >= self.data.count {
-                            self.index = self.data.count - 1
-                        }
-                        print("After remove, size is \(self.data.count)")
-                    }
-                    self.amountDragged = .zero
-                }
-            } else {
-                self.amountDragged = .zero
-                
-            }
-        }
-        */
         ZStack {
             Color.black
             VStack {
