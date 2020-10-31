@@ -24,6 +24,7 @@ import GoogleSignIn
  var ref: DatabaseReference!
 
 
+
 //if user.isLoggedIn {
 //        MainView()
 //    } else {
@@ -40,6 +41,7 @@ struct ContentView: View {
     @State var editMode = false
     @State var eventMode = false
     @State var loggedIn = false
+    @State var pEmail = ""
     
     @State private var email: String = ""
     @State private var isPresentingSheet = false
@@ -90,7 +92,7 @@ struct ContentView: View {
                             .animation(.easeOut(duration: 1.5))
                     }
                     if self.eventMode {
-                        EventHandler(eventMode: self.$eventMode).animation(.easeOut(duration:1.5))
+                        EventHandler(eventMode: self.$eventMode, email: self.$pEmail).animation(.easeOut(duration:1.5))
                     }
                 }
             }
@@ -98,7 +100,7 @@ struct ContentView: View {
                 NavigationView {
                       VStack(alignment: .leading) {
                         Spacer()
-                        Text("Authenticate users with only their email, no password required!")
+                        Text("Authenticate with your email:")
                           .padding(.bottom, 60)
                         CustomStyledTextField(
                           text: $email, placeholder: "Email", symbolName: "person.circle.fill"
@@ -116,7 +118,7 @@ struct ContentView: View {
                         
                         )
 
-                        CustomStyledButton(title: "Send Sign In Link", action: sendSignInLink)
+                        CustomStyledButton(title: "Send Sign In Link / Login", action: sendSignInLink)
                           .disabled(email.isEmpty)
 
                         Spacer()
@@ -165,17 +167,15 @@ struct ContentView: View {
     private func sendSignInLink() {
         var validEmail = true
         var validAcct = false
-        var pEmail = email.replacingOccurrences(of: "@", with: "", options: NSString.CompareOptions.literal, range: nil)
-        pEmail = pEmail.replacingOccurrences(of: ".", with: "", options: NSString.CompareOptions.literal, range: nil)
+        self.pEmail = email.replacingOccurrences(of: "@", with: "", options: NSString.CompareOptions.literal, range: nil)
+        self.pEmail = pEmail.replacingOccurrences(of: ".", with: "", options: NSString.CompareOptions.literal, range: nil)
         
-        ref.child(pEmail).observeSingleEvent(of: .value, with: { (snapshot) in
-            if let id = snapshot.value as? Int {
-                if (id == 1) {
+        if (ref.child(pEmail) != nil) {
                     validAcct = true
                     self.loggedIn = true
-                }
-            }
-            })
+        }
+            
+        
         
         let actionCodeSettings = ActionCodeSettings()
         actionCodeSettings.url = URL(string: "https://matt.page.link/vAA2")
@@ -191,9 +191,11 @@ struct ContentView: View {
             validEmail = false
           }
             if(validEmail) {
+                
                 if(!validAcct) {
-                    ref.child(pEmail).setValue(1)
+                    //ref.child(pEmail).setValue(1)
                 }
+                EventHandler(eventMode: self.$eventMode, email: self.$pEmail).animation(.easeOut(duration:1.5))
                 //POPULATE OBJECTS
             }
           
@@ -467,7 +469,7 @@ struct HomePage: View {
                                         .stroke(colors[i % colors.count], lineWidth: 20)
                                         .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
                                 }
-                                
+                                            
                                 // Inner circle
                                 // Color of the current task
                                 Circle()
