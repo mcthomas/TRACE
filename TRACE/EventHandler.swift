@@ -17,6 +17,7 @@ struct EventHandler: View {
 @State private var colorSelected = "No color chosen"
 @State var description = " "
 @State var selectedDate = Date()
+@State var selectedEndDate = Date()
     var body : some View {
         ZStack {
             Color.black
@@ -98,6 +99,9 @@ struct EventHandler: View {
                 VStack {
 //                    Text("Please pick a time..")
                     DatePicker("", selection: $selectedDate).accentColor(.green)
+                    if self.taskToggled {
+                        DatePicker("End time (Task only)", selection: $selectedEndDate, displayedComponents: .hourAndMinute).accentColor(.green)
+                    }
 //                            Text("Your selected date: \(selectedDate)")
                 }.padding()
                 HStack{
