@@ -10,7 +10,7 @@
   - [Testing and Demoing](#Testing-and-Demoing "Testing and Demoing")
   - [Feasibility](#Feasibility "Feasibility")
   - [Concept Images](#Concept-Images "Concept Images")
-
+  - [Access Instructions](#Access-Instructions "Access Instructions")
 ## Problem Description: 
 During a time when our workflow is entirely digital, self-organization is a necessity to best manage our time and to maintain our sanity. Most of us favor our mobile devices for scheduling events, reminders, and alarms. We’ve adapted with heavy use of respective native iOS and Android apps, as well as with third-party replacements. I would like to improve on this model with respect to (1) decreasing time spent hopping between these apps and (2) visually minimizing our mental view of our workflow. Swiping between pages of apps, with multiple accounts, between multiple storage mediums is not ideal. Rummaging through their notifications is not ideal. Opening your calendar and seeing all your personal and scholarly events stacked together is not ideal. In fact, it’s overwhelming, and many of these functions are managed by third-parties. Self-managing the personal events, alerts, and alarms that matter most to you, in one place, is ideal. Being able to trace your days, one step at a time, as one would read a line of text would be ideal. Aggregating time-management tools into a single app is not unheard of, but doing so gracefully and with a single- dimensional nuance would be novel.
 
@@ -38,3 +38,12 @@ Colors indicate tasks
 Task expanded view:
 
 <img src="ci_task_expanded.png"/>
+
+
+## Access Instructions:
+Clone the repository using 
+'git clone git@github.com:mcthomas/TRACE.git'
+Then in the podifle, change the workspace target to wherever this project is stored. 
+In the terminal, type 'pod install'
+Open the .xcworkspace created by 'pod install' and build the app. 
+Open the trace app and register your email to gain access.
