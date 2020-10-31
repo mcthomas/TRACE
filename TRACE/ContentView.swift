@@ -38,6 +38,7 @@ struct ContentView: View {
     @State var darkMode = true              // Dark mode toggle (default: dark)
     @State var showMenu = false             // Toggle Menu View
     @State var editMode = false
+    @State var eventMode = false
     @State var loggedIn = false
     
     @State private var email: String = ""
@@ -71,7 +72,8 @@ struct ContentView: View {
             
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
-                    HomePage(time24hr: self.$time24hr, darkMode: self.$darkMode, showMenu: self.$showMenu, editMode: self.$editMode, currentDate: self.$currentDate, areNotifications: self.$areNotifications)
+                    HomePage(time24hr: self.$time24hr, darkMode: self.$darkMode, showMenu: self.$showMenu, editMode: self.$editMode,eventMode: self.$eventMode, currentDate:
+                                self.$currentDate, areNotifications: self.$areNotifications)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .disabled(self.editMode ? true : false)
                         .blur(radius: self.editMode ? 10 : 0)
@@ -86,6 +88,9 @@ struct ContentView: View {
                     if self.editMode {
                         EditView(editMode: self.$editMode)
                             .animation(.easeOut(duration: 1.5))
+                    }
+                    if self.eventMode {
+                        EventHandler(eventMode: self.$eventMode).animation(.easeOut(duration:1.5))
                     }
                 }
             }
@@ -315,6 +320,7 @@ struct HomePage: View {
     @Binding var darkMode: Bool             // Dark mode toggle (default: dark)
     @Binding var showMenu: Bool             // Menu toggleable  (default: don't show)
     @Binding var editMode: Bool
+    @Binding var eventMode: Bool
     @Binding var currentDate: Date
     @Binding var areNotifications: Bool
     @State var taskAngles = CircleView.allocateAngles()
@@ -510,7 +516,7 @@ struct HomePage: View {
                             HStack {
                                 // Add button
                                 // Should take user to the AddPage (use NavigationLink)
-                                Button(action: {print("Add")}) {
+                                Button(action: {withAnimation{self.eventMode.toggle() }}) {
                                     ZStack {
                                         Circle()
                                             .foregroundColor(Color(rgb: ORANGE))
