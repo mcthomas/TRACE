@@ -12,11 +12,17 @@ struct EventHandler: View {
     @Binding var email: String
     @State var editEvent: String
     @State var index = 0
+//Var that tells is alert was chosen for the event
     @State var alertToggled = false
+//Var that tells if cue was chosen for the event
     @State var cueToggled = false
+//Var that tells if task was chosen for the event
     @State var taskToggled = false
+//Var that holds the color selected for the event
     @State private var colorSelected = "No color chosen"
+//Var that holds the description of the event
     @State var description = ""
+//Vars to hold the date and time selected for the event
     @State var selectedDate = Date()
     @State var selectedEndDate = Date(timeIntervalSinceReferenceDate: 0)
     
@@ -68,9 +74,12 @@ struct EventHandler: View {
     }
     
     var body : some View {
+//ZStack contains all elements in the add view
         ZStack {
             Color.black
+//VStack wrapped in ZStack to get correct formatting
             VStack {
+//Alert, Cue, and Task toggable buttons
                 VStack{
                     Divider()
                     let alertToggled = Binding<Bool>(get: { self.alertToggled }, set: { self.alertToggled = $0; self.cueToggled = false; self.taskToggled = false })
@@ -83,22 +92,22 @@ struct EventHandler: View {
                     Toggle("Task event", isOn: taskToggled)
                     Divider()
                 }//VStack
-                
+//Description of the event field
                 VStack(){
                     Text("Description of your event")
                     .font(.callout)
                     .bold()
                     TextField("Enter the description..", text:$description).colorInvert()
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                }.frame(width: 300, height: 75, alignment: .top).padding()
-                
+                }.frame(width: 300, height: 75, alignment: .top).padding() //VStack
+//Field for which color has been selected for the event
                 VStack(){
                     TextField("Color: ", text: $colorSelected)
                         .font(.callout)
-                }.frame(width: 300, height: 25, alignment: .top).padding()
+                }.frame(width: 300, height: 25, alignment: .top).padding() //VStack
                 
                 Divider()
-                
+//HStack of buttons to assign the color to the event
                 HStack{
                     Button(action: {self.colorSelected="RED"})
                         {
@@ -148,16 +157,17 @@ struct EventHandler: View {
                 }//HStack
                 
                 Divider()
-                
+//SwiftUI's datepicker function
                 VStack {
-//                    Text("Please pick a time..")
                     DatePicker("", selection: $selectedDate).accentColor(.green)
                     if self.taskToggled {
                         DatePicker("End time (Task only)", selection: $selectedEndDate, in: selectedDate...Calendar.current.date(byAdding: .day, value: 1, to: self.selectedDate)!).accentColor(.green)
                     }
-                }.padding()
+                }.padding() //VStack
+//HStack that contains the add and close buttons
                 HStack{
                     Spacer()
+//Close icon to revert back to the homepage
                     Button(action: {
                             withAnimation{self.eventMode.toggle() }}) {
                         ZStack {
@@ -168,12 +178,12 @@ struct EventHandler: View {
                             Image("close_icon")
                                 .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                                 .scaleEffect(1.8)
-                        }
-                    }
+                        }//ZStack
+                    }//Close button end
                     Spacer()
                     Button(action: {
-                            
                             withAnimation{self.eventMode.toggle();
+//References to the database being pushed after clicking the add button
                                 if editEvent == "" { // if not opened from editView (adding)
                                     ref?.child(email).updateChildValues([description: objType()])
                                     ref?.child(email).child(description).updateChildValues(["Start Date": "\(selectedDate)"])
@@ -192,7 +202,7 @@ struct EventHandler: View {
                                         ref?.child(email).child(editEvent).updateChildValues(["Type": "\(objType())"])
                                         ref?.child(email).child(editEvent).updateChildValues(["Color": "\(colorSelected)"])
                                     }
-                                }
+                                } //Editing else statement
                                 
                             }
                         CircleView.getEvents(email: email)
@@ -206,8 +216,8 @@ struct EventHandler: View {
                             Image("add_icon")
                                 .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                                 .scaleEffect(1.8)
-                        }
-                    }
+                        }//ZStack
+                    }//End of add button
                     Spacer()
                 }//HStack
             }.background(Color.black) //Vstack
@@ -215,9 +225,10 @@ struct EventHandler: View {
         .onAppear(perform: {
             presetValuesOnEdit(event: editEvent)
         })//ZStack
-    }
-}
+    }//Varbody
+}//EventHandler Struct
 
+//Switches the view back to the main homepage
 struct EventHandler_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()

@@ -94,6 +94,7 @@ struct ContentView: View {
                         EditView(editMode: self.$editMode, email: self.$pEmail)
                             .animation(.easeOut(duration: 1.5))
                     }
+//Switches to addpage when the eventMode is toggled
                     if self.eventMode {
                         EventHandler(eventMode: self.$eventMode, email: self.$pEmail, editEvent: "").animation(.easeOut(duration:1.5))
                     }
