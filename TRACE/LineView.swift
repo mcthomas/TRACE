@@ -28,13 +28,13 @@ class LineView {
     
     func assignColors () {
         for i in tasks {
-            i.set_colorHex(by: [1, 2, 3])
+            i.set_color(by: "RED")
         }
         for i in alerts {
-            i.set_colorHex(by: colors[tasks.count % 5])
+            i.set_color(by: "BLUE")
         }
         for i in cues {
-            i.set_colorHex(by: colors[tasks.count % 5])
+            i.set_color(by: "GREEN")
         }
     }
     

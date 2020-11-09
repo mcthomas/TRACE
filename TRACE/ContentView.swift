@@ -161,6 +161,11 @@ struct ContentView: View {
                         message: Text(alert.message)
                     )
                 }
+                
+                .onDisappear {
+                    CircleView.getEvents(email: email)
+                    CircleView.allocateAngles()
+                }
             } // end of if statement
             
         }
@@ -333,7 +338,7 @@ struct HomePage: View {
     @Binding var eventMode: Bool
     @Binding var currentDate: Date
     @Binding var areNotifications: Bool
-    @State var taskAngles = CircleView.allocateAngles()
+    @State var taskAngles = [[Angle]]()
     @State var tasks = CircleView.tasks
     @State var colors = [Color.blue, Color.red, Color.orange, Color.green, Color.yellow, Color.purple]
     
