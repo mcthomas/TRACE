@@ -10,12 +10,14 @@ let DARK_GREY = [54, 52, 52]
 let WHITE = [255, 255, 255]
 let ORANGE = [247, 202, 89]
 let RED = [252, 76, 93]
-let LIME = [114,224,110]
-let LIGHT_BLUE = [76,223,252]
+let GREEN = [114,224,110]
+let BLUE = [76,223,252]
+let YELLOW = [255,249,51]
 let PURPLE = [129,79,255]
 let HOT_PINK = [250,75,212]
-let SETTINGS = ["Dark Mode", "24 Hour Format", "Colorblind Mode"]
-let SETTINGS_ICONS = ["darkmode_icon", "24hr_icon", "colorblind_icon"]
+let SETTINGS = ["Dark Mode", "24 Hour Format", "Colorblind Mode", "Line Mode"]
+let SETTINGS_ICONS = ["darkmode_icon", "24hr_icon", "colorblind_icon", "linemode_icon"]
+let HOURS = 24;
 
 import SwiftUI
 import Firebase
@@ -37,6 +39,7 @@ struct ContentView: View {
     @State var areNotifications = true      // if there are notifications
     @State var time24hr = false             // 24 format toggle (default: 12)
     @State var darkMode = true              // Dark mode toggle (default: dark)
+    @State var lineMode = false             // Line mode toggle (default: off)
     @State var showMenu = false             // Toggle Menu View
     @State var editMode = false
     @State var eventMode = false
@@ -74,25 +77,25 @@ struct ContentView: View {
             
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
-                    HomePage(time24hr: self.$time24hr, darkMode: self.$darkMode, showMenu: self.$showMenu, editMode: self.$editMode,eventMode: self.$eventMode, currentDate:
+                    HomePage(time24hr: self.$time24hr, darkMode: self.$darkMode, lineMode: self.$lineMode, showMenu: self.$showMenu, editMode: self.$editMode,eventMode: self.$eventMode, currentDate:
                                 self.$currentDate, areNotifications: self.$areNotifications)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .disabled(self.editMode ? true : false)
                         .blur(radius: self.editMode ? 10 : 0)
                         .gesture(drag)
                     if self.showMenu {
-                        Menu(showMenu: self.$showMenu, darkMode: self.$darkMode, time24hr: self.$time24hr)
+                        Menu(showMenu: self.$showMenu, darkMode: self.$darkMode, time24hr: self.$time24hr, lineMode: self.$lineMode)
                             .transition(.move(edge: .leading))
                             .animation(.spring())
                             .gesture(drag)
                     }
                     
                     if self.editMode {
-                        EditView(editMode: self.$editMode)
+                        EditView(editMode: self.$editMode, email: self.$pEmail)
                             .animation(.easeOut(duration: 1.5))
                     }
                     if self.eventMode {
-                        EventHandler(eventMode: self.$eventMode, email: self.$pEmail).animation(.easeOut(duration:1.5))
+                        EventHandler(eventMode: self.$eventMode, email: self.$pEmail, editEvent: "").animation(.easeOut(duration:1.5))
                     }
                 }
             }
@@ -170,9 +173,12 @@ struct ContentView: View {
         self.pEmail = email.replacingOccurrences(of: "@", with: "", options: NSString.CompareOptions.literal, range: nil)
         self.pEmail = pEmail.replacingOccurrences(of: ".", with: "", options: NSString.CompareOptions.literal, range: nil)
         
-        if (ref.child(pEmail) != nil) {
+        ref.child(pEmail).observe(.value) { (snapshot) in
+            
+            if snapshot.exists() {
                     validAcct = true
                     self.loggedIn = true
+        }
         }
             
         
@@ -195,7 +201,7 @@ struct ContentView: View {
                 if(!validAcct) {
                     //ref.child(pEmail).setValue(1)
                 }
-                EventHandler(eventMode: self.$eventMode, email: self.$pEmail).animation(.easeOut(duration:1.5))
+                EventHandler(eventMode: self.$eventMode, email: self.$pEmail, editEvent: "").animation(.easeOut(duration:1.5))
                 //POPULATE OBJECTS
             }
           
@@ -216,6 +222,7 @@ struct ContentView: View {
           }
         }
       }
+    
     }
 
 
@@ -320,6 +327,7 @@ struct HomePage: View {
     
     @Binding var time24hr: Bool             // 24 format toggle (default: 12)
     @Binding var darkMode: Bool             // Dark mode toggle (default: dark)
+    @Binding var lineMode: Bool             // Line mode toggle (default: off)
     @Binding var showMenu: Bool             // Menu toggleable  (default: don't show)
     @Binding var editMode: Bool
     @Binding var eventMode: Bool
@@ -453,6 +461,80 @@ struct HomePage: View {
                                 
                             }
                             
+                            /*
+                            // Linear Timeline ZStack
+                            ZStack {
+                                VStack(spacing: 80) {
+                                        Text("")
+                                        GeometryReader { fullView in
+                                                                    
+                                            // Top Arrow for indicating position on timeline
+                                            Image("menu_arrow")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                            .offset(x: UIScreen.main.bounds.size.width/2, y: 15)
+                                                                    
+                                            // ScrollView that scales with HStack width
+                                            ScrollView(.horizontal, showsIndicators: false) {
+                                                                        
+                                                // HStack with top measurement indicators
+                                                HStack {
+                                                    ForEach (0 ..< HOURS) { i in
+                                                        Rectangle()
+                                                            .fill(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                                            .frame(width: 1, height: 30)
+                                                            .offset(y: -15)
+                                                        Spacer().frame(width: UIScreen.main.bounds.size.width/4)
+                                                    }
+                                                }
+                                                                        
+                                                // HStack with placeholder icons and timeline segments
+                                                HStack() {
+                                                    Rectangle()
+                                                        .fill(Color(rgb: RED))
+                                                        .frame(width: UIScreen.main.bounds.size.width*1.5, height: 5)
+                                                    Image("24hr_icon")
+                                                        .resizable()
+                                                        .frame(width: 25, height: 25)
+                                                        .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                                    Rectangle()
+                                                        .fill(Color(rgb: ORANGE))
+                                                        .frame(width: UIScreen.main.bounds.size.width*1.5, height: 5)
+                                                    Image("close_icon")
+                                                        .resizable()
+                                                        .frame(width: 25, height: 25)
+                                                        .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                                    Rectangle()
+                                                        .fill(Color(rgb: BLUE))
+                                                        .frame(width: UIScreen.main.bounds.size.width*2, height: 5)
+                                                }.frame(width: UIScreen.main.bounds.size.width*6, height: 20)
+                                                                        
+                                                // HStack with bottom measurement indicators
+                                                HStack() {
+                                                    ForEach (0 ..< HOURS) { i in
+                                                        Rectangle()
+                                                        .fill(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                                        .frame(width: 1, height: 30)
+                                                        .offset(y: 15)
+                                                    Spacer().frame(width: UIScreen.main.bounds.size.width/4)
+                                                }
+                                            }
+                                        }
+                                                                    
+                                        // Bottom Arrow for indicating position on timeline
+                                        Image("menu_arrow")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                            .rotationEffect(.degrees(180))
+                                            .offset(x: UIScreen.main.bounds.size.width/2, y: 60)
+                                    }
+                                }
+                            }.frame(width: UIScreen.main.bounds.size.width, height: 200, alignment: .center)
+                            */
+                            
+                            
                             // Circular Timeline ZStack
                             ZStack {
                                 // Orbital Circle
@@ -486,12 +568,9 @@ struct HomePage: View {
                                     .multilineTextAlignment(.center)
                                     .fixedSize()
                                     .offset(y: 5)
-                                
-                                
-                                
-                                
                             }
                             
+ 
                             // TO-DO: Peek Next Event
                             ZStack {
                                 RoundedRectangle(cornerRadius: 15.0)
@@ -565,6 +644,7 @@ struct Menu : View {
     @Binding var showMenu: Bool
     @Binding var darkMode: Bool
     @Binding var time24hr: Bool
+    @Binding var lineMode: Bool
     
     // might be bad practice
     // any button that gets pressed from settings
@@ -577,6 +657,8 @@ struct Menu : View {
             self.time24hr.toggle()
         case SETTINGS[2]:
             print("placeholder for colorblind mode")
+        case SETTINGS[3]:
+            self.lineMode.toggle()
         default:
             print("Error: No action in settings for \(setting)")
         }
