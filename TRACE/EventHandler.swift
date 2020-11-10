@@ -8,19 +8,18 @@
 import SwiftUI
 
 struct EventHandler: View {
-@Binding var eventMode: Bool
-@State var index = 0
-@State var amountDragged = CGSize.zero
-@State var alertToggled = false
-@State var cueToggled = false
-@State var taskToggled = false
-@State private var colorSelected = "No color chosen"
-@State var description = " "
-@State var selectedDate = Date()
-    @State var selectedEndDate = Date()
-
-@Binding var email: String
-
+    @Binding var eventMode: Bool
+    @Binding var email: String
+    @State var editEvent: String
+    @State var index = 0
+    @State var alertToggled = false
+    @State var cueToggled = false
+    @State var taskToggled = false
+    @State private var colorSelected = "No color chosen"
+    @State var description = ""
+    @State var selectedDate = Date()
+    @State var selectedEndDate = Date(timeIntervalSinceReferenceDate: 0)
+    
     
     private func objType() -> String {
         if (alertToggled) {
@@ -33,8 +32,41 @@ struct EventHandler: View {
             return "task"
         }
     }
-    
 
+    private func presetValuesOnEdit(event: String) -> Void {
+        if event == "" {
+            return
+        } else {
+            ref.child("\(email)").child("\(event)").observeSingleEvent(of: .value, with: { (snapshot) in
+                let value = snapshot.value as? NSDictionary
+                let start = value?["Start Date"] as? String ?? ""
+                let end = value?["End Date"] as? String ?? ""
+                let type = value?["Type"] as? String ?? ""
+                let color = value?["Color"] as? String ?? ""
+                
+                let dateFormatterOrig = DateFormatter()
+                
+                dateFormatterOrig.locale = Locale(identifier: "en_US_POSIX")
+                dateFormatterOrig.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+                self.selectedDate = dateFormatterOrig.date(from: start)!
+                self.selectedEndDate = dateFormatterOrig.date(from: end)!
+                
+                if type == "alert" {
+                    self.alertToggled = true
+                }
+                else if type == "cue" {
+                    self.cueToggled = true
+                }
+                else {
+                    self.taskToggled = true
+                }
+                
+                self.colorSelected = color
+            })
+            self.description = event
+        }
+    }
+    
     var body : some View {
         ZStack {
             Color.black
@@ -51,6 +83,7 @@ struct EventHandler: View {
                     Toggle("Task event", isOn: taskToggled)
                     Divider()
                 }//VStack
+                
                 VStack(){
                     Text("Description of your event")
                     .font(.callout)
@@ -58,15 +91,16 @@ struct EventHandler: View {
                     TextField("Enter the description..", text:$description).colorInvert()
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }.frame(width: 300, height: 75, alignment: .top).padding()
+                
                 VStack(){
                     TextField("Color: ", text: $colorSelected)
                         .font(.callout)
-                        
-
                 }.frame(width: 300, height: 25, alignment: .top).padding()
+                
                 Divider()
+                
                 HStack{
-                    Button(action: {self.colorSelected="Selected color: Red"})
+                    Button(action: {self.colorSelected="RED"})
                         {
                         Text("Red")
                         }
@@ -75,7 +109,7 @@ struct EventHandler: View {
                            .foregroundColor(.red)
                            .background(Color.red)
                            .border(Color.black, width:2)
-                    Button(action: {self.colorSelected="Selected color: Blue"})
+                    Button(action: {self.colorSelected="BLUE"})
                         {
                         Text("Blue")
                         }
@@ -84,7 +118,7 @@ struct EventHandler: View {
                            .foregroundColor(.blue)
                            .background(Color.blue)
                            .border(Color.black, width:2)
-                    Button(action: {self.colorSelected="Selected color: Green"})
+                    Button(action: {self.colorSelected="GREEN"})
                         {
                         Text("Green")
                         }
@@ -93,7 +127,7 @@ struct EventHandler: View {
                            .foregroundColor(.green)
                            .background(Color.green)
                            .border(Color.black, width:2)
-                    Button(action: {self.colorSelected="Selected color: Yellow"})
+                    Button(action: {self.colorSelected="YELLOW"})
                         {
                         Text("Yellow")
                         }
@@ -102,7 +136,7 @@ struct EventHandler: View {
                            .foregroundColor(.yellow)
                            .background(Color.yellow)
                            .border(Color.black, width:2)
-                    Button(action: {self.colorSelected="Selected color: Orange"})
+                    Button(action: {self.colorSelected="ORANGE"})
                         {
                         Text("Orange")
                         }
@@ -112,19 +146,18 @@ struct EventHandler: View {
                            .background(Color.orange)
                            .border(Color.black, width:2)
                 }//HStack
+                
                 Divider()
+                
                 VStack {
 //                    Text("Please pick a time..")
                     DatePicker("", selection: $selectedDate).accentColor(.green)
                     if self.taskToggled {
-                        DatePicker("End time (Task only)", selection: $selectedEndDate, displayedComponents: .hourAndMinute).accentColor(.green)
+                        DatePicker("End time (Task only)", selection: $selectedEndDate, in: selectedDate...Calendar.current.date(byAdding: .day, value: 1, to: self.selectedDate)!).accentColor(.green)
                     }
-                    if self.taskToggled {
-                                             DatePicker("End time (Task only)", selection: $selectedEndDate, displayedComponents: .hourAndMinute).accentColor(.green)
-                                         }
-//                            Text("Your selected date: \(selectedDate)")
                 }.padding()
                 HStack{
+                    Spacer()
                     Button(action: {
                             withAnimation{self.eventMode.toggle() }}) {
                         ZStack {
@@ -137,9 +170,31 @@ struct EventHandler: View {
                                 .scaleEffect(1.8)
                         }
                     }
+                    Spacer()
                     Button(action: {
-                    
-                            withAnimation{self.eventMode.toggle(); ref?.child(email).updateChildValues([description: objType()]); ref?.child(email).child(description).updateChildValues(["Date": "\(selectedDate)"])}}) {
+                            
+                            withAnimation{self.eventMode.toggle();
+                                if editEvent == "" { // if not opened from editView (adding)
+                                    ref?.child(email).updateChildValues([description: objType()])
+                                    ref?.child(email).child(description).updateChildValues(["Start Date": "\(selectedDate)"])
+                                    ref?.child(email).child(description).updateChildValues(["End Date": "\(selectedEndDate)"])
+                                    ref?.child(email).child(description).updateChildValues(["Type": "\(objType())"])
+                                    ref?.child(email).child(description).updateChildValues(["Color": "\(colorSelected)"])
+                                } else { // editing
+                                    if editEvent != self.description {
+                                        let updates = ["Start Date": "\(selectedDate)", "End Date": "\(selectedEndDate)", "Type": "\(objType())", "Color": "\(colorSelected)"]
+
+                                        ref?.child(email).child(description).updateChildValues(updates)
+                                        ref?.child(email).child(editEvent).removeValue()
+                                    } else {
+                                        ref?.child(email).child(editEvent).updateChildValues(["Start Date": "\(selectedDate)"])
+                                        ref?.child(email).child(editEvent).updateChildValues(["End Date": "\(selectedEndDate)"])
+                                        ref?.child(email).child(editEvent).updateChildValues(["Type": "\(objType())"])
+                                        ref?.child(email).child(editEvent).updateChildValues(["Color": "\(colorSelected)"])
+                                    }
+                                }
+                                
+                            }}) {
                         ZStack {
                             Circle()
                                 .strokeBorder(Color(rgb: WHITE), lineWidth: 3)
@@ -150,38 +205,19 @@ struct EventHandler: View {
                                 .scaleEffect(1.8)
                         }
                     }
-                    
-                }//VStack
-        }.background(Color.black)//Zstack
-        }.background(Color.black)//Body
-}//Struct
-
-struct EventView : View {
-let index: Int
-let mockData: String  // replace with data element from database
-
-init(index: Int, mockData: String) {
-    self.index = index
-    self.mockData = mockData
-    UIScrollView.appearance().bounces = false
-}
-
-
-var body : some View {
-    HStack {
-        // Circle Subject Matter
-        
-        // Button to go to "AddView" (in edit mode)
-        Button(action: {print("works")}) {
-            
-        }
-    
+                    Spacer()
+                }//HStack
+            }.background(Color.black) //Vstack
+        }.background(Color.black)
+        .onAppear(perform: {
+            presetValuesOnEdit(event: editEvent)
+        })//ZStack
     }
 }
+
 struct EventHandler_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
 }
-}
-}
+

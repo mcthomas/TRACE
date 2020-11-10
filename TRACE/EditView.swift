@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 /*struct Segment : Shape {
     func path(in rect: CGRect) -> Path {
@@ -18,11 +19,29 @@ import SwiftUI
 }*/
 
 struct EditView : View {
-    @State var data = ["CS506", "Second item", "Third Item", "Complete iteration 1 we got this", "fix index oob error"]
     @Binding var editMode: Bool
+    @Binding var email: String
+    @State var eventMode = false
+    @State var data = [String]()
     @State var index = 0
     @State var amountDragged = CGSize.zero
-
+    
+    public func getEventList() -> Void {
+        var eventNames = ""
+        ref.child("\(self.email)").observeSingleEvent(of: .value, with: { (snapshot) in
+            for child in snapshot.children {
+                let snap = child as! DataSnapshot
+                let key = snap.key
+                
+                eventNames += "|\(key)"
+                var events = eventNames.components(separatedBy: "|")
+                events.removeFirst()
+                self.data = events
+                print(self.data)
+            }
+        })
+    }
+    
     var body : some View {
         let drag = DragGesture()
             .onChanged {
@@ -31,7 +50,8 @@ struct EditView : View {
             .onEnded {
                 if $0.translation.height < -100 {
                     withAnimation {
-                        if data.count > 0 {
+                        if self.data.count > 0 {
+                            ref.child("\(self.email)").child("\(self.data[self.index])").removeValue()
                             self.data.remove(at: self.index)
                             if self.index >= self.data.count {
                                 self.index = self.data.count - 1
@@ -45,7 +65,6 @@ struct EditView : View {
                     
                 }
             }
-        
         GeometryReader { geo in
             ZStack {
                 Color(rgb: [0, 0, 0], alpha: 0.3)
@@ -62,8 +81,8 @@ struct EditView : View {
                     if self.data.count > 0 {
                         // Events List
                         TabView(selection: self.$index) {
-                            ForEach(0..<data.count, id: \.self) {item in
-                                InfoView(index: self.index, mockData: self.data[item])
+                            ForEach(0..<self.data.count, id: \.self) {item in
+                                InfoView(eventMode: self.$eventMode, index: self.$index, eventString: self.data[item], email: self.email)
                                     .padding(.horizontal, 5)
                                     .scaleEffect(self.index == item ? 1.0 : 0.3)
                                     .offset(y: amountDragged.height < 0 ? 10 + amountDragged.height : 10)
@@ -76,6 +95,10 @@ struct EditView : View {
                         //.offset(y: -70)
                         .animation(.easeOut)
                         .frame(height: UIScreen.main.bounds.height - 240)
+                        .onChange(of: self.eventMode, perform: { value in
+                            self.getEventList()
+                        })
+                        
                     } else {
                         Spacer()
                         Text("No scheduled events yet.\nMake one by using the + button on the homepage!")
@@ -88,7 +111,7 @@ struct EditView : View {
                     }
                     // Exit Edit Mode
                     Button(action: {
-                            withAnimation{self.editMode.toggle() }}) {
+                            withAnimation{ self.editMode = false }}) {
                         ZStack {
                             Circle()
                                 .strokeBorder(Color(rgb: WHITE), lineWidth: 3)
@@ -100,34 +123,122 @@ struct EditView : View {
                         }
                     }
                 } // End of VStack
-            } // End of ZStack
+                
+                if self.eventMode && self.editMode {
+                    EventHandler(eventMode: self.$eventMode, email: self.$email, editEvent: self.data[self.index])
+                }
+            }.onAppear(perform: {
+                self.getEventList()
+            })// End of ZStack
         }
     }
 }
 
 struct InfoView : View {
-    let index: Int
-    let mockData: String  // replace with data element from database
+    @Binding var eventMode: Bool
+    @Binding var index: Int
+    @State var startDate = ""
+    @State var endDate = ""
+    @State var eventType = ""
+    @State var startComp = [" ", " ", " "]
+    @State var endComp = [" ", " ", " "]
+    @State var eventColor = "DARK_GREY"
+    let eventString: String  // replace with data element from database
+    let email: String
+    let editMode = true
     
-    init(index: Int, mockData: String) {
-        self.index = index
-        self.mockData = mockData
-        UIScrollView.appearance().bounces = false
+    
+    func setDates() -> Void {
+        ref.child("\(email)").child("\(eventString)").observeSingleEvent(of: .value, with: { (snapshot) in
+            let value = snapshot.value as? NSDictionary
+            let start = value?["Start Date"] as? String ?? ""
+            let end = value?["End Date"] as? String ?? ""
+            let type = value?["Type"] as? String ?? ""
+            let color = value?["Color"] as? String ?? ""
+            let dateFormatterOrig = DateFormatter()
+            let dateFormatterPost = DateFormatter()
+            
+            dateFormatterOrig.locale = Locale(identifier: "en_US_POSIX")
+            dateFormatterOrig.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+            
+            // if 24 hours format
+            // dateFormatterPost.dateFormat = "MM/dd/yyyy HH:mm"
+            
+            // am/pm format
+            dateFormatterPost.dateFormat = "MM/dd/yyyy hh:mm a"
+            
+            // startDate = dateFormatter.date(from:start)!
+            // endDate = dateFormatter.date(from:end)!
+            eventType = type
+            eventColor = color
+            
+            if let date = dateFormatterOrig.date(from: start) {
+                self.startDate = dateFormatterPost.string(from: date)
+                
+            } else {
+               print("There was an error decoding the string")
+            }
+            
+            if let date = dateFormatterOrig.date(from: end) {
+                self.endDate = dateFormatterPost.string(from: date)
+                
+            } else {
+               print("There was an error decoding the string")
+            }
+            
+            print(startDate)
+            print(endDate)
+            
+            startComp = startDate.components(separatedBy: " ")
+            endComp = endDate.components(separatedBy: " ")
+            
+            print(eventType)
+        })
+        
     }
     
+    func translateColor(color: String) -> [Int] {
+        if color == "DARK_GREY" {
+            return DARK_GREY
+        }
+        else if color == "ORANGE" {
+            return ORANGE
+        }
+        else if color == "RED" {
+            return RED
+        }
+        else if color == "GREEN" {
+            return GREEN
+        }
+        else if color == "BLUE" {
+            return BLUE
+        }
+        else if color == "YELLOW" {
+            return YELLOW
+        }
+        else if color == "PURPLE" {
+            return PURPLE
+        }
+        else if color == "HOT_PINK" {
+            return HOT_PINK
+        }
+        else {
+            return WHITE
+        }
+    }
     
     var body : some View {
         VStack {
             // Circle Subject Matter
             
             // Button to go to "AddView" (in edit mode)
-            Button(action: {print("\(mockData) INDEX: \(index)")}) {
+            Button(action: { self.eventMode.toggle() }) {
                 ZStack {
                     Circle()
-                        .foregroundColor(index % 2 == 0 ? Color(rgb: ORANGE) : Color(rgb: RED))
+                        .foregroundColor(Color(rgb: translateColor(color: eventColor)))
                         .frame(width: UIScreen.main.bounds.width / 1.4, height: UIScreen.main.bounds.width / 1.4)
-                        .shadow(color: index % 2 == 0 ? Color(rgb: ORANGE) : Color(rgb: RED), radius: 6)
-                    Text("\(mockData)")
+                        .shadow(color: Color(rgb: translateColor(color: eventColor)), radius: 6)
+                    Text("\(eventString)")
                         .font(Font.custom("Comfortaa-Light", size: 40))
                         .padding()
                         .foregroundColor(Color(rgb: DARK_GREY))
@@ -144,17 +255,47 @@ struct InfoView : View {
             // Event Date & Time
             ZStack {
                 RoundedRectangle(cornerRadius: 15.0)
-                    .foregroundColor(index % 2 == 0 ? Color(rgb: ORANGE) : Color(rgb: RED))
+                    .foregroundColor(Color(rgb: translateColor(color: eventColor)))
                     .frame(width: UIScreen.main.bounds.size.width * 0.70, height: 80, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    .shadow(color: index % 2 == 0 ? Color(rgb: ORANGE) : Color(rgb: RED), radius: 3)
-                Text("10/30/31\n8:20pm-10:05pm")
-                    .font(Font.custom("Comfortaa-Light", size: 24))
-                    .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
-                    .multilineTextAlignment(.center)
-                    //.offset(y: 5)
+                    .shadow(color: Color(rgb: translateColor(color: eventColor)), radius: 3)
+               
+                // start and end date strings in format MM/dd/yyyy hh:mm a (split into 3 components)
+                VStack {
+                    HStack {
+                        Text("\(startComp[0])")
+                            .font(Font.custom("Comfortaa-Light", size: 18))
+                            .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
+                            .multilineTextAlignment(.center)
+                        if eventType == "task" && endComp[0] != startComp[0] {
+                            Text("- \(endComp[0])")
+                                .font(Font.custom("Comfortaa-Light", size: 18))
+                                .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
+                                .multilineTextAlignment(.center)
+                        }
+                    }
+                    HStack {
+                        Text("\(startComp[1])\(startComp[2])")
+                            .font(Font.custom("Comfortaa-Light", size: 22))
+                            .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
+                            .multilineTextAlignment(.center)
+                            //.offset(y: 5)
+                        if eventType == "task" {
+                            Text("- \(endComp[1])\(endComp[2])")
+                                .font(Font.custom("Comfortaa-Light", size: 22))
+                                .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
+                                .multilineTextAlignment(.center)
+                        }
+                    }
+                }
             }
             
-        }
+        }.onAppear(perform: {
+            self.setDates()
+        })
+        .onChange(of: self.eventMode, perform: { value in
+            self.setDates()
+        })
+        // end of VStack
         
     }
 }

@@ -23,8 +23,19 @@
 		C9899C9D2548C48200880166 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9899C9C2548C48200880166 /* Alert.swift */; };
 		C9899CA02548C48700880166 /* Cue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9899C9F2548C48700880166 /* Cue.swift */; };
 		C9899CA32549E0D700880166 /* EditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9899CA22549E0D700880166 /* EditView.swift */; };
+		C997DEE4255A38E300880166 /* TRACETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C997DEE3255A38E300880166 /* TRACETests.swift */; };
 		C9C4D089254B321A00880166 /* credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = C9C4D088254B321A00880166 /* credentials.plist */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C997DEE6255A38E300880166 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9665A8E2541053700880166 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9665A952541053700880166;
+			remoteInfo = TRACE;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0D7645146B0F83F9BD6CAF85 /* libPods-TRACE.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TRACE.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -47,6 +58,9 @@
 		C9899C9C2548C48200880166 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		C9899C9F2548C48700880166 /* Cue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cue.swift; sourceTree = "<group>"; };
 		C9899CA22549E0D700880166 /* EditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditView.swift; sourceTree = "<group>"; };
+		C997DEE1255A38E300880166 /* TRACETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TRACETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C997DEE3255A38E300880166 /* TRACETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TRACETests.swift; sourceTree = "<group>"; };
+		C997DEE5255A38E300880166 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C9C4D088254B321A00880166 /* credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credentials.plist; sourceTree = "<group>"; };
 		C9C4D08B254B3B9500880166 /* TRACE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TRACE.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -57,6 +71,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				C36DF8EE25B85782103EFC08 /* libPods-TRACE.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C997DEDE255A38E300880166 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				C9665A982541053700880166 /* TRACE */,
+				C997DEE2255A38E300880166 /* TRACETests */,
 				C9665A972541053700880166 /* Products */,
 				16E24F72D4E4D57CC75A9996 /* Pods */,
 				26C5D5591A11E05667BF20EB /* Frameworks */,
@@ -94,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				C9665A962541053700880166 /* TRACE.app */,
+				C997DEE1255A38E300880166 /* TRACETests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -131,6 +154,15 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		C997DEE2255A38E300880166 /* TRACETests */ = {
+			isa = PBXGroup;
+			children = (
+				C997DEE3255A38E300880166 /* TRACETests.swift */,
+				C997DEE5255A38E300880166 /* Info.plist */,
+			);
+			path = TRACETests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -153,17 +185,39 @@
 			productReference = C9665A962541053700880166 /* TRACE.app */;
 			productType = "com.apple.product-type.application";
 		};
+		C997DEE0255A38E300880166 /* TRACETests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C997DEEA255A38E300880166 /* Build configuration list for PBXNativeTarget "TRACETests" */;
+			buildPhases = (
+				C997DEDD255A38E300880166 /* Sources */,
+				C997DEDE255A38E300880166 /* Frameworks */,
+				C997DEDF255A38E300880166 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C997DEE7255A38E300880166 /* PBXTargetDependency */,
+			);
+			name = TRACETests;
+			productName = TRACETests;
+			productReference = C997DEE1255A38E300880166 /* TRACETests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		C9665A8E2541053700880166 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1200;
+				LastSwiftUpdateCheck = 1210;
 				LastUpgradeCheck = 1200;
 				TargetAttributes = {
 					C9665A952541053700880166 = {
 						CreatedOnToolsVersion = 12.0.1;
+					};
+					C997DEE0255A38E300880166 = {
+						CreatedOnToolsVersion = 12.1;
+						TestTargetID = C9665A952541053700880166;
 					};
 				};
 			};
@@ -181,6 +235,7 @@
 			projectRoot = "";
 			targets = (
 				C9665A952541053700880166 /* TRACE */,
+				C997DEE0255A38E300880166 /* TRACETests */,
 			);
 		};
 /* End PBXProject section */
@@ -194,6 +249,13 @@
 				C9C4D089254B321A00880166 /* credentials.plist in Resources */,
 				C9665A9E2541053800880166 /* Assets.xcassets in Resources */,
 				C95478D42544F6BA00880166 /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C997DEDF255A38E300880166 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,7 +323,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C997DEDD255A38E300880166 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C997DEE4255A38E300880166 /* TRACETests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C997DEE7255A38E300880166 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9665A952541053700880166 /* TRACE */;
+			targetProxy = C997DEE6255A38E300880166 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		C9665AA32541053800880166 /* Debug */ = {
@@ -428,6 +506,48 @@
 			};
 			name = Release;
 		};
+		C997DEE8255A38E300880166 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = GC6FJWA2CX;
+				INFOPLIST_FILE = TRACETests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Matt.TRACETests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TRACE.app/TRACE";
+			};
+			name = Debug;
+		};
+		C997DEE9255A38E300880166 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = GC6FJWA2CX;
+				INFOPLIST_FILE = TRACETests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Matt.TRACETests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TRACE.app/TRACE";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -445,6 +565,15 @@
 			buildConfigurations = (
 				C9665AA62541053800880166 /* Debug */,
 				C9665AA72541053800880166 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C997DEEA255A38E300880166 /* Build configuration list for PBXNativeTarget "TRACETests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C997DEE8255A38E300880166 /* Debug */,
+				C997DEE9255A38E300880166 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

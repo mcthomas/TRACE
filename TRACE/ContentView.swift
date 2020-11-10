@@ -10,8 +10,9 @@ let DARK_GREY = [54, 52, 52]
 let WHITE = [255, 255, 255]
 let ORANGE = [247, 202, 89]
 let RED = [252, 76, 93]
-let LIME = [114,224,110]
-let LIGHT_BLUE = [76,223,252]
+let GREEN = [114,224,110]
+let BLUE = [76,223,252]
+let YELLOW = [255,249,51]
 let PURPLE = [129,79,255]
 let HOT_PINK = [250,75,212]
 let SETTINGS = ["Dark Mode", "24 Hour Format", "Colorblind Mode"]
@@ -88,11 +89,11 @@ struct ContentView: View {
                     }
                     
                     if self.editMode {
-                        EditView(editMode: self.$editMode)
+                        EditView(editMode: self.$editMode, email: self.$pEmail)
                             .animation(.easeOut(duration: 1.5))
                     }
                     if self.eventMode {
-                        EventHandler(eventMode: self.$eventMode, email: self.$pEmail).animation(.easeOut(duration:1.5))
+                        EventHandler(eventMode: self.$eventMode, email: self.$pEmail, editEvent: "").animation(.easeOut(duration:1.5))
                     }
                 }
             }
@@ -170,9 +171,12 @@ struct ContentView: View {
         self.pEmail = email.replacingOccurrences(of: "@", with: "", options: NSString.CompareOptions.literal, range: nil)
         self.pEmail = pEmail.replacingOccurrences(of: ".", with: "", options: NSString.CompareOptions.literal, range: nil)
         
-        if (ref.child(pEmail) != nil) {
+        ref.child(pEmail).observe(.value) { (snapshot) in
+            
+            if snapshot.exists() {
                     validAcct = true
                     self.loggedIn = true
+        }
         }
             
         
@@ -195,7 +199,7 @@ struct ContentView: View {
                 if(!validAcct) {
                     //ref.child(pEmail).setValue(1)
                 }
-                EventHandler(eventMode: self.$eventMode, email: self.$pEmail).animation(.easeOut(duration:1.5))
+                EventHandler(eventMode: self.$eventMode, email: self.$pEmail, editEvent: "").animation(.easeOut(duration:1.5))
                 //POPULATE OBJECTS
             }
           
@@ -216,6 +220,7 @@ struct ContentView: View {
           }
         }
       }
+    
     }
 
 
