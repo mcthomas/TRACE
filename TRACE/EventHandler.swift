@@ -194,7 +194,10 @@ struct EventHandler: View {
                                     }
                                 }
                                 
-                            }}) {
+                            }
+                        CircleView.getEvents(email: email)
+                        CircleView.allocateAngles()
+                    }) {
                         ZStack {
                             Circle()
                                 .strokeBorder(Color(rgb: WHITE), lineWidth: 3)
