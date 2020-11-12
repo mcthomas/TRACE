@@ -19,16 +19,20 @@ import Firebase
 }*/
 
 struct EditView : View {
+    /*
     @Binding var editMode: Bool
     @Binding var email: String
     @State var eventMode = false
-    @State var data = [String]()
+    
+     */
+    @EnvironmentObject var data : Model
+    @State var eventStrings = [String]()
     @State var index = 0
     @State var amountDragged = CGSize.zero
     
     public func getEventList() -> Void {
         var eventNames = ""
-        ref.child("\(self.email)").observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child("\(self.data.email)").observeSingleEvent(of: .value, with: { (snapshot) in
             for child in snapshot.children {
                 let snap = child as! DataSnapshot
                 let key = snap.key
@@ -36,8 +40,8 @@ struct EditView : View {
                 eventNames += "|\(key)"
                 var events = eventNames.components(separatedBy: "|")
                 events.removeFirst()
-                self.data = events
-                print(self.data)
+                self.eventStrings = events
+                print(self.eventStrings)
             }
         })
     }
@@ -50,13 +54,13 @@ struct EditView : View {
             .onEnded {
                 if $0.translation.height < -100 {
                     withAnimation {
-                        if self.data.count > 0 {
-                            ref.child("\(self.email)").child("\(self.data[self.index])").removeValue()
-                            self.data.remove(at: self.index)
-                            if self.index >= self.data.count {
-                                self.index = self.data.count - 1
+                        if self.eventStrings.count > 0 {
+                            ref.child("\(self.data.email)").child("\(self.eventStrings[self.index])").removeValue()
+                            self.eventStrings.remove(at: self.index)
+                            if self.index >= self.eventStrings.count {
+                                self.index = self.eventStrings.count - 1
                             }
-                            print("After remove, size is \(self.data.count)")
+                            print("After remove, size is \(self.eventStrings.count)")
                         }
                         self.amountDragged = .zero
                     }
@@ -78,11 +82,11 @@ struct EditView : View {
                         .multilineTextAlignment(.center)
                         .offset(y: 30)
                     
-                    if self.data.count > 0 {
+                    if self.eventStrings.count > 0 {
                         // Events List
                         TabView(selection: self.$index) {
-                            ForEach(0..<self.data.count, id: \.self) {item in
-                                InfoView(eventMode: self.$eventMode, index: self.$index, eventString: self.data[item], email: self.email)
+                            ForEach(0..<self.eventStrings.count, id: \.self) {item in
+                                InfoView(index: self.$index, eventString: self.eventStrings[item])
                                     .padding(.horizontal, 5)
                                     .scaleEffect(self.index == item ? 1.0 : 0.3)
                                     .offset(y: amountDragged.height < 0 ? 10 + amountDragged.height : 10)
@@ -95,7 +99,7 @@ struct EditView : View {
                         //.offset(y: -70)
                         .animation(.easeOut)
                         .frame(height: UIScreen.main.bounds.height - 240)
-                        .onChange(of: self.eventMode, perform: { value in
+                        .onChange(of: self.data.views["eventMode"]!, perform: { value in
                             self.getEventList()
                         })
                         
@@ -111,7 +115,7 @@ struct EditView : View {
                     }
                     // Exit Edit Mode
                     Button(action: {
-                            withAnimation{ self.editMode = false }}) {
+                            withAnimation{ self.data.views["editMode"]! = false }}) {
                         ZStack {
                             Circle()
                                 .strokeBorder(Color(rgb: WHITE), lineWidth: 3)
@@ -124,8 +128,8 @@ struct EditView : View {
                     }
                 } // End of VStack
                 
-                if self.eventMode && self.editMode {
-                    EventHandler(eventMode: self.$eventMode, email: self.$email, editEvent: self.data[self.index])
+                if self.data.views["eventMode"]! && self.data.views["editMode"]! {
+                    EventHandler(editEvent: self.eventStrings[self.index])
                 }
             }.onAppear(perform: {
                 self.getEventList()
@@ -135,7 +139,8 @@ struct EditView : View {
 }
 
 struct InfoView : View {
-    @Binding var eventMode: Bool
+    // @Binding var eventMode: Bool
+    @EnvironmentObject var data : Model
     @Binding var index: Int
     @State var startDate = ""
     @State var endDate = ""
@@ -144,12 +149,11 @@ struct InfoView : View {
     @State var endComp = [" ", " ", " "]
     @State var eventColor = "DARK_GREY"
     let eventString: String  // replace with data element from database
-    let email: String
     let editMode = true
     
     
     func setDates() -> Void {
-        ref.child("\(email)").child("\(eventString)").observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child("\(self.data.email)").child("\(eventString)").observeSingleEvent(of: .value, with: { (snapshot) in
             let value = snapshot.value as? NSDictionary
             let start = value?["Start Date"] as? String ?? ""
             let end = value?["End Date"] as? String ?? ""
@@ -232,7 +236,7 @@ struct InfoView : View {
             // Circle Subject Matter
             
             // Button to go to "AddView" (in edit mode)
-            Button(action: { self.eventMode.toggle() }) {
+            Button(action: { self.data.views["eventMode"]!.toggle() }) {
                 ZStack {
                     Circle()
                         .foregroundColor(Color(rgb: translateColor(color: eventColor)))
@@ -292,7 +296,7 @@ struct InfoView : View {
         }.onAppear(perform: {
             self.setDates()
         })
-        .onChange(of: self.eventMode, perform: { value in
+        .onChange(of: self.data.views["eventMode"]!, perform: { value in
             self.setDates()
         })
         // end of VStack

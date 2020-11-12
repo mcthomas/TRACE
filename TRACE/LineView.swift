@@ -9,7 +9,7 @@ import Foundation
 
 //Only instantiate ONCE
 class LineView {
-    var tasks = [Task]()
+    var tasks = [Event]()
     var alerts = [Alert]()
     var cues = [Cue]()
     var colors = ["#ff0000", "#56cfda", "#31b941", "#dcb832", "#eb56c1"]

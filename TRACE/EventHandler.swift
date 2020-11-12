@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct EventHandler: View {
-    @Binding var eventMode: Bool
-    @Binding var email: String
+    @EnvironmentObject var data : Model
+    // @Binding var eventMode: Bool
+    // @Binding var email: String
     @State var editEvent: String
     @State var index = 0
 //Var that tells is alert was chosen for the event
@@ -43,7 +44,7 @@ struct EventHandler: View {
         if event == "" {
             return
         } else {
-            ref.child("\(email)").child("\(event)").observeSingleEvent(of: .value, with: { (snapshot) in
+            ref.child("\(self.data.email)").child("\(event)").observeSingleEvent(of: .value, with: { (snapshot) in
                 let value = snapshot.value as? NSDictionary
                 let start = value?["Start Date"] as? String ?? ""
                 let end = value?["End Date"] as? String ?? ""
@@ -70,6 +71,7 @@ struct EventHandler: View {
                 self.colorSelected = color
             })
             self.description = event
+            
         }
     }
     
@@ -169,7 +171,7 @@ struct EventHandler: View {
                     Spacer()
 //Close icon to revert back to the homepage
                     Button(action: {
-                            withAnimation{self.eventMode.toggle() }}) {
+                            withAnimation{self.data.views["eventMode"]!.toggle() }}) {
                         ZStack {
                             Circle()
                                 .strokeBorder(Color(rgb: WHITE), lineWidth: 3)
@@ -182,30 +184,32 @@ struct EventHandler: View {
                     }//Close button end
                     Spacer()
                     Button(action: {
-                            withAnimation{self.eventMode.toggle();
+                            withAnimation{self.data.views["eventMode"]!.toggle();
 //References to the database being pushed after clicking the add button
                                 if editEvent == "" { // if not opened from editView (adding)
-                                    ref?.child(email).updateChildValues([description: objType()])
-                                    ref?.child(email).child(description).updateChildValues(["Start Date": "\(selectedDate)"])
-                                    ref?.child(email).child(description).updateChildValues(["End Date": "\(selectedEndDate)"])
-                                    ref?.child(email).child(description).updateChildValues(["Type": "\(objType())"])
-                                    ref?.child(email).child(description).updateChildValues(["Color": "\(colorSelected)"])
+                                    ref?.child(self.data.email).updateChildValues([description: objType()])
+                                    ref?.child(self.data.email).child(description).updateChildValues(["Start Date": "\(selectedDate)"])
+                                    ref?.child(self.data.email).child(description).updateChildValues(["End Date": "\(selectedEndDate)"])
+                                    ref?.child(self.data.email).child(description).updateChildValues(["Type": "\(objType())"])
+                                    ref?.child(self.data.email).child(description).updateChildValues(["Color": "\(colorSelected)"])
+                                    
+                                    // self.data.events.append(Event(subject: description, start_time: selectedDate, end_time: selectedEndDate, color: colorSelected, type: objType()))
                                 } else { // editing
                                     if editEvent != self.description {
                                         let updates = ["Start Date": "\(selectedDate)", "End Date": "\(selectedEndDate)", "Type": "\(objType())", "Color": "\(colorSelected)"]
 
-                                        ref?.child(email).child(description).updateChildValues(updates)
-                                        ref?.child(email).child(editEvent).removeValue()
+                                        ref?.child(self.data.email).child(description).updateChildValues(updates)
+                                        ref?.child(self.data.email).child(editEvent).removeValue()
                                     } else {
-                                        ref?.child(email).child(editEvent).updateChildValues(["Start Date": "\(selectedDate)"])
-                                        ref?.child(email).child(editEvent).updateChildValues(["End Date": "\(selectedEndDate)"])
-                                        ref?.child(email).child(editEvent).updateChildValues(["Type": "\(objType())"])
-                                        ref?.child(email).child(editEvent).updateChildValues(["Color": "\(colorSelected)"])
+                                        ref?.child(self.data.email).child(editEvent).updateChildValues(["Start Date": "\(selectedDate)"])
+                                        ref?.child(self.data.email).child(editEvent).updateChildValues(["End Date": "\(selectedEndDate)"])
+                                        ref?.child(self.data.email).child(editEvent).updateChildValues(["Type": "\(objType())"])
+                                        ref?.child(self.data.email).child(editEvent).updateChildValues(["Color": "\(colorSelected)"])
                                     }
                                 } //Editing else statement
                                 
                             }
-                        CircleView.getEvents(email: email)
+                        CircleView.getEvents(email: self.data.email)
                         CircleView.allocateAngles()
                     }) {
                         ZStack {

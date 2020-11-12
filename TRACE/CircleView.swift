@@ -11,7 +11,7 @@ import Firebase
  
 //Only instantiate ONCE
 class CircleView {
-    static var tasks = [Task]()
+    static var tasks = [Event]()
     static var taskAngles = [[Angle]]()
     static var alerts = [Alert]()
     static var cues = [Cue]()
@@ -25,7 +25,7 @@ class CircleView {
             dateFormatter.locale = Locale(identifier: "en_US_POSIX") // set locale to reliable US_POSIX
             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
             ref.child(finalEmail).observeSingleEvent(of: .value, with: { (snapshot) in
-                CircleView.tasks = [Task]()
+                CircleView.tasks = [Event]()
                 for child in snapshot.children {
                     let snap = child as! DataSnapshot
                     let name = snap.key
@@ -61,7 +61,7 @@ class CircleView {
      
                     
                     if (type == "task"){
-                        let newTask = Task(fromSubject: "Subject", fromStart_time: startTime, fromEnd_time: endTime, fromColor: color, fromTask_name: name)
+                        let newTask = Event(subject: "Subject", start_time: startTime, end_time: endTime, color: color, type: type)
                         CircleView.tasks.append(newTask)
                     }
                     else if(type == "alert"){

@@ -8,20 +8,21 @@
 import Foundation
 
 //Instantiate as needed
-class Task {
+// USED TO BE TASK.SWIFT, for this branch going to use this for environment object
+class Event : Identifiable {
+    var uid = UUID()
+    var subject: String         // description
+    var start_time: Int         // starting time
+    var end_time: Int           // ending time
+    var color: String           // color
+    var type: String       // type
     
-    var subject: String
-    var start_time: Int
-    var end_time: Int
-    var color: String
-    var task_name: String
-    
-    init (fromSubject subject: String, fromStart_time start_time: Int, fromEnd_time end_time: Int, fromColor color: String, fromTask_name task_name: String) {
+    init (subject: String, start_time: Int, end_time: Int, color: String, type: String) {
         self.subject = subject
         self.start_time = start_time
         self.end_time = end_time
         self.color = color
-        self.task_name = task_name
+        self.type = type
     }
     
     func get_subject () -> String {
@@ -60,12 +61,12 @@ class Task {
         return
     }
     
-    func get_task_name () -> String {
-        return self.task_name
+    func get_type () -> String {
+        return self.type
     }
     
-    func set_task_name (by task_name: String) {
-        self.task_name = task_name
+    func set_type (by type: String) {
+        self.type = type
         return
     }
     

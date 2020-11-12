@@ -25,6 +25,33 @@ import GoogleSignIn
 
  var ref: DatabaseReference!
 
+// Class to hold all environment objects
+class Model : ObservableObject {
+    // Will be a list of event objects
+    @Published var events : [Event] = []
+    @Published var settings : Dictionary<String, Bool>
+    @Published var views : Dictionary<String, Bool>
+    @Published var areNotifications : Bool
+    @Published var loggedIn : Bool
+    @Published var email : String
+    @Published var currentDate : Date
+    init() {
+        self.settings = [
+            "time24hr": false,
+            "darkMode": true,
+            "lineMode": false
+        ]
+        self.views = [
+            "showMenu": false,
+            "editMode": false,
+            "eventMode": false
+        ]
+        self.areNotifications = false
+        self.loggedIn = false
+        self.email = ""
+        self.currentDate = Date()
+    }
+}
 
 
 //if user.isLoggedIn {
@@ -34,7 +61,9 @@ import GoogleSignIn
 
 
 struct ContentView: View {
+    @EnvironmentObject var data: Model
     // Should probably put these in the environment using EnvironmentObject
+    /*
     @State var currentDate = Date()         // gives current date/time
     @State var areNotifications = true      // if there are notifications
     @State var time24hr = false             // 24 format toggle (default: 12)
@@ -48,11 +77,11 @@ struct ContentView: View {
     
     @State private var email: String = ""
     @State private var isPresentingSheet = false
+    */
+    @State var pEmail = ""
+    @State var isPresentingSheet = false
     
-    
-
       /// This property will cause an alert view to display when it has a non-null value.
-    
     @State private var alertItem: AlertItem? = nil
 
     
@@ -65,49 +94,51 @@ struct ContentView: View {
                         .onEnded {
                             if $0.translation.width > 50 {
                                 withAnimation {
-                                    self.showMenu = true
+                                    data.settings["showMenu"] = true
                                 }
                             }
                             if $0.translation.width < -50 {
                                 withAnimation {
-                                    self.showMenu = false
+                                    data.settings["showMenu"] = false
                                 }
                             }
                         }
             
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
-                    HomePage(time24hr: self.$time24hr, darkMode: self.$darkMode, lineMode: self.$lineMode, showMenu: self.$showMenu, editMode: self.$editMode,eventMode: self.$eventMode, currentDate:
-                                self.$currentDate, areNotifications: self.$areNotifications)
+                    // HomePage(time24hr: self.$time24hr, darkMode: self.$darkMode, lineMode: self.$lineMode, showMenu: self.$showMenu, editMode: self.$editMode,eventMode: self.$eventMode, currentDate: self.$currentDate, areNotifications: self.$areNotifications)
+                    HomePage()
+                        .environmentObject(data)
                         .frame(width: geometry.size.width, height: geometry.size.height)
-                        .disabled(self.editMode ? true : false)
-                        .blur(radius: self.editMode ? 10 : 0)
+                        .disabled(self.data.views["editMode"] == true ? true : false)
+                        .blur(radius: self.data.views["editMode"]! ? 10 : 0)
                         .gesture(drag)
-                    if self.showMenu {
-                        Menu(showMenu: self.$showMenu, darkMode: self.$darkMode, time24hr: self.$time24hr, lineMode: self.$lineMode)
+                    if self.data.views["showMenu"]! {
+                        Menu()
                             .transition(.move(edge: .leading))
                             .animation(.spring())
                             .gesture(drag)
                     }
                     
-                    if self.editMode {
-                        EditView(editMode: self.$editMode, email: self.$pEmail)
+                    if self.data.views["editMode"]! {
+                        EditView()
+                            .environmentObject(data)
                             .animation(.easeOut(duration: 1.5))
                     }
-//Switches to addpage when the eventMode is toggled
-                    if self.eventMode {
-                        EventHandler(eventMode: self.$eventMode, email: self.$pEmail, editEvent: "").animation(.easeOut(duration:1.5))
+                    //Switches to addpage when the eventMode is toggled
+                    if self.data.views["eventMode"]! {
+                        EventHandler(editEvent: "")
+                            .environmentObject(data)
                     }
                 }
             }
-            if !loggedIn {
+            if !self.data.loggedIn {
                 NavigationView {
                       VStack(alignment: .leading) {
                         Spacer()
                         Text("Authenticate with your email:")
                           .padding(.bottom, 60)
-                        CustomStyledTextField(
-                          text: $email, placeholder: "Email", symbolName: "person.circle.fill"
+                        CustomStyledTextField(placeholder: "Email", symbolName: "person.circle.fill"
                             //if()
                         
                         
@@ -120,11 +151,10 @@ struct ContentView: View {
 //                        }
 //                        })
                         
-                        )
+                        ).environmentObject(data)
 
                         CustomStyledButton(title: "Send Sign In Link / Login", action: sendSignInLink)
-                          .disabled(email.isEmpty)
-
+                            .disabled(self.data.email.isEmpty)
                         Spacer()
                       }
                       .padding()
@@ -134,7 +164,7 @@ struct ContentView: View {
                     .onOpenURL { url in
                       let link = url.absoluteString
                       if Auth.auth().isSignIn(withEmailLink: link) {
-                        passwordlessSignIn(email: email, link: link) { result in
+                        passwordlessSignIn(email: self.data.email, link: link) { result in
                           switch result {
                           case let .success(user):
                             isPresentingSheet = user?.isEmailVerified ?? false
@@ -148,9 +178,9 @@ struct ContentView: View {
                         }
                       }
                     }
-                    .sheet(isPresented: $isPresentingSheet, onDismiss:
-                            { self.loggedIn = true }) {
-                      SuccessView(email: email)
+                .sheet(isPresented: self.$isPresentingSheet, onDismiss:
+                        { self.data.loggedIn = true }) {
+                    SuccessView(email: self.data.email)
 
                     }
                 
@@ -164,11 +194,10 @@ struct ContentView: View {
                 }
                 
                 .onDisappear {
-                    CircleView.getEvents(email: email)
+                    CircleView.getEvents(email: self.data.email)
                     CircleView.allocateAngles()
                 }
             } // end of if statement
-            
         }
     }
 
@@ -176,15 +205,15 @@ struct ContentView: View {
     private func sendSignInLink() {
         var validEmail = true
         var validAcct = false
-        self.pEmail = email.replacingOccurrences(of: "@", with: "", options: NSString.CompareOptions.literal, range: nil)
+        self.pEmail = self.data.email.replacingOccurrences(of: "@", with: "", options: NSString.CompareOptions.literal, range: nil)
         self.pEmail = pEmail.replacingOccurrences(of: ".", with: "", options: NSString.CompareOptions.literal, range: nil)
         
         ref.child(pEmail).observe(.value) { (snapshot) in
             
             if snapshot.exists() {
                     validAcct = true
-                    self.loggedIn = true
-        }
+                self.data.loggedIn = true
+            }
         }
             
         
@@ -194,7 +223,7 @@ struct ContentView: View {
         actionCodeSettings.handleCodeInApp = true
         actionCodeSettings.setIOSBundleID(Bundle.main.bundleIdentifier!)
         
-        Auth.auth().sendSignInLink(toEmail: email, actionCodeSettings: actionCodeSettings) { error in
+        Auth.auth().sendSignInLink(toEmail: self.data.email, actionCodeSettings: actionCodeSettings) { error in
           if let error = error {
             alertItem = AlertItem(
               title: "The sign in link could not be sent.",
@@ -207,7 +236,8 @@ struct ContentView: View {
                 if(!validAcct) {
                     //ref.child(pEmail).setValue(1)
                 }
-                EventHandler(eventMode: self.$eventMode, email: self.$pEmail, editEvent: "").animation(.easeOut(duration:1.5))
+                EventHandler(editEvent: "")
+                    .environmentObject(data)
                 //POPULATE OBJECTS
             }
           
@@ -238,30 +268,30 @@ struct AlertItem: Identifiable {    // *
   var message: String
 }
 
-
-
-
 struct CustomStyledTextField: View {
-  @Binding var text: String
-  let placeholder: String
-  let symbolName: String
+    @EnvironmentObject var data : Model
+    let placeholder: String
+    let symbolName: String
 
-  var body: some View {
-    HStack {
-      Image(systemName: symbolName)
-        .imageScale(.large)
-        .padding(.leading)
+    var body: some View {
+        HStack {
+          Image(systemName: symbolName)
+            .imageScale(.large)
+            .padding(.leading)
 
-      TextField(placeholder, text: $text)
-        .padding(.vertical)
-        .accentColor(.orange)
-        .autocapitalization(.none)
+            TextField(placeholder, text: $data.email)
+            .padding(.vertical)
+            .accentColor(.orange)
+            .autocapitalization(.none)
+                .onChange(of: data.email, perform: { value in
+                    print(data.email)
+                })
+        }
+        .background(
+          RoundedRectangle(cornerRadius: 16.0, style: .circular)
+            .foregroundColor(Color(.secondarySystemFill))
+        )
     }
-    .background(
-      RoundedRectangle(cornerRadius: 16.0, style: .circular)
-        .foregroundColor(Color(.secondarySystemFill))
-    )
-  }
 }
 
 /// A custom styled button with a custom title and action.
@@ -330,7 +360,8 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 struct HomePage: View {
-    
+    @EnvironmentObject var data : Model
+    /*
     @Binding var time24hr: Bool             // 24 format toggle (default: 12)
     @Binding var darkMode: Bool             // Dark mode toggle (default: dark)
     @Binding var lineMode: Bool             // Line mode toggle (default: off)
@@ -339,6 +370,7 @@ struct HomePage: View {
     @Binding var eventMode: Bool
     @Binding var currentDate: Date
     @Binding var areNotifications: Bool
+    */
     @State var taskAngles = [[Angle]]()
     @State var tasks = CircleView.tasks
     @State var colors = [Color.blue, Color.red, Color.orange, Color.green, Color.yellow, Color.purple]
@@ -353,21 +385,23 @@ struct HomePage: View {
 
         
         let formatter = DateFormatter()
-        if !time24hr {
+        if !self.data.settings["time24hr"]! {
             formatter.dateFormat = "h:mm a"
         } else {
             formatter.dateFormat = "HH:mm"
         }
         return formatter
     }
+    
     func timeToString(date: Date) -> String {
          let time = timeFormat.string(from: date)
          return time
     }
+    
     var updateTimer: Timer {
                  Timer.scheduledTimer(withTimeInterval: 1, repeats: true,
                                       block: {_ in
-                                         self.currentDate = Date()
+                                        self.data.currentDate = Date()
                                        })
     }
     
@@ -392,7 +426,7 @@ struct HomePage: View {
     var body: some View {
 
         NavigationView {
-            Color(rgb: self.darkMode ? DARK_GREY : WHITE)
+            Color(rgb: self.data.settings["darkMode"]! ? DARK_GREY : WHITE)
                 .ignoresSafeArea()
                 .overlay(
                     ZStack (alignment: .leading) {
@@ -404,19 +438,19 @@ struct HomePage: View {
                                 
                                 Button(action: {
                                     withAnimation {
-                                        self.showMenu.toggle()
+                                        self.data.settings["showMenu"]!.toggle()
                                     }}) {
                                     HStack {
                                         Image("menu_icon")
                                             .resizable()
                                             .frame(width: 30, height: 40)
-                                            .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                            .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                             .offset(x: 0, y: 13)
 
                                             Image("menu_arrow")
                                                 .resizable()
                                                 .frame(width: 10, height: 10)
-                                                .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                                .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                                 .offset(x: -12, y: 6)
                                                 .rotationEffect(Angle(degrees: 270), anchor: .bottomLeading)
                                     }
@@ -428,22 +462,22 @@ struct HomePage: View {
                                     // time[0] - h:mm
                                     // time[1] - AM/PM
                                     // Otherwise, if 24hr format, only time[0]
-                                    let time = timeToString(date: currentDate).components(separatedBy: " ")
+                                    let time = timeToString(date: self.data.currentDate).components(separatedBy: " ")
                                     
                                     Text("\(time[0])")
                                         .onAppear(perform: {
                                             let _ = self.updateTimer
                                         })
                                     .font(Font.custom("Comfortaa-Light", size: 60))
-                                    .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                        .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                     
-                                    if !time24hr {
+                                    if !self.data.settings["time24hr"]! {
                                         Text("\(time[1].lowercased())")
                                             .font(Font.custom("Comfortaa-Light", size: 20))
-                                            .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                            .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                             .offset(x: -5, y: 10)
                                     }
-                                }.offset(x: (time24hr) ? -6 : 7, y: 16)
+                                }.offset(x: (self.data.settings["time24hr"]!) ? -6 : 7, y: 16)
                                 .padding(.horizontal, 10)
                                 .frame(width: 230, height: 55)
                                 .fixedSize()
@@ -453,11 +487,11 @@ struct HomePage: View {
                                     Image("notifications_bell")
                                         .resizable()
                                         .frame(width: 30, height: 30)
-                                        .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                        .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                         .offset(x: 0, y: 14)
                                     
                                     // if there are notifications
-                                    if areNotifications {
+                                    if self.data.areNotifications {
                                         Circle()
                                             .frame(width: 10, height: 10, alignment: .trailing)
                                             .foregroundColor(Color(rgb: RED))
@@ -547,7 +581,7 @@ struct HomePage: View {
                                 // Should rotate with the time
                                 // Should have colored arcs for separate events
                                 Circle()
-                                    .strokeBorder(self.darkMode ? Color.white : Color(rgb: DARK_GREY, alpha: 0.9), lineWidth: 8)
+                                    .strokeBorder(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY, alpha: 0.9), lineWidth: 8)
                                     .frame(width: UIScreen.main.bounds.size.width / 1.1)
                                 
                                 // Arcs
@@ -603,7 +637,7 @@ struct HomePage: View {
                             HStack {
                                 // Add button
                                 // Should take user to the AddPage (use NavigationLink)
-                                Button(action: {withAnimation{self.eventMode.toggle() }}) {
+                                Button(action: {withAnimation{self.data.views["eventMode"]!.toggle() }}) {
                                     ZStack {
                                         Circle()
                                             .foregroundColor(Color(rgb: ORANGE))
@@ -618,7 +652,7 @@ struct HomePage: View {
                                 // Delete button
                                 // Changes the view to the deleteView (use NavigationLink)
                                 Button(action: {
-                                        withAnimation{self.editMode.toggle() }}) {
+                                        withAnimation{self.data.views["editMode"]!.toggle() }}) {
                                     ZStack {
                                         Circle()
                                             .foregroundColor(Color(rgb: ORANGE))
@@ -634,7 +668,7 @@ struct HomePage: View {
                             Spacer()
                         }
                         .navigationBarHidden(true)
-                        .preferredColorScheme(self.darkMode ? /*@START_MENU_TOKEN@*/.dark/*@END_MENU_TOKEN@*/ : .light)
+                        .preferredColorScheme(self.data.settings["darkMode"]! ? /*@START_MENU_TOKEN@*/.dark/*@END_MENU_TOKEN@*/ : .light)
                         // end of VStack
                         
                     } // end of ZStack
@@ -647,24 +681,21 @@ struct HomePage: View {
 
 // Menu View
 struct Menu : View {
-    @Binding var showMenu: Bool
-    @Binding var darkMode: Bool
-    @Binding var time24hr: Bool
-    @Binding var lineMode: Bool
-    
+    var data = Model()
     // might be bad practice
     // any button that gets pressed from settings
     // triggers an action based on the setting pressed
+    
     func performSettingAction(setting: String) -> Void {
         switch(setting) {
         case SETTINGS[0]:
-            self.darkMode.toggle()
+            self.data.settings["darkMode"]!.toggle()
         case SETTINGS[1]:
-            self.time24hr.toggle()
+            self.data.settings["time24hr"]!.toggle()
         case SETTINGS[2]:
             print("placeholder for colorblind mode")
         case SETTINGS[3]:
-            self.lineMode.toggle()
+            self.data.settings["lineMode"]!.toggle()
         default:
             print("Error: No action in settings for \(setting)")
         }
@@ -673,7 +704,7 @@ struct Menu : View {
     
     var body: some View {
         ZStack {
-            Button(action: {withAnimation {self.showMenu.toggle()}}) {
+            Button(action: {withAnimation {self.data.views["showMenu"]!.toggle()}}) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 15.0)
                         .foregroundColor(Color(rgb: RED))
@@ -710,7 +741,7 @@ struct Menu : View {
                                 .foregroundColor(Color(rgb: RED, alpha: 0.9))
                             Text("\(SETTINGS[set])")
                                 .font(Font.custom("Comfortaa-Regular", size: 15))
-                                .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                 .frame(width: 100, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                                 .multilineTextAlignment(.center)
                         }
@@ -723,7 +754,7 @@ struct Menu : View {
             .frame(width: UIScreen.main.bounds.width / 3.5)
             .padding(.horizontal, 30)
             .padding(.top, 50)
-            .background(self.darkMode ? Color(rgb: DARK_GREY) : Color.white)
+            .background(self.data.settings["darkMode"]! ? Color(rgb: DARK_GREY) : Color.white)
             .overlay(Rectangle().stroke(Color.black.opacity(0.1), lineWidth: 3).shadow(radius: 3))
             .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             
