@@ -9,15 +9,15 @@ import Foundation
 
 //Instantiate as needed
 // USED TO BE TASK.SWIFT, for this branch going to use this for environment object
-class Event : Identifiable, Codable {
-    var id = UUID()
+class Event : Identifiable {
+    var uid = UUID()
     var subject: String         // description
     var start_time: Int         // starting time
     var end_time: Int           // ending time
     var color: String           // color
     var type: String       // type
     
-    init (fromSubject subject: String, fromStart_time start_time: Int, fromEnd_time end_time: Int, fromColor color: String, fromType type: String) {
+    init (subject: String, start_time: Int, end_time: Int, color: String, type: String) {
         self.subject = subject
         self.start_time = start_time
         self.end_time = end_time

@@ -28,23 +28,14 @@ import GoogleSignIn
 // Class to hold all environment objects
 class Model : ObservableObject {
     // Will be a list of event objects
-    @Published var events = [Event]()
-    @Published var settings = [
-        "time24hr": false,
-        "darkMode": true,
-        "lineMode": false
-    ]
-    @Published var views = [
-        "showMenu": false,
-        "editMode": false,
-        "eventMode": false
-    ]
-    @Published var areNotifications = false
-    @Published var loggedIn = false
-    @Published var email = ""
-    @Published var currentDate = Date()
+    @Published var events : [Event] = []
+    @Published var settings : Dictionary<String, Bool>
+    @Published var views : Dictionary<String, Bool>
+    @Published var areNotifications : Bool
+    @Published var loggedIn : Bool
+    @Published var email : String
+    @Published var currentDate : Date
     init() {
-        self.events = []
         self.settings = [
             "time24hr": false,
             "darkMode": true,
@@ -59,7 +50,6 @@ class Model : ObservableObject {
         self.loggedIn = false
         self.email = ""
         self.currentDate = Date()
-        
     }
 }
 
@@ -71,8 +61,7 @@ class Model : ObservableObject {
 
 
 struct ContentView: View {
-    // @EnvironmentObject var data: Model
-    var data = Model()
+    @EnvironmentObject var data: Model
     // Should probably put these in the environment using EnvironmentObject
     /*
     @State var currentDate = Date()         // gives current date/time
@@ -149,8 +138,7 @@ struct ContentView: View {
                         Spacer()
                         Text("Authenticate with your email:")
                           .padding(.bottom, 60)
-                        CustomStyledTextField(
-                            text: self.data.email, placeholder: "Email", symbolName: "person.circle.fill"
+                        CustomStyledTextField(placeholder: "Email", symbolName: "person.circle.fill"
                             //if()
                         
                         
@@ -163,11 +151,11 @@ struct ContentView: View {
 //                        }
 //                        })
                         
-                        )
+                        ).environmentObject(data)
 
                         CustomStyledButton(title: "Send Sign In Link / Login", action: sendSignInLink)
                             .disabled(self.data.email.isEmpty)
-
+                        Text("email input: \(data.email)").foregroundColor(.white)
                         Spacer()
                       }
                       .padding()
@@ -282,26 +270,29 @@ struct AlertItem: Identifiable {    // *
 }
 
 struct CustomStyledTextField: View {
-  @State var text: String
-  let placeholder: String
-  let symbolName: String
+    @EnvironmentObject var data : Model
+    let placeholder: String
+    let symbolName: String
 
-  var body: some View {
-    HStack {
-      Image(systemName: symbolName)
-        .imageScale(.large)
-        .padding(.leading)
+    var body: some View {
+        HStack {
+          Image(systemName: symbolName)
+            .imageScale(.large)
+            .padding(.leading)
 
-      TextField(placeholder, text: $text)
-        .padding(.vertical)
-        .accentColor(.orange)
-        .autocapitalization(.none)
+            TextField(placeholder, text: $data.email)
+            .padding(.vertical)
+            .accentColor(.orange)
+            .autocapitalization(.none)
+                .onChange(of: data.email, perform: { value in
+                    print(data.email)
+                })
+        }
+        .background(
+          RoundedRectangle(cornerRadius: 16.0, style: .circular)
+            .foregroundColor(Color(.secondarySystemFill))
+        )
     }
-    .background(
-      RoundedRectangle(cornerRadius: 16.0, style: .circular)
-        .foregroundColor(Color(.secondarySystemFill))
-    )
-  }
 }
 
 /// A custom styled button with a custom title and action.
@@ -370,7 +361,7 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 struct HomePage: View {
-    
+    @EnvironmentObject var data : Model
     /*
     @Binding var time24hr: Bool             // 24 format toggle (default: 12)
     @Binding var darkMode: Bool             // Dark mode toggle (default: dark)
@@ -381,7 +372,6 @@ struct HomePage: View {
     @Binding var currentDate: Date
     @Binding var areNotifications: Bool
     */
-    var data = Model()
     @State var taskAngles = [[Angle]]()
     @State var tasks = CircleView.tasks
     @State var colors = [Color.blue, Color.red, Color.orange, Color.green, Color.yellow, Color.purple]

@@ -61,7 +61,7 @@ class CircleView {
      
                     
                     if (type == "task"){
-                        let newTask = Event(fromSubject: "Subject", fromStart_time: startTime, fromEnd_time: endTime, fromColor: color, fromType: type)
+                        let newTask = Event(subject: "Subject", start_time: startTime, end_time: endTime, color: color, type: type)
                         CircleView.tasks.append(newTask)
                     }
                     else if(type == "alert"){

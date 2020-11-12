@@ -71,6 +71,7 @@ struct EventHandler: View {
                 self.colorSelected = color
             })
             self.description = event
+            
         }
     }
     
@@ -191,6 +192,8 @@ struct EventHandler: View {
                                     ref?.child(self.data.email).child(description).updateChildValues(["End Date": "\(selectedEndDate)"])
                                     ref?.child(self.data.email).child(description).updateChildValues(["Type": "\(objType())"])
                                     ref?.child(self.data.email).child(description).updateChildValues(["Color": "\(colorSelected)"])
+                                    
+                                    // self.data.events.append(Event(subject: description, start_time: selectedDate, end_time: selectedEndDate, color: colorSelected, type: objType()))
                                 } else { // editing
                                     if editEvent != self.description {
                                         let updates = ["Start Date": "\(selectedDate)", "End Date": "\(selectedEndDate)", "Type": "\(objType())", "Color": "\(colorSelected)"]
