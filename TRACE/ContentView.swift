@@ -155,7 +155,6 @@ struct ContentView: View {
 
                         CustomStyledButton(title: "Send Sign In Link / Login", action: sendSignInLink)
                             .disabled(self.data.email.isEmpty)
-                        Text("email input: \(data.email)").foregroundColor(.white)
                         Spacer()
                       }
                       .padding()
