@@ -34,6 +34,7 @@ class Model : ObservableObject {
     @Published var areNotifications : Bool
     @Published var loggedIn : Bool
     @Published var email : String
+    @Published var parsedEmail : String
     @Published var currentDate : Date
     init() {
         self.settings = [
@@ -49,6 +50,7 @@ class Model : ObservableObject {
         self.areNotifications = false
         self.loggedIn = false
         self.email = ""
+        self.parsedEmail = ""
         self.currentDate = Date()
     }
 }
@@ -94,12 +96,12 @@ struct ContentView: View {
                         .onEnded {
                             if $0.translation.width > 50 {
                                 withAnimation {
-                                    data.settings["showMenu"] = true
+                                    data.views["showMenu"] = true
                                 }
                             }
                             if $0.translation.width < -50 {
                                 withAnimation {
-                                    data.settings["showMenu"] = false
+                                    data.views["showMenu"] = false
                                 }
                             }
                         }
@@ -115,6 +117,7 @@ struct ContentView: View {
                         .gesture(drag)
                     if self.data.views["showMenu"]! {
                         Menu()
+                            .environmentObject(data)
                             .transition(.move(edge: .leading))
                             .animation(.spring())
                             .gesture(drag)
@@ -208,6 +211,8 @@ struct ContentView: View {
         self.pEmail = self.data.email.replacingOccurrences(of: "@", with: "", options: NSString.CompareOptions.literal, range: nil)
         self.pEmail = pEmail.replacingOccurrences(of: ".", with: "", options: NSString.CompareOptions.literal, range: nil)
         
+        self.data.parsedEmail = pEmail
+        
         ref.child(pEmail).observe(.value) { (snapshot) in
             
             if snapshot.exists() {
@@ -283,9 +288,6 @@ struct CustomStyledTextField: View {
             .padding(.vertical)
             .accentColor(.orange)
             .autocapitalization(.none)
-                .onChange(of: data.email, perform: { value in
-                    print(data.email)
-                })
         }
         .background(
           RoundedRectangle(cornerRadius: 16.0, style: .circular)
@@ -438,7 +440,7 @@ struct HomePage: View {
                                 
                                 Button(action: {
                                     withAnimation {
-                                        self.data.settings["showMenu"]!.toggle()
+                                        self.data.views["showMenu"]!.toggle()
                                     }}) {
                                     HStack {
                                         Image("menu_icon")
@@ -681,7 +683,7 @@ struct HomePage: View {
 
 // Menu View
 struct Menu : View {
-    var data = Model()
+    @EnvironmentObject var data : Model
     // might be bad practice
     // any button that gets pressed from settings
     // triggers an action based on the setting pressed

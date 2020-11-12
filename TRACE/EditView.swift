@@ -32,7 +32,8 @@ struct EditView : View {
     
     public func getEventList() -> Void {
         var eventNames = ""
-        ref.child("\(self.data.email)").observeSingleEvent(of: .value, with: { (snapshot) in
+        print("getEventList, data.parsedEmail: \(data.parsedEmail)")
+        ref.child("\(self.data.parsedEmail)").observeSingleEvent(of: .value, with: { (snapshot) in
             for child in snapshot.children {
                 let snap = child as! DataSnapshot
                 let key = snap.key
@@ -41,7 +42,6 @@ struct EditView : View {
                 var events = eventNames.components(separatedBy: "|")
                 events.removeFirst()
                 self.eventStrings = events
-                print(self.eventStrings)
             }
         })
     }
@@ -55,7 +55,7 @@ struct EditView : View {
                 if $0.translation.height < -100 {
                     withAnimation {
                         if self.eventStrings.count > 0 {
-                            ref.child("\(self.data.email)").child("\(self.eventStrings[self.index])").removeValue()
+                            ref.child("\(self.data.parsedEmail)").child("\(self.eventStrings[self.index])").removeValue()
                             self.eventStrings.remove(at: self.index)
                             if self.index >= self.eventStrings.count {
                                 self.index = self.eventStrings.count - 1
@@ -93,7 +93,8 @@ struct EditView : View {
                                     .disabled(amountDragged.height < -30 ? true : false)
                                     .tag(self.index)
                                     .gesture(drag)
-                                }
+                                    .environmentObject(data)
+                            }
                         }
                         .tabViewStyle(PageTabViewStyle())
                         //.offset(y: -70)
@@ -130,6 +131,7 @@ struct EditView : View {
                 
                 if self.data.views["eventMode"]! && self.data.views["editMode"]! {
                     EventHandler(editEvent: self.eventStrings[self.index])
+                        .environmentObject(data)
                 }
             }.onAppear(perform: {
                 self.getEventList()
@@ -153,7 +155,7 @@ struct InfoView : View {
     
     
     func setDates() -> Void {
-        ref.child("\(self.data.email)").child("\(eventString)").observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child("\(self.data.parsedEmail)").child("\(eventString)").observeSingleEvent(of: .value, with: { (snapshot) in
             let value = snapshot.value as? NSDictionary
             let start = value?["Start Date"] as? String ?? ""
             let end = value?["End Date"] as? String ?? ""
@@ -190,13 +192,8 @@ struct InfoView : View {
                print("There was an error decoding the string")
             }
             
-            print(startDate)
-            print(endDate)
-            
             startComp = startDate.components(separatedBy: " ")
             endComp = endDate.components(separatedBy: " ")
-            
-            print(eventType)
         })
         
     }

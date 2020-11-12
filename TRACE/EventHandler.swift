@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct EventHandler: View {
     @EnvironmentObject var data : Model
     // @Binding var eventMode: Bool
@@ -14,7 +15,7 @@ struct EventHandler: View {
     @State var editEvent: String
     @State var index = 0
 //Var that tells is alert was chosen for the event
-    @State var alertToggled = false
+    @State var alertToggled = true
 //Var that tells if cue was chosen for the event
     @State var cueToggled = false
 //Var that tells if task was chosen for the event
@@ -26,7 +27,6 @@ struct EventHandler: View {
 //Vars to hold the date and time selected for the event
     @State var selectedDate = Date()
     @State var selectedEndDate = Date(timeIntervalSinceReferenceDate: 0)
-    
     
     private func objType() -> String {
         if (alertToggled) {
@@ -44,13 +44,16 @@ struct EventHandler: View {
         if event == "" {
             return
         } else {
-            ref.child("\(self.data.email)").child("\(event)").observeSingleEvent(of: .value, with: { (snapshot) in
+            print("parsed email in preset: \(self.data.parsedEmail)\npresetEvent: \(event)")
+            
+            ref.child("\(self.data.parsedEmail)").child("\(event)").observeSingleEvent(of: .value, with: { (snapshot) in
                 let value = snapshot.value as? NSDictionary
                 let start = value?["Start Date"] as? String ?? ""
                 let end = value?["End Date"] as? String ?? ""
                 let type = value?["Type"] as? String ?? ""
                 let color = value?["Color"] as? String ?? ""
                 
+                self.description = event
                 let dateFormatterOrig = DateFormatter()
                 
                 dateFormatterOrig.locale = Locale(identifier: "en_US_POSIX")
@@ -70,8 +73,6 @@ struct EventHandler: View {
                 
                 self.colorSelected = color
             })
-            self.description = event
-            
         }
     }
     
@@ -187,29 +188,29 @@ struct EventHandler: View {
                             withAnimation{self.data.views["eventMode"]!.toggle();
 //References to the database being pushed after clicking the add button
                                 if editEvent == "" { // if not opened from editView (adding)
-                                    ref?.child(self.data.email).updateChildValues([description: objType()])
-                                    ref?.child(self.data.email).child(description).updateChildValues(["Start Date": "\(selectedDate)"])
-                                    ref?.child(self.data.email).child(description).updateChildValues(["End Date": "\(selectedEndDate)"])
-                                    ref?.child(self.data.email).child(description).updateChildValues(["Type": "\(objType())"])
-                                    ref?.child(self.data.email).child(description).updateChildValues(["Color": "\(colorSelected)"])
+                                    ref?.child(self.data.parsedEmail).updateChildValues([description: objType()])
+                                    ref?.child(self.data.parsedEmail).child(description).updateChildValues(["Start Date": "\(selectedDate)"])
+                                    ref?.child(self.data.parsedEmail).child(description).updateChildValues(["End Date": "\(selectedEndDate)"])
+                                    ref?.child(self.data.parsedEmail).child(description).updateChildValues(["Type": "\(objType())"])
+                                    ref?.child(self.data.parsedEmail).child(description).updateChildValues(["Color": "\(colorSelected)"])
                                     
                                     // self.data.events.append(Event(subject: description, start_time: selectedDate, end_time: selectedEndDate, color: colorSelected, type: objType()))
                                 } else { // editing
                                     if editEvent != self.description {
                                         let updates = ["Start Date": "\(selectedDate)", "End Date": "\(selectedEndDate)", "Type": "\(objType())", "Color": "\(colorSelected)"]
 
-                                        ref?.child(self.data.email).child(description).updateChildValues(updates)
-                                        ref?.child(self.data.email).child(editEvent).removeValue()
+                                        ref?.child(self.data.parsedEmail).child(description).updateChildValues(updates)
+                                        ref?.child(self.data.parsedEmail).child(editEvent).removeValue()
                                     } else {
-                                        ref?.child(self.data.email).child(editEvent).updateChildValues(["Start Date": "\(selectedDate)"])
-                                        ref?.child(self.data.email).child(editEvent).updateChildValues(["End Date": "\(selectedEndDate)"])
-                                        ref?.child(self.data.email).child(editEvent).updateChildValues(["Type": "\(objType())"])
-                                        ref?.child(self.data.email).child(editEvent).updateChildValues(["Color": "\(colorSelected)"])
+                                        ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["Start Date": "\(selectedDate)"])
+                                        ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["End Date": "\(selectedEndDate)"])
+                                        ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["Type": "\(objType())"])
+                                        ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["Color": "\(colorSelected)"])
                                     }
                                 } //Editing else statement
                                 
                             }
-                        CircleView.getEvents(email: self.data.email)
+                        CircleView.getEvents(email: self.data.parsedEmail)
                         CircleView.allocateAngles()
                     }) {
                         ZStack {
@@ -227,7 +228,8 @@ struct EventHandler: View {
             }.background(Color.black) //Vstack
         }.background(Color.black)
         .onAppear(perform: {
-            presetValuesOnEdit(event: editEvent)
+            self.presetValuesOnEdit(event: self.editEvent)
+            print("Event: \(self.editEvent)\nType: \(objType())\nStart: \(self.selectedDate)\nEnd: \(self.selectedEndDate)\nColor: \(self.colorSelected)")
         })//ZStack
     }//Varbody
 }//EventHandler Struct
