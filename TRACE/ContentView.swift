@@ -217,7 +217,7 @@ struct ContentView: View {
                             .animation(.easeOut(duration: 1.5))
                     }
                     //Switches to addpage when the eventMode is toggled
-                    if self.data.views["eventMode"]! {
+                    if self.data.views["eventMode"]! && !self.data.views["editMode"]! {
                         EventHandler(editEvent: "")
                             .environmentObject(data)
                             .environmentObject(attr)

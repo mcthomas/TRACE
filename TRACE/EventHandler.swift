@@ -13,7 +13,7 @@ struct EventHandler: View {
     // @Binding var eventMode: Bool
     // @Binding var email: String
     
-    var editEvent: String
+    let editEvent: String
     /*
     @State var index = 0
 //Var that tells is alert was chosen for the event
@@ -144,6 +144,7 @@ struct EventHandler: View {
                             withAnimation{self.data.views["eventMode"]!.toggle();
 //References to the database being pushed after clicking the add button
                                 if self.editEvent == "" { // if not opened from editView (adding)
+                                    print("add, editevent empty")
                                     ref?.child(self.data.parsedEmail).updateChildValues([attr.description: attr.objType()])
                                     ref?.child(self.data.parsedEmail).child(attr.description).updateChildValues(["Start Date": "\(attr.selectedDate)"])
                                     ref?.child(self.data.parsedEmail).child(attr.description).updateChildValues(["End Date": "\(attr.selectedEndDate)"])
@@ -156,8 +157,10 @@ struct EventHandler: View {
                                         let updates = ["Start Date": "\(attr.selectedDate)", "End Date": "\(attr.selectedEndDate)", "Type": "\(attr.objType())", "Color": "\(attr.colorSelected)"]
 
                                         ref?.child(self.data.parsedEmail).child(attr.description).updateChildValues(updates)
+                                        print("here, \(editEvent)")
                                         ref?.child(self.data.parsedEmail).child(editEvent).removeValue()
                                     } else {
+                                        print("description not changed")
                                         ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["Start Date": "\(attr.selectedDate)"])
                                         ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["End Date": "\(attr.selectedEndDate)"])
                                         ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["Type": "\(attr.objType())"])
