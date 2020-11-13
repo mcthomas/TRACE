@@ -55,6 +55,93 @@ class Model : ObservableObject {
     }
 }
 
+class EventAttributes : ObservableObject {
+    @Published var index : Int
+//Var that tells is alert was chosen for the event
+    @Published var alertToggled : Bool
+//Var that tells if cue was chosen for the event
+    @Published var cueToggled : Bool
+//Var that tells if task was chosen for the event
+    @Published var taskToggled : Bool
+//Var that holds the color selected for the event
+    @Published var colorSelected : String
+//Var that holds the description of the event
+    @Published var description : String
+//Vars to hold the date and time selected for the event
+    @Published var selectedDate : Date
+    @Published var selectedEndDate : Date
+    
+    init() {
+        index = 0
+        alertToggled = false
+        cueToggled = false
+        taskToggled = false
+        colorSelected = "RED"
+        description = ""
+        selectedDate = Date()
+        selectedEndDate = Date(timeIntervalSinceReferenceDate: 0)
+    }
+    
+    public func objType() -> String {
+        if (alertToggled) {
+            return "alert"
+        }
+        else if (cueToggled) {
+            return "cue"
+        }
+        else {
+            return "task"
+        }
+    }
+    
+    public func presetValuesOnEdit(email: String, event: String) -> Void {
+        if event == "" {
+            index = 0
+            alertToggled = false
+            cueToggled = false
+            taskToggled = false
+            colorSelected = "RED"
+            description = ""
+            selectedDate = Date()
+            selectedEndDate = Date(timeIntervalSinceReferenceDate: 0)
+        } else {
+            ref.child("\(email)").child("\(event)").observeSingleEvent(of: .value, with: { (snapshot) in
+                let value = snapshot.value as? NSDictionary
+                let start = value?["Start Date"] as? String ?? ""
+                let end = value?["End Date"] as? String ?? ""
+                let type = value?["Type"] as? String ?? ""
+                let color = value?["Color"] as? String ?? ""
+                
+                self.description = event
+                let dateFormatterOrig = DateFormatter()
+                
+                dateFormatterOrig.locale = Locale(identifier: "en_US_POSIX")
+                dateFormatterOrig.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+                self.selectedDate = dateFormatterOrig.date(from: start)!
+                self.selectedEndDate = dateFormatterOrig.date(from: end)!
+                
+                if type == "alert" {
+                    self.alertToggled = true
+                    self.cueToggled = false
+                    self.taskToggled = false
+                }
+                else if type == "cue" {
+                    self.alertToggled = false
+                    self.cueToggled = true
+                    self.taskToggled = false
+                }
+                else {
+                    self.alertToggled = false
+                    self.cueToggled = false
+                    self.taskToggled = true
+                }
+                
+                self.colorSelected = color
+            })
+        }
+    }
+}
+
 
 //if user.isLoggedIn {
 //        MainView()
@@ -64,6 +151,7 @@ class Model : ObservableObject {
 
 struct ContentView: View {
     @EnvironmentObject var data: Model
+    @EnvironmentObject var attr : EventAttributes
     // Should probably put these in the environment using EnvironmentObject
     /*
     @State var currentDate = Date()         // gives current date/time
@@ -124,7 +212,7 @@ struct ContentView: View {
                     }
                     
                     if self.data.views["editMode"]! {
-                        EditView()
+                        EditView(attr: self.attr)
                             .environmentObject(data)
                             .animation(.easeOut(duration: 1.5))
                     }
@@ -132,6 +220,7 @@ struct ContentView: View {
                     if self.data.views["eventMode"]! {
                         EventHandler(editEvent: "")
                             .environmentObject(data)
+                            .environmentObject(attr)
                     }
                 }
             }
@@ -243,6 +332,7 @@ struct ContentView: View {
                 }
                 EventHandler(editEvent: "")
                     .environmentObject(data)
+                    .environmentObject(attr)
                 //POPULATE OBJECTS
             }
           

@@ -26,13 +26,14 @@ struct EditView : View {
     
      */
     @EnvironmentObject var data : Model
+    @ObservedObject var attr : EventAttributes
     @State var eventStrings = [String]()
     @State var index = 0
     @State var amountDragged = CGSize.zero
     
+    
     public func getEventList() -> Void {
         var eventNames = ""
-        print("getEventList, data.parsedEmail: \(data.parsedEmail)")
         ref.child("\(self.data.parsedEmail)").observeSingleEvent(of: .value, with: { (snapshot) in
             for child in snapshot.children {
                 let snap = child as! DataSnapshot
@@ -132,6 +133,7 @@ struct EditView : View {
                 if self.data.views["eventMode"]! && self.data.views["editMode"]! {
                     EventHandler(editEvent: self.eventStrings[self.index])
                         .environmentObject(data)
+                        .environmentObject(attr)
                 }
             }.onAppear(perform: {
                 self.getEventList()

@@ -12,12 +12,13 @@ import GoogleSignIn
 @main
 struct TRACEApp: App {
     var data = Model()
+    var attr = EventAttributes()
     init() {
         FirebaseApp.configure()
       }
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(data)
+            ContentView().environmentObject(data).environmentObject(attr)
         }
     }
 

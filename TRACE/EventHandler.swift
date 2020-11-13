@@ -7,15 +7,17 @@
 
 import SwiftUI
 
-
 struct EventHandler: View {
     @EnvironmentObject var data : Model
+    @EnvironmentObject var attr : EventAttributes
     // @Binding var eventMode: Bool
     // @Binding var email: String
-    @State var editEvent: String
+    
+    var editEvent: String
+    /*
     @State var index = 0
 //Var that tells is alert was chosen for the event
-    @State var alertToggled = true
+    @State var alertToggled = false
 //Var that tells if cue was chosen for the event
     @State var cueToggled = false
 //Var that tells if task was chosen for the event
@@ -27,57 +29,11 @@ struct EventHandler: View {
 //Vars to hold the date and time selected for the event
     @State var selectedDate = Date()
     @State var selectedEndDate = Date(timeIntervalSinceReferenceDate: 0)
-    
-    private func objType() -> String {
-        if (alertToggled) {
-            return "alert"
-        }
-        else if (cueToggled) {
-            return "cue"
-        }
-        else {
-            return "task"
-        }
-    }
-
-    private func presetValuesOnEdit(event: String) -> Void {
-        if event == "" {
-            return
-        } else {
-            print("parsed email in preset: \(self.data.parsedEmail)\npresetEvent: \(event)")
-            
-            ref.child("\(self.data.parsedEmail)").child("\(event)").observeSingleEvent(of: .value, with: { (snapshot) in
-                let value = snapshot.value as? NSDictionary
-                let start = value?["Start Date"] as? String ?? ""
-                let end = value?["End Date"] as? String ?? ""
-                let type = value?["Type"] as? String ?? ""
-                let color = value?["Color"] as? String ?? ""
-                
-                self.description = event
-                let dateFormatterOrig = DateFormatter()
-                
-                dateFormatterOrig.locale = Locale(identifier: "en_US_POSIX")
-                dateFormatterOrig.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
-                self.selectedDate = dateFormatterOrig.date(from: start)!
-                self.selectedEndDate = dateFormatterOrig.date(from: end)!
-                
-                if type == "alert" {
-                    self.alertToggled = true
-                }
-                else if type == "cue" {
-                    self.cueToggled = true
-                }
-                else {
-                    self.taskToggled = true
-                }
-                
-                self.colorSelected = color
-            })
-        }
-    }
+ */
     
     var body : some View {
 //ZStack contains all elements in the add view
+        GeometryReader { geo in
         ZStack {
             Color.black
 //VStack wrapped in ZStack to get correct formatting
@@ -85,34 +41,34 @@ struct EventHandler: View {
 //Alert, Cue, and Task toggable buttons
                 VStack{
                     Divider()
-                    let alertToggled = Binding<Bool>(get: { self.alertToggled }, set: { self.alertToggled = $0; self.cueToggled = false; self.taskToggled = false })
-                    let cueToggled = Binding<Bool>(get: { self.cueToggled }, set: { self.alertToggled = false; self.cueToggled = $0; self.taskToggled = false })
-                    let taskToggled = Binding<Bool>(get: { self.taskToggled }, set: { self.alertToggled = false; self.cueToggled = false; self.taskToggled = $0 })
+                    let alertToggled = Binding<Bool>(get: { self.attr.alertToggled }, set: { self.attr.alertToggled = $0; self.attr.cueToggled = false; self.attr.taskToggled = false })
+                    let cueToggled = Binding<Bool>(get: { self.attr.cueToggled }, set: { self.attr.alertToggled = false; self.attr.cueToggled = $0; self.attr.taskToggled = false })
+                    let taskToggled = Binding<Bool>(get: { self.attr.taskToggled }, set: { self.attr.alertToggled = false; self.attr.cueToggled = false; self.attr.taskToggled = $0 })
                     Toggle("Alert event", isOn: alertToggled)
                     Divider()
                     Toggle("Cue event", isOn: cueToggled)
                     Divider()
                     Toggle("Task event", isOn: taskToggled)
                     Divider()
-                }//VStack
+                } //VStack
 //Description of the event field
                 VStack(){
                     Text("Description of your event")
                     .font(.callout)
                     .bold()
-                    TextField("Enter the description..", text:$description).colorInvert()
+                    TextField("Enter the description..", text: $attr.description).colorInvert()
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }.frame(width: 300, height: 75, alignment: .top).padding() //VStack
 //Field for which color has been selected for the event
                 VStack(){
-                    TextField("Color: ", text: $colorSelected)
+                    TextField("Color: ", text: $attr.colorSelected)
                         .font(.callout)
                 }.frame(width: 300, height: 25, alignment: .top).padding() //VStack
                 
                 Divider()
 //HStack of buttons to assign the color to the event
                 HStack{
-                    Button(action: {self.colorSelected="RED"})
+                    Button(action: {self.attr.colorSelected="RED"})
                         {
                         Text("Red")
                         }
@@ -121,7 +77,7 @@ struct EventHandler: View {
                            .foregroundColor(.red)
                            .background(Color.red)
                            .border(Color.black, width:2)
-                    Button(action: {self.colorSelected="BLUE"})
+                    Button(action: {self.attr.colorSelected="BLUE"})
                         {
                         Text("Blue")
                         }
@@ -130,7 +86,7 @@ struct EventHandler: View {
                            .foregroundColor(.blue)
                            .background(Color.blue)
                            .border(Color.black, width:2)
-                    Button(action: {self.colorSelected="GREEN"})
+                    Button(action: {self.attr.colorSelected="GREEN"})
                         {
                         Text("Green")
                         }
@@ -139,7 +95,7 @@ struct EventHandler: View {
                            .foregroundColor(.green)
                            .background(Color.green)
                            .border(Color.black, width:2)
-                    Button(action: {self.colorSelected="YELLOW"})
+                    Button(action: {self.attr.colorSelected="YELLOW"})
                         {
                         Text("Yellow")
                         }
@@ -148,7 +104,7 @@ struct EventHandler: View {
                            .foregroundColor(.yellow)
                            .background(Color.yellow)
                            .border(Color.black, width:2)
-                    Button(action: {self.colorSelected="ORANGE"})
+                    Button(action: {self.attr.colorSelected="ORANGE"})
                         {
                         Text("Orange")
                         }
@@ -162,9 +118,9 @@ struct EventHandler: View {
                 Divider()
 //SwiftUI's datepicker function
                 VStack {
-                    DatePicker("", selection: $selectedDate).accentColor(.green)
-                    if self.taskToggled {
-                        DatePicker("End time (Task only)", selection: $selectedEndDate, in: selectedDate...Calendar.current.date(byAdding: .day, value: 1, to: self.selectedDate)!).accentColor(.green)
+                    DatePicker("", selection: $attr.selectedDate).accentColor(.green)
+                    if self.attr.taskToggled {
+                        DatePicker("End time (Task only)", selection: $attr.selectedEndDate, in: attr.selectedDate...Calendar.current.date(byAdding: .day, value: 1, to: self.attr.selectedDate)!).accentColor(.green)
                     }
                 }.padding() //VStack
 //HStack that contains the add and close buttons
@@ -187,25 +143,25 @@ struct EventHandler: View {
                     Button(action: {
                             withAnimation{self.data.views["eventMode"]!.toggle();
 //References to the database being pushed after clicking the add button
-                                if editEvent == "" { // if not opened from editView (adding)
-                                    ref?.child(self.data.parsedEmail).updateChildValues([description: objType()])
-                                    ref?.child(self.data.parsedEmail).child(description).updateChildValues(["Start Date": "\(selectedDate)"])
-                                    ref?.child(self.data.parsedEmail).child(description).updateChildValues(["End Date": "\(selectedEndDate)"])
-                                    ref?.child(self.data.parsedEmail).child(description).updateChildValues(["Type": "\(objType())"])
-                                    ref?.child(self.data.parsedEmail).child(description).updateChildValues(["Color": "\(colorSelected)"])
+                                if self.editEvent == "" { // if not opened from editView (adding)
+                                    ref?.child(self.data.parsedEmail).updateChildValues([attr.description: attr.objType()])
+                                    ref?.child(self.data.parsedEmail).child(attr.description).updateChildValues(["Start Date": "\(attr.selectedDate)"])
+                                    ref?.child(self.data.parsedEmail).child(attr.description).updateChildValues(["End Date": "\(attr.selectedEndDate)"])
+                                    ref?.child(self.data.parsedEmail).child(attr.description).updateChildValues(["Type": "\(attr.objType())"])
+                                    ref?.child(self.data.parsedEmail).child(attr.description).updateChildValues(["Color": "\(attr.colorSelected)"])
                                     
                                     // self.data.events.append(Event(subject: description, start_time: selectedDate, end_time: selectedEndDate, color: colorSelected, type: objType()))
                                 } else { // editing
-                                    if editEvent != self.description {
-                                        let updates = ["Start Date": "\(selectedDate)", "End Date": "\(selectedEndDate)", "Type": "\(objType())", "Color": "\(colorSelected)"]
+                                    if self.editEvent != self.attr.description {
+                                        let updates = ["Start Date": "\(attr.selectedDate)", "End Date": "\(attr.selectedEndDate)", "Type": "\(attr.objType())", "Color": "\(attr.colorSelected)"]
 
-                                        ref?.child(self.data.parsedEmail).child(description).updateChildValues(updates)
+                                        ref?.child(self.data.parsedEmail).child(attr.description).updateChildValues(updates)
                                         ref?.child(self.data.parsedEmail).child(editEvent).removeValue()
                                     } else {
-                                        ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["Start Date": "\(selectedDate)"])
-                                        ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["End Date": "\(selectedEndDate)"])
-                                        ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["Type": "\(objType())"])
-                                        ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["Color": "\(colorSelected)"])
+                                        ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["Start Date": "\(attr.selectedDate)"])
+                                        ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["End Date": "\(attr.selectedEndDate)"])
+                                        ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["Type": "\(attr.objType())"])
+                                        ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["Color": "\(attr.colorSelected)"])
                                     }
                                 } //Editing else statement
                                 
@@ -225,12 +181,14 @@ struct EventHandler: View {
                     }//End of add button
                     Spacer()
                 }//HStack
-            }.background(Color.black) //Vstack
+            }.background(Color.black)
+            .onAppear(perform: {
+                self.attr.presetValuesOnEdit(email: self.data.parsedEmail, event: self.editEvent)
+                print("Event: \(self.editEvent)")
+            }) //Vstack
         }.background(Color.black)
-        .onAppear(perform: {
-            self.presetValuesOnEdit(event: self.editEvent)
-            print("Event: \(self.editEvent)\nType: \(objType())\nStart: \(self.selectedDate)\nEnd: \(self.selectedEndDate)\nColor: \(self.colorSelected)")
-        })//ZStack
+        //ZStack
+        }
     }//Varbody
 }//EventHandler Struct
 
