@@ -503,10 +503,12 @@ struct HomePage: View {
                                 
                             }
                             
-                            /*
-                            // Linear Timeline ZStack
+                            
+                            // ZStack containing both circular display and linear display
                             ZStack {
-                                VStack(spacing: 80) {
+                                if self.data.settings["lineMode"]! {
+                                    // Linear Timeline 
+                                    VStack(spacing: 80) {
                                         Text("")
                                         GeometryReader { fullView in
                                                                     
@@ -514,7 +516,7 @@ struct HomePage: View {
                                             Image("menu_arrow")
                                             .resizable()
                                             .frame(width: 20, height: 20)
-                                            .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                                .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                             .offset(x: UIScreen.main.bounds.size.width/2, y: 15)
                                                                     
                                             // ScrollView that scales with HStack width
@@ -524,7 +526,7 @@ struct HomePage: View {
                                                 HStack {
                                                     ForEach (0 ..< HOURS) { i in
                                                         Rectangle()
-                                                            .fill(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                                            .fill(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                                             .frame(width: 1, height: 30)
                                                             .offset(y: -15)
                                                         Spacer().frame(width: UIScreen.main.bounds.size.width/4)
@@ -539,14 +541,14 @@ struct HomePage: View {
                                                     Image("24hr_icon")
                                                         .resizable()
                                                         .frame(width: 25, height: 25)
-                                                        .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                                        .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                                     Rectangle()
                                                         .fill(Color(rgb: ORANGE))
                                                         .frame(width: UIScreen.main.bounds.size.width*1.5, height: 5)
                                                     Image("close_icon")
                                                         .resizable()
                                                         .frame(width: 25, height: 25)
-                                                        .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                                        .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                                     Rectangle()
                                                         .fill(Color(rgb: BLUE))
                                                         .frame(width: UIScreen.main.bounds.size.width*2, height: 5)
@@ -556,7 +558,7 @@ struct HomePage: View {
                                                 HStack() {
                                                     ForEach (0 ..< HOURS) { i in
                                                         Rectangle()
-                                                        .fill(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                                            .fill(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                                         .frame(width: 1, height: 30)
                                                         .offset(y: 15)
                                                     Spacer().frame(width: UIScreen.main.bounds.size.width/4)
@@ -568,50 +570,46 @@ struct HomePage: View {
                                         Image("menu_arrow")
                                             .resizable()
                                             .frame(width: 20, height: 20)
-                                            .foregroundColor(self.darkMode ? Color.white : Color(rgb: DARK_GREY))
+                                            .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                             .rotationEffect(.degrees(180))
                                             .offset(x: UIScreen.main.bounds.size.width/2, y: 60)
                                     }
-                                }
                             }.frame(width: UIScreen.main.bounds.size.width, height: 200, alignment: .center)
-                            */
-                            
-                            
-                            // Circular Timeline ZStack
-                            ZStack {
-                                // Orbital Circle
-                                // Should rotate with the time
-                                // Should have colored arcs for separate events
-                                Circle()
-                                    .strokeBorder(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY, alpha: 0.9), lineWidth: 8)
-                                    .frame(width: UIScreen.main.bounds.size.width / 1.1)
+                        } else {
+                            // Circular Timeline
+                            // Orbital Circle
+                            // Should rotate with the time
+                            // Should have colored arcs for separate events
+                            Circle()
+                                .strokeBorder(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY, alpha: 0.9), lineWidth: 8)
+                                .frame(width: UIScreen.main.bounds.size.width / 1.1)
                                 
-                                // Arcs
-                                // Should also rotate with time
-                                ForEach(0 ..< taskAngles.count) { i in
-                                    Arc(startAngle: taskAngles[i][0], endAngle: taskAngles[i][1], clockwise: true)
-                                        .stroke(colors[i % colors.count], lineWidth: 20)
-                                        .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
-                                }
-                                            
-                                // Inner circle
-                                // Color of the current task
-                                Circle()
-                                    .foregroundColor(Color(rgb: ORANGE))
-                                    .frame(width: UIScreen.main.bounds.size.width / 1.4)
-                                
-                                // Subject Text
-                                // Bounded to not overflow inner circle dimensions
-                                Text("CS 506")
-                                    .font(Font.custom("Comfortaa-Light", size: 40))
-                                    .padding()
-                                    .foregroundColor(Color(rgb: DARK_GREY))
-                                    .frame(width: UIScreen.main.bounds.size.width - 145, height: UIScreen.main.bounds.size.width - 160, alignment: .center)
-                                    .multilineTextAlignment(.center)
-                                    .fixedSize()
-                                    .offset(y: 5)
+                            // Arcs
+                            // Should also rotate with time
+                            ForEach(0 ..< taskAngles.count) { i in
+                                Arc(startAngle: taskAngles[i][0], endAngle: taskAngles[i][1], clockwise: true)
+                                    .stroke(colors[i % colors.count], lineWidth: 20)
+                                    .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
                             }
-                            
+                                            
+                            // Inner circle
+                            // Color of the current task
+                            Circle()
+                                .foregroundColor(Color(rgb: ORANGE))
+                                .frame(width: UIScreen.main.bounds.size.width / 1.4)
+                                
+                            // Subject Text
+                            // Bounded to not overflow inner circle dimensions
+                            Text("CS 506")
+                                .font(Font.custom("Comfortaa-Light", size: 40))
+                                .padding()
+                                .foregroundColor(Color(rgb: DARK_GREY))
+                                .frame(width: UIScreen.main.bounds.size.width - 145, height: UIScreen.main.bounds.size.width - 160, alignment: .center)
+                                .multilineTextAlignment(.center)
+                                .fixedSize()
+                                .offset(y: 5)
+                        }
+                    }
  
                             // TO-DO: Peek Next Event
                             ZStack {
