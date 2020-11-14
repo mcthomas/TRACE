@@ -22,6 +22,7 @@ let HOURS = 24;
 import SwiftUI
 import Firebase
 import GoogleSignIn
+import UserNotifications
 
  var ref: DatabaseReference!
 
@@ -36,6 +37,10 @@ class Model : ObservableObject {
     @Published var email : String
     @Published var parsedEmail : String
     @Published var currentDate : Date
+//Variable to reference the UserNotifications class
+    @Published var notificationManager = UserNotifications()
+//Variable that toggles if notifications are enabled or disabled
+    @Published var notificationsToggle : Bool
     init() {
         self.settings = [
             "time24hr": false,
@@ -47,11 +52,13 @@ class Model : ObservableObject {
             "editMode": false,
             "eventMode": false
         ]
-        self.areNotifications = false
+        self.areNotifications = true
         self.loggedIn = false
         self.email = ""
         self.parsedEmail = ""
         self.currentDate = Date()
+        self.notificationManager = UserNotifications()
+        self.notificationsToggle = false
     }
 }
 
@@ -70,7 +77,7 @@ class EventAttributes : ObservableObject {
 //Vars to hold the date and time selected for the event
     @Published var selectedDate : Date
     @Published var selectedEndDate : Date
-    
+    @Published var idcounter: Int
     init() {
         index = 0
         alertToggled = false
@@ -80,6 +87,7 @@ class EventAttributes : ObservableObject {
         description = ""
         selectedDate = Date()
         selectedEndDate = Date(timeIntervalSinceReferenceDate: 0)
+        idcounter = 0
     }
     
     public func objType() -> String {
@@ -142,7 +150,139 @@ class EventAttributes : ObservableObject {
     }
 }
 
-
+//Struct to hold the elements needed to push a notification
+struct Notification {
+    var id: String
+    var title : String
+    var datetime : DateComponents
+}
+class UserNotifications {
+    @EnvironmentObject var data: Model
+    @EnvironmentObject var attr: EventAttributes
+//    @State var eventStrings = [String]()
+//Keeps track of the unique id for each event in the database
+    @State var idcounter = 0
+//Holds the notifications to be scheduled
+    @State var notifications = [Notification]()
+//Prompts the user to allow notifications to be pushed
+    private func registerForLocalNotifications() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+//if authorization is given and notifications are enabled then schedule the notifications
+            if granted == true && error == nil && self.data.notificationsToggle == true{
+                self.scheduleNotifications()
+            }
+        }
+    }
+//Public function to call the notifications class for scheduling
+    func schedule() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .notDetermined:
+//Pushes to the user if they want to authorize notifications
+                self.registerForLocalNotifications()
+            case .authorized, .provisional:
+                print("schedulenotifications")
+//calls the schedulenotifications function is authorization is given
+                self.scheduleNotifications()
+            default:
+                break //Do nothing
+            }
+        }
+    }
+    private func scheduleNotifications()
+    {
+        print("Test \(notifications)")
+//Iterates through the notifications array scheduling each one for its respective time
+        for notification in notifications
+        {
+//Variables used in trigger and request
+            let content = UNMutableNotificationContent()
+            content.title = notification.title
+            content.sound = .default
+            let trigger = UNCalendarNotificationTrigger(dateMatching: notification.datetime, repeats: false)
+            let request = UNNotificationRequest(identifier: notification.id, content: content, trigger: trigger)
+//Adds the most recent event to the notification center to prompt the user at its designated time
+            UNUserNotificationCenter.current().add(request)
+            { error in
+                guard error == nil else { return }
+                print ("Notification scheduled!")
+            }
+        }
+    }
+//Not populating notifications at the moment but this function retrieves the events from the database when the user signs in
+    func retrieveFromDB (email: String){
+//the users parsed email
+        print(email)
+        let userEmail = email
+        var eventNames = ""
+//child gives a snapshot reference to the database
+        ref.child("\(userEmail)").observeSingleEvent(of: .value, with: { (snapshot) in
+//iterates over each event in the database
+            for child in snapshot.children {
+//formats all the children from the database to be stored in eventNames as a list like object
+                let snap = child as! DataSnapshot
+                let key = snap.key
+                print("child \(child)")
+                eventNames += "|\(key)"
+//Holds all the names of the events
+                var events = eventNames.components(separatedBy: "|")
+//removes the first empty entry in from initialization of eventNames
+                events.removeFirst()
+//Loops through all the events to parse the start date for each one
+                for event in events {
+                    print("Event: \(event)")
+//if the event is empty assigns defaults values
+                    if event == "" {
+                        self.attr.index = 0
+                        self.attr.description = ""
+                        self.attr.selectedDate = Date()
+                    } else {
+//creates a snapshot of the dataabase to acquire the startdate and description
+                            ref.child("\(userEmail)").child("\(event)").observeSingleEvent(of: .value, with: { (snapshot) in
+                            let value = snapshot.value as? NSDictionary
+                            print ("value \(value)")
+//grabs the start date as a string as thats how it is stored in Firebase
+                            let start = value?["Start Date"] as? String ?? ""
+//grabs the description of the event
+                            let description = event
+//These format the start date string back to the Date type
+                            let dateFormatterOrig = DateFormatter()
+                            dateFormatterOrig.locale = Locale(identifier: "en_US_POSIX")
+                            dateFormatterOrig.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+//selecteddate is of the right type to schedule for notifications
+                            let selectedDate = dateFormatterOrig.date(from: start)!
+                            print("Date: \(selectedDate)")
+//grabs the current date and time
+                                var now = Date()
+//figures out how much time (in seconds) is inbetween the selected date and now
+                                let interval = selectedDate.timeIntervalSince(now)
+//adds the difference between the two dates to allow the system to know when to prompt the user
+                                now.addTimeInterval(interval)
+//Parses the Date object to individual ints
+                                let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: now)
+                                let targetYear = components.year ?? 0
+                                let targetMonth = components.month ?? 0
+                                let targetDay = components.day ?? 0
+                                let targetHour = components.hour ?? 0
+                                let targetMinute = components.minute ?? 0
+                                let targetSecond = components.second ?? 0
+                                print(event)
+//increments the id for the next notification
+                                self.idcounter += 1
+//Supposed to populate the notifications array with the current notification but doesnt work for some reason. Need to look into *****************
+                                self.notifications = [Notification(id: "event-\(self.idcounter)",title: description, datetime: DateComponents(calendar: Calendar.current, year: targetYear, month: targetMonth, day: targetDay, hour: targetHour, minute: targetMinute, second: targetSecond))]
+                                print("notifications tests :\(self.notifications)")
+//schedules the notifcation grabbed from the database
+                                self.scheduleNotifications()
+                            })
+                    }
+        //            data.events =
+                }
+            }
+        })
+//        EditView.getEventList(	)
+    }
+}
 //if user.isLoggedIn {
 //        MainView()
 //    } else {
@@ -170,14 +310,10 @@ struct ContentView: View {
     */
     @State var pEmail = ""
     @State var isPresentingSheet = false
-    
-      /// This property will cause an alert view to display when it has a non-null value.
+    /// This property will cause an alert view to display when it has a non-null value.
     @State private var alertItem: AlertItem? = nil
-
-    
     
     var body: some View {
-
         ZStack {
             //Segment()
             let drag = DragGesture()
@@ -245,7 +381,11 @@ struct ContentView: View {
                         
                         ).environmentObject(data)
 
-                        CustomStyledButton(title: "Send Sign In Link / Login", action: sendSignInLink)
+                        CustomStyledButton(title: "Send Sign In Link / Login", action: {
+                            sendSignInLink()
+                            data.notificationManager.retrieveFromDB(email: data.parsedEmail)
+//                            data.notificationManager.schedule()
+                        })
                             .disabled(self.data.email.isEmpty)
                         Spacer()
                       }
@@ -411,7 +551,7 @@ struct CustomStyledButton: View {
 /// Displayed when a user successfuly logs in.
 struct SuccessView: View {
   let email: String
-  var body: some View {
+    var body: some View {
     /// The first view in this `ZStack` is a `Color` view that expands
     /// to set the background color of the `SucessView`.
     ZStack {
@@ -466,8 +606,6 @@ struct HomePage: View {
     @State var taskAngles = [[Angle]]()
     @State var tasks = CircleView.tasks
     @State var colors = [Color.blue, Color.red, Color.orange, Color.green, Color.yellow, Color.purple]
-    
-
     // Functions and variables used to create a functioning digital clock
     var timeFormat: DateFormatter {
          
@@ -501,7 +639,6 @@ struct HomePage: View {
         var startAngle: Angle
         var endAngle: Angle
         var clockwise: Bool
-        
         func path(in rect: CGRect) -> Path {
             let rotationAdjustment = Angle.degrees(90)
             let modifiedStart = startAngle - rotationAdjustment
@@ -513,7 +650,7 @@ struct HomePage: View {
             return path
         }
         
-            }
+    }
     @ViewBuilder
     var body: some View {
 
@@ -576,18 +713,34 @@ struct HomePage: View {
                                 
                                 // Notifications
                                 ZStack {
-                                    Image("notifications_bell")
-                                        .resizable()
-                                        .frame(width: 30, height: 30)
-                                        .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
-                                        .offset(x: 0, y: 14)
-                                    
+                                    Button(action: {
+                                        withAnimation {
+                                            data.notificationsToggle.toggle()
+                                        }
+                                    }){
+                                        HStack {
+                                            if (data.notificationsToggle == true) {
+                                                Image("notifications_bell")
+                                                    .resizable()
+                                                    .frame(width: 40, height: 40)
+                                                    .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
+                                                    .offset(x: -10, y: 17)
+                                            }
+                                            else {
+                                                Image("notifications_bell_muted")
+                                                    .resizable()
+                                                    .frame(width: 40, height: 40)
+                                                    .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
+                                                    .offset(x: -10, y: 17)
+                                            }
+                                        }
+                                    }
                                     // if there are notifications
                                     if self.data.areNotifications {
                                         Circle()
-                                            .frame(width: 10, height: 10, alignment: .trailing)
+                                            .frame(width: 15, height: 15, alignment: .trailing)
                                             .foregroundColor(Color(rgb: RED))
-                                            .offset(x: 10, y: 5)
+                                            .offset(x: 0, y: 5)
                                     }
                                 }
                                 
@@ -735,7 +888,7 @@ struct HomePage: View {
                                         Text("+")
                                             .font(Font.custom("Comfortaa-Regular", size: 70))
                                             .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
-                                            .offset(y: 6)
+                                            .offset(y: -4)
                                     }
                                 }.padding(.horizontal, 50)
                                 
