@@ -79,7 +79,7 @@ class CircleView {
  
     
     
-    func arrangeChrono () {
+    static func arrangeChrono () {
         CircleView.tasks.sort {
             $0.start_time < $1.start_time
         }
@@ -91,7 +91,7 @@ class CircleView {
         }
     }
     
-    func assignColors () {
+    static func assignColors () {
         for i in CircleView.tasks {
             i.set_color(by: "blue")
         }
