@@ -8,57 +8,169 @@
  
 import XCTest
 import Foundation
+import Firebase
 @testable import TRACE
  
 class TRACETests: XCTestCase {
  
-    override func setupWithError() throws{
+    func setupWithError() throws{
         super.setUp()
         //sut = TRACEApp()
     }
    
-    override func tearDownWithErro() throws {
+    func tearDownWithErro() throws {
         //sut = nil
         super.tearDown()
     }
  
 //Tests for Task
-    func testTaskInitAndGetters() throws {
-        let testTask: Task = Task(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColorHex: [1,2,3], fromTask_name: "name")
-        XCAssertEqual(testTask.get_subject(), "subject")
-        XCAssertEqual(testTask.get_start_time(), 1)
-        XCAssertEqual(testTask.get_end_time(), 2)
-        XCAssertEqual(testTask.get_colorHex()[0], 1)
-        XCAssertEqual(testTask.get_task_name(), "name")
+    func testEventInitAndGetters() throws {
+        let testEvent: Event = Event(subject: "subject", start_time: 1, end_time: 2, color: "blue", type: "task")
+        XCTAssertEqual(testEvent.get_subject(), "subject")
+        XCTAssertEqual(testEvent.get_start_time(), 1)
+        XCTAssertEqual(testEvent.get_end_time(), 2)
+        XCTAssertEqual(testEvent.get_color(), "blue")
        
     }
    
     func testAlertInitAndGetters() throws {
-        let testAlert: Alert = Alert(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColorHex: [1,2,3], fromTask_name: "name")
-        XCAssertEqual(testAlert.get_subject(), "subject")
-        XCAssertEqual(testAlert.get_start_time(), 1)
-        XCAssertEqual(testAlert.get_end_time(), 2)
-        XCAssertEqual(testAlert.get_colorHex()[0], 1)
-        XCAssertEqual(testAlert.get_task_name(), "name")
+        let testAlert: Alert = Alert(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColor: "blue", fromTask_name: "name")
+        XCTAssertEqual(testAlert.get_subject(), "subject")
+        XCTAssertEqual(testAlert.get_start_time(), 1)
+        XCTAssertEqual(testAlert.get_end_time(), 2)
+        XCTAssertEqual(testAlert.get_color(), "blue")
+        XCTAssertEqual(testAlert.get_task_name(), "name")
        
     }
    
     func testCueInitAndGetters() throws {
-        let testCue: Cue = Cue(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColorHex: [1,2,3], fromTask_name: "name")
-        XCAssertEqual(testCue.get_subject(), "subject")
-        XCAssertEqual(testCue.get_start_time(), 1)
-        XCAssertEqual(testCue.get_end_time(), 2)
-        XCAssertEqual(testCue.get_colorHex()[0], 1)
-        XCAssertEqual(testCue.get_task_name(), "name")
+        let testCue: Cue = Cue(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColor: "blue", fromTask_name: "name")
+        XCTAssertEqual(testCue.get_subject(), "subject")
+        XCTAssertEqual(testCue.get_start_time(), 1)
+        XCTAssertEqual(testCue.get_end_time(), 2)
+        XCTAssertEqual(testCue.get_color(), "blue")
+        XCTAssertEqual(testCue.get_task_name(), "name")
        
     }
+    
+    func testCircleViewArrangeChrono(){
+        //let testCircle: CircleView = CircleView()
+        CircleView.tasks.append(Event(subject: "subject1", start_time: 10, end_time: 20, color: "blue", type: "task"))
+        CircleView.tasks.append(Event(subject: "subject2", start_time: 1, end_time: 2, color: "blue", type: "task"))
+        CircleView.tasks.append(Event(subject: "subject3", start_time: 5, end_time: 15, color: "blue", type: "task"))
+        
+        CircleView.alerts.append(Alert(fromSubject: "subject1", fromStart_time: 10, fromEnd_time: 20, fromColor: "blue", fromTask_name: "name1"))
+        CircleView.alerts.append(Alert(fromSubject: "subject2", fromStart_time: 1, fromEnd_time: 2, fromColor: "blue", fromTask_name: "name2"))
+        CircleView.alerts.append(Alert(fromSubject: "subject3", fromStart_time: 5, fromEnd_time: 15, fromColor: "blue", fromTask_name: "name3"))
+        
+        CircleView.cues.append(Cue(fromSubject: "subject", fromStart_time: 10, fromEnd_time: 20, fromColor: "blue", fromTask_name: "name1"))
+        CircleView.cues.append(Cue(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColor: "blue", fromTask_name: "name2"))
+        CircleView.cues.append(Cue(fromSubject: "subject3", fromStart_time: 5, fromEnd_time: 15, fromColor: "blue", fromTask_name: "name3"))
+        
+        CircleView.arrangeChrono()
+        
+        
+        XCTAssertEqual(CircleView.tasks[0].get_subject(), "subject2")
+        XCTAssertEqual(CircleView.tasks[1].get_subject(), "subject3")
+        XCTAssertEqual(CircleView.tasks[2].get_subject(), "subject1")
+
+        XCTAssertEqual(CircleView.alerts[0].get_task_name(), "name2")
+        XCTAssertEqual(CircleView.alerts[1].get_task_name(), "name3")
+        XCTAssertEqual(CircleView.alerts[2].get_task_name(), "name1")
+
+        XCTAssertEqual(CircleView.cues[0].get_task_name(), "name2")
+        XCTAssertEqual(CircleView.cues[1].get_task_name(), "name3")
+        XCTAssertEqual(CircleView.cues[2].get_task_name(), "name1")
+
+    }
+    
+    func testCircleViewAssignColors() {
+        let testCircle: CircleView = CircleView()
+        CircleView.tasks.append(Event(subject: "subject1", start_time: 10, end_time: 20, color: "red", type: "task"))
+        CircleView.tasks.append(Event(subject: "subject1", start_time: 10, end_time: 20, color: "red", type: "task"))
+        
+        CircleView.alerts.append(Alert(fromSubject: "subject", fromStart_time: 10, fromEnd_time: 20, fromColor: "green", fromTask_name: "name1"))
+        CircleView.alerts.append(Alert(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColor: "green", fromTask_name: "name2"))
+        
+        CircleView.cues.append(Cue(fromSubject: "subject", fromStart_time: 10, fromEnd_time: 20, fromColor: "green", fromTask_name: "name1"))
+        CircleView.cues.append(Cue(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColor: "green", fromTask_name: "name2"))
+        
+        CircleView.assignColors()
+        
+        XCTAssertEqual(CircleView.tasks[0].get_color(), "blue")
+        XCTAssertEqual(CircleView.alerts[0].get_color(), "#ff000")
+        XCTAssertEqual(CircleView.cues[0].get_color(), "red")
+        
+    }
+    
+    
+    func testLineViewArrangeChrono(){
+        let testLine: LineView = LineView()
+        testLine.tasks.append(Event(subject: "subject1", start_time: 10, end_time: 20, color: "blue", type: "task"))
+        testLine.tasks.append(Event(subject: "subject2", start_time: 1, end_time: 2, color: "blue", type: "task"))
+        testLine.tasks.append(Event(subject: "subject3", start_time: 5, end_time: 15, color: "blue", type: "task"))
+        
+        testLine.alerts.append(Alert(fromSubject: "subject1", fromStart_time: 10, fromEnd_time: 20, fromColor: "blue", fromTask_name: "name1"))
+        testLine.alerts.append(Alert(fromSubject: "subject2", fromStart_time: 1, fromEnd_time: 2, fromColor: "blue", fromTask_name: "name2"))
+        testLine.alerts.append(Alert(fromSubject: "subject3", fromStart_time: 5, fromEnd_time: 15, fromColor: "blue", fromTask_name: "name3"))
+        
+        testLine.cues.append(Cue(fromSubject: "subject", fromStart_time: 10, fromEnd_time: 20, fromColor: "blue", fromTask_name: "name1"))
+        testLine.cues.append(Cue(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColor: "blue", fromTask_name: "name2"))
+        testLine.cues.append(Cue(fromSubject: "subject3", fromStart_time: 5, fromEnd_time: 15, fromColor: "blue", fromTask_name: "name3"))
+        
+        testLine.arrangeChrono()
+        
+        XCTAssertEqual(testLine.tasks[0].get_subject(), "subject2")
+        XCTAssertEqual(testLine.tasks[1].get_subject(), "subject3")
+        XCTAssertEqual(testLine.tasks[2].get_subject(), "subject1")
+
+        XCTAssertEqual(testLine.alerts[0].get_task_name(), "name2")
+        XCTAssertEqual(testLine.alerts[1].get_task_name(), "name3")
+        XCTAssertEqual(testLine.alerts[2].get_task_name(), "name1")
+
+        XCTAssertEqual(testLine.cues[0].get_task_name(), "name2")
+        XCTAssertEqual(testLine.cues[1].get_task_name(), "name3")
+        XCTAssertEqual(testLine.cues[2].get_task_name(), "name1")
+
+
+    }
+    
+    func testLineViewAssignColors() {
+        let testLine: LineView = LineView()
+        testLine.tasks.append(Event(subject: "subject1", start_time: 10, end_time: 20, color: "blue", type: "task"))
+        testLine.tasks.append(Event(subject: "subject1", start_time: 10, end_time: 20, color: "blue", type: "task"))
+        
+        testLine.alerts.append(Alert(fromSubject: "subject", fromStart_time: 10, fromEnd_time: 20, fromColor: "green", fromTask_name: "name1"))
+        testLine.alerts.append(Alert(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColor: "green", fromTask_name: "name2"))
+        
+        testLine.cues.append(Cue(fromSubject: "subject", fromStart_time: 10, fromEnd_time: 20, fromColor: "yellow", fromTask_name: "name1"))
+        testLine.cues.append(Cue(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColor: "yellow", fromTask_name: "name2"))
+        
+        testLine.assignColors()
+        
+        XCTAssertEqual(testLine.tasks[0].get_color(), "RED")
+        XCTAssertEqual(testLine.alerts[0].get_color(), "BLUE")
+        XCTAssertEqual(testLine.cues[0].get_color(), "GREEN")
+        
+    }
+    
+    
+
+
  
- 
-    func testPerformanceExample() throws {
+    func testPerformanceCreateAccount() throws {
         // This is an example of a performance test case.
         measure {
+            
             // Put the code you want to measure the time of here.
+//            var testView: ContentView = ContentView()
+//            testView.data.loggedIn = false
+            
+            
+            
+            
         }
     }
  
 }
+
