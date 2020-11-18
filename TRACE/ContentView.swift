@@ -149,21 +149,26 @@ class EventAttributes : ObservableObject {
         }
     }
 }
-
 //Struct to hold the elements needed to push a notification
 struct Notification {
     var id: String
     var title : String
     var datetime : DateComponents
+    init(ident: String, desc: String, datetimes: DateComponents) {
+        id = ident
+        title = desc
+        datetime = datetimes
+    }
+  
 }
 class UserNotifications {
     @EnvironmentObject var data: Model
     @EnvironmentObject var attr: EventAttributes
-//    @State var eventStrings = [String]()
+
 //Keeps track of the unique id for each event in the database
     @State var idcounter = 0
 //Holds the notifications to be scheduled
-    @State var notifications = [Notification]()
+    var notifications : [Notification] = [Notification]()
 //Prompts the user to allow notifications to be pushed
     private func registerForLocalNotifications() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
@@ -181,7 +186,6 @@ class UserNotifications {
 //Pushes to the user if they want to authorize notifications
                 self.registerForLocalNotifications()
             case .authorized, .provisional:
-                print("schedulenotifications")
 //calls the schedulenotifications function is authorization is given
                 self.scheduleNotifications()
             default:
@@ -191,7 +195,6 @@ class UserNotifications {
     }
     private func scheduleNotifications()
     {
-        print("Test \(notifications)")
 //Iterates through the notifications array scheduling each one for its respective time
         for notification in notifications
         {
@@ -206,15 +209,17 @@ class UserNotifications {
             { error in
                 guard error == nil else { return }
                 print ("Notification scheduled!")
+ //           }
             }
         }
     }
 //Not populating notifications at the moment but this function retrieves the events from the database when the user signs in
     func retrieveFromDB (email: String){
 //the users parsed email
-        print(email)
         let userEmail = email
         var eventNames = ""
+//grabs the current date and time
+        var now = Date()
 //child gives a snapshot reference to the database
         ref.child("\(userEmail)").observeSingleEvent(of: .value, with: { (snapshot) in
 //iterates over each event in the database
@@ -222,7 +227,6 @@ class UserNotifications {
 //formats all the children from the database to be stored in eventNames as a list like object
                 let snap = child as! DataSnapshot
                 let key = snap.key
-                print("child \(child)")
                 eventNames += "|\(key)"
 //Holds all the names of the events
                 var events = eventNames.components(separatedBy: "|")
@@ -230,7 +234,6 @@ class UserNotifications {
                 events.removeFirst()
 //Loops through all the events to parse the start date for each one
                 for event in events {
-                    print("Event: \(event)")
 //if the event is empty assigns defaults values
                     if event == "" {
                         self.attr.index = 0
@@ -238,49 +241,48 @@ class UserNotifications {
                         self.attr.selectedDate = Date()
                     } else {
 //creates a snapshot of the dataabase to acquire the startdate and description
-                            ref.child("\(userEmail)").child("\(event)").observeSingleEvent(of: .value, with: { (snapshot) in
+                        ref.child("\(userEmail)").child("\(event)").observeSingleEvent(of: .value, with: { [self] (snapshot) in
                             let value = snapshot.value as? NSDictionary
-                            print ("value \(value)")
 //grabs the start date as a string as thats how it is stored in Firebase
                             let start = value?["Start Date"] as? String ?? ""
-//grabs the description of the event
-                            let description = event
 //These format the start date string back to the Date type
                             let dateFormatterOrig = DateFormatter()
                             dateFormatterOrig.locale = Locale(identifier: "en_US_POSIX")
                             dateFormatterOrig.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
 //selecteddate is of the right type to schedule for notifications
                             let selectedDate = dateFormatterOrig.date(from: start)!
-                            print("Date: \(selectedDate)")
-//grabs the current date and time
-                                var now = Date()
+              //              print("original selected date \(selectedDate)")
 //figures out how much time (in seconds) is inbetween the selected date and now
                                 let interval = selectedDate.timeIntervalSince(now)
+              //                  print("interval \(interval)")
 //adds the difference between the two dates to allow the system to know when to prompt the user
                                 now.addTimeInterval(interval)
+              //                 print("now \(now)")
 //Parses the Date object to individual ints
                                 let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: now)
+              //                  print("components: \(components)")
                                 let targetYear = components.year ?? 0
                                 let targetMonth = components.month ?? 0
                                 let targetDay = components.day ?? 0
+                //                print("day \(targetDay)")
                                 let targetHour = components.hour ?? 0
                                 let targetMinute = components.minute ?? 0
                                 let targetSecond = components.second ?? 0
-                                print(event)
 //increments the id for the next notification
-                                self.idcounter += 1
-//Supposed to populate the notifications array with the current notification but doesnt work for some reason. Need to look into *****************
-                                self.notifications = [Notification(id: "event-\(self.idcounter)",title: description, datetime: DateComponents(calendar: Calendar.current, year: targetYear, month: targetMonth, day: targetDay, hour: targetHour, minute: targetMinute, second: targetSecond))]
-                                print("notifications tests :\(self.notifications)")
+//populates the notifications array with the current notifications
+                            let notificationHolder = Notification(ident: "event-\(self.idcounter)",desc: event, datetimes: DateComponents(calendar: Calendar.current, year: targetYear, month: targetMonth, day: targetDay, hour: targetHour, minute: targetMinute, second: targetSecond))
+                                notifications.append(notificationHolder)
+       //                     notifications.append(Notification(ident: "event-\(self.idcounter)",desc: event, datetimes: DateComponents(calendar: Calendar.current, year: targetYear, month: targetMonth, day: targetDay, hour: targetHour, minute: targetMinute, second: targetSecond)))
 //schedules the notifcation grabbed from the database
-                                self.scheduleNotifications()
-                            })
+                                scheduleNotifications()
+                                self.idcounter += 1
+                        })
                     }
         //            data.events =
                 }
             }
         })
-//        EditView.getEventList(	)
+//        EditView.getEventList(    )
     }
 }
 //if user.isLoggedIn {
@@ -710,7 +712,7 @@ struct HomePage: View {
                                 .padding(.horizontal, 10)
                                 .frame(width: 230, height: 55)
                                 .fixedSize()
-                                
+                                /*
                                 // Notifications
                                 ZStack {
                                     Button(action: {
@@ -742,7 +744,7 @@ struct HomePage: View {
                                             .foregroundColor(Color(rgb: RED))
                                             .offset(x: 0, y: 5)
                                     }
-                                }
+                                }*/
                                 
                             }
                             

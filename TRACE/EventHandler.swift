@@ -182,7 +182,7 @@ struct EventHandler: View {
                         let targetHour = components.hour ?? 0
                         let targetMinute = components.minute ?? 0
                         let targetSecond = components.second ?? 0
-                        data.notificationManager.notifications = [Notification(id: "event-\(attr.idcounter)",title: self.attr.description, datetime: DateComponents(calendar: Calendar.current, year: targetYear, month: targetMonth, day: targetDay, hour: targetHour, minute: targetMinute, second: targetSecond))]
+                        data.notificationManager.notifications = [Notification(ident: "event-\(attr.idcounter)",desc: self.attr.description, datetimes: DateComponents(calendar: Calendar.current, year: targetYear, month: targetMonth, day: targetDay, hour: targetHour, minute: targetMinute, second: targetSecond))]
                         attr.idcounter += 1
                         print("Eventhandler notifs \(data.notificationManager.notifications)")
                         data.notificationManager.schedule()
