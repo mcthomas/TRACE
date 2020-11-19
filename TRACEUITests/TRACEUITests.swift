@@ -26,21 +26,30 @@ class TRACEUITests: XCTestCase {
 //        // Put teardown code here. This method is called after the invocation of each test method in the class.
 //    }
 
-    func testExample() throws {
+    func testLoginWithInvalidEmail() throws {
         // UI tests must launch the application that they test.
-        
+        continueAfterFailure = false
+        app = XCUIApplication()
         app.launch()
+        let app = XCUIApplication()
+        let emailTextField = app.textFields["Email"]
+        emailTextField.tap()
+        emailTextField.tap()
+        app.buttons["Send Sign In Link / Login"].tap()
+        emailTextField.tap()
+        app.alerts["The sign in link could not be sent."].scrollViews.otherElements.buttons["OK"].tap()
+        XCTAssert(true)
 
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
-        }
-    }
+//    func testLaunchPerformance() throws {
+//        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, *) {
+//            // This measures how long it takes to launch your application.
+//            measure(metrics: [XCTApplicationLaunchMetric()]) {
+//                XCUIApplication().launch()
+//            }
+//        }
+//    }
 }
