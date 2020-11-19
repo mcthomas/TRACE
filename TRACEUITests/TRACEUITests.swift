@@ -1,7 +1,7 @@
 //
 //  TRACEUITests.swift
 //  TRACEUITests
-//
+//  Note: some tests will have to be run manually to verify that the displays look how we want them to.
 //  Created by Tony S on 11/16/20.
 //
 
