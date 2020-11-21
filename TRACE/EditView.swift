@@ -200,7 +200,7 @@ struct InfoView : View {
         
     }
     
-    func translateColor(color: String) -> [Int] {
+    static func translateColor(color: String) -> [Int] {
         if color == "DARK_GREY" {
             return DARK_GREY
         }
@@ -238,9 +238,9 @@ struct InfoView : View {
             Button(action: { self.data.views["eventMode"]!.toggle() }) {
                 ZStack {
                     Circle()
-                        .foregroundColor(Color(rgb: translateColor(color: eventColor)))
+                        .foregroundColor(Color(rgb: InfoView.translateColor(color: eventColor)))
                         .frame(width: UIScreen.main.bounds.width / 1.4, height: UIScreen.main.bounds.width / 1.4)
-                        .shadow(color: Color(rgb: translateColor(color: eventColor)), radius: 6)
+                        .shadow(color: Color(rgb: InfoView.translateColor(color: eventColor)), radius: 6)
                     Text("\(eventString)")
                         .font(Font.custom("Comfortaa-Light", size: 40))
                         .padding()
@@ -258,9 +258,9 @@ struct InfoView : View {
             // Event Date & Time
             ZStack {
                 RoundedRectangle(cornerRadius: 15.0)
-                    .foregroundColor(Color(rgb: translateColor(color: eventColor)))
+                    .foregroundColor(Color(rgb: InfoView.translateColor(color: eventColor)))
                     .frame(width: UIScreen.main.bounds.size.width * 0.70, height: 80, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    .shadow(color: Color(rgb: translateColor(color: eventColor)), radius: 3)
+                    .shadow(color: Color(rgb: InfoView.translateColor(color: eventColor)), radius: 3)
                
                 // start and end date strings in format MM/dd/yyyy hh:mm a (split into 3 components)
                 VStack {

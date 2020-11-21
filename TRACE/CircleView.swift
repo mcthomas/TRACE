@@ -61,7 +61,7 @@ class CircleView {
      
                     
                     if (type == "task"){
-                        let newTask = Event(subject: "Subject", start_time: startTime, end_time: endTime, color: color, type: type)
+                        let newTask = Event(subject: "Subject", start_time: dateFormatterOrig.date(from: start)!, end_time: dateFormatterOrig.date(from: end)!, color: color, type: type)
                         CircleView.tasks.append(newTask)
                     }
                     else if(type == "alert"){
@@ -108,7 +108,15 @@ class CircleView {
         for i in CircleView.tasks {
             let startTime = i.get_start_time()
             let endTime = i.get_end_time()
-            newTaskAngles.append( [Angle.degrees(Double(360*startTime/1440)),Angle.degrees(Double(360*endTime/1440))])
+            let startOffset = Calendar.current.dateComponents([.minute], from: Date(), to: startTime)
+            let minutesFromStart = Int(startOffset.minute!)
+            let endOffset = Calendar.current.dateComponents([.minute], from: Date(), to: endTime)
+            let minutesFromEnd = Int(endOffset.minute!)
+            
+            do {
+                newTaskAngles.append( [try Angle.degrees(Double(360*minutesFromStart/1440)), try Angle.degrees(Double(360*minutesFromEnd/1440))])
+
+            } catch{}
         }
         taskAngles = newTaskAngles
     }
@@ -120,4 +128,3 @@ class CircleView {
     }
  
 }
-

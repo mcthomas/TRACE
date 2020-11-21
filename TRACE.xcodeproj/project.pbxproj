@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		0E9E31A5254C8D50002DB7CD /* EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9E31A4254C8D50002DB7CD /* EventHandler.swift */; };
 		6051CD7425461791005DEBDB /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6051CD7325461791005DEBDB /* Settings.swift */; };
+		7ADA7E8B758110BA4F96E441 /* libPods-TRACEUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C34218931A6EEE80B191B79C /* libPods-TRACEUITests.a */; };
+		9CBE490E33A292BE42606B61 /* libPods-TRACETests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7794E232907693C79CBFE8 /* libPods-TRACETests.a */; };
 		C36DF8EE25B85782103EFC08 /* libPods-TRACE.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D7645146B0F83F9BD6CAF85 /* libPods-TRACE.a */; };
 		C95478D42544F6BA00880166 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C95478D32544F6BA00880166 /* GoogleService-Info.plist */; };
 		C9665A9A2541053700880166 /* TRACEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9665A992541053700880166 /* TRACEApp.swift */; };
@@ -25,10 +27,18 @@
 		C9899CA32549E0D700880166 /* EditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9899CA22549E0D700880166 /* EditView.swift */; };
 		C997DEE4255A38E300880166 /* TRACETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C997DEE3255A38E300880166 /* TRACETests.swift */; };
 		C9C4D089254B321A00880166 /* credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = C9C4D088254B321A00880166 /* credentials.plist */; };
+		C9C4E6E625691D0100880166 /* TRACEUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C4E6E525691D0100880166 /* TRACEUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		C997DEE6255A38E300880166 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9665A8E2541053700880166 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9665A952541053700880166;
+			remoteInfo = TRACE;
+		};
+		C9C4E6E825691D0100880166 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C9665A8E2541053700880166 /* Project object */;
 			proxyType = 1;
@@ -41,8 +51,11 @@
 		0D7645146B0F83F9BD6CAF85 /* libPods-TRACE.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TRACE.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0E9E31A4254C8D50002DB7CD /* EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHandler.swift; sourceTree = "<group>"; };
 		1781D1CCB8002728CA3772A2 /* Pods-TRACE.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRACE.release.xcconfig"; path = "Target Support Files/Pods-TRACE/Pods-TRACE.release.xcconfig"; sourceTree = "<group>"; };
+		4388DE61D42AC24B9BCCDE42 /* Pods-TRACETests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRACETests.debug.xcconfig"; path = "Target Support Files/Pods-TRACETests/Pods-TRACETests.debug.xcconfig"; sourceTree = "<group>"; };
+		5A7794E232907693C79CBFE8 /* libPods-TRACETests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TRACETests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6051CD7325461791005DEBDB /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		6CCBC6C6682B89CE217716EF /* Pods-TRACE.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRACE.debug.xcconfig"; path = "Target Support Files/Pods-TRACE/Pods-TRACE.debug.xcconfig"; sourceTree = "<group>"; };
+		C34218931A6EEE80B191B79C /* libPods-TRACEUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TRACEUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C95478D32544F6BA00880166 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C9665A962541053700880166 /* TRACE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TRACE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9665A992541053700880166 /* TRACEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TRACEApp.swift; sourceTree = "<group>"; };
@@ -63,6 +76,12 @@
 		C997DEE5255A38E300880166 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C9C4D088254B321A00880166 /* credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credentials.plist; sourceTree = "<group>"; };
 		C9C4D08B254B3B9500880166 /* TRACE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TRACE.entitlements; sourceTree = "<group>"; };
+		C9C4E6E325691D0100880166 /* TRACEUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TRACEUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9C4E6E525691D0100880166 /* TRACEUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TRACEUITests.swift; sourceTree = "<group>"; };
+		C9C4E6E725691D0100880166 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D08BA28BB97E74F02E45204E /* Pods-TRACETests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRACETests.release.xcconfig"; path = "Target Support Files/Pods-TRACETests/Pods-TRACETests.release.xcconfig"; sourceTree = "<group>"; };
+		D964EEDE7B9375E330252501 /* Pods-TRACEUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRACEUITests.release.xcconfig"; path = "Target Support Files/Pods-TRACEUITests/Pods-TRACEUITests.release.xcconfig"; sourceTree = "<group>"; };
+		DB821FB4D8040F8B1CD7BBFA /* Pods-TRACEUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRACEUITests.debug.xcconfig"; path = "Target Support Files/Pods-TRACEUITests/Pods-TRACEUITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +97,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CBE490E33A292BE42606B61 /* libPods-TRACETests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9C4E6E025691D0100880166 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7ADA7E8B758110BA4F96E441 /* libPods-TRACEUITests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,6 +117,10 @@
 			children = (
 				6CCBC6C6682B89CE217716EF /* Pods-TRACE.debug.xcconfig */,
 				1781D1CCB8002728CA3772A2 /* Pods-TRACE.release.xcconfig */,
+				4388DE61D42AC24B9BCCDE42 /* Pods-TRACETests.debug.xcconfig */,
+				D08BA28BB97E74F02E45204E /* Pods-TRACETests.release.xcconfig */,
+				DB821FB4D8040F8B1CD7BBFA /* Pods-TRACEUITests.debug.xcconfig */,
+				D964EEDE7B9375E330252501 /* Pods-TRACEUITests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -97,6 +129,8 @@
 			isa = PBXGroup;
 			children = (
 				0D7645146B0F83F9BD6CAF85 /* libPods-TRACE.a */,
+				5A7794E232907693C79CBFE8 /* libPods-TRACETests.a */,
+				C34218931A6EEE80B191B79C /* libPods-TRACEUITests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -106,6 +140,7 @@
 			children = (
 				C9665A982541053700880166 /* TRACE */,
 				C997DEE2255A38E300880166 /* TRACETests */,
+				C9C4E6E425691D0100880166 /* TRACEUITests */,
 				C9665A972541053700880166 /* Products */,
 				16E24F72D4E4D57CC75A9996 /* Pods */,
 				26C5D5591A11E05667BF20EB /* Frameworks */,
@@ -117,6 +152,7 @@
 			children = (
 				C9665A962541053700880166 /* TRACE.app */,
 				C997DEE1255A38E300880166 /* TRACETests.xctest */,
+				C9C4E6E325691D0100880166 /* TRACEUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -163,6 +199,15 @@
 			path = TRACETests;
 			sourceTree = "<group>";
 		};
+		C9C4E6E425691D0100880166 /* TRACEUITests */ = {
+			isa = PBXGroup;
+			children = (
+				C9C4E6E525691D0100880166 /* TRACEUITests.swift */,
+				C9C4E6E725691D0100880166 /* Info.plist */,
+			);
+			path = TRACEUITests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -189,9 +234,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C997DEEA255A38E300880166 /* Build configuration list for PBXNativeTarget "TRACETests" */;
 			buildPhases = (
+				33F6C685AB132E86401FD141 /* [CP] Check Pods Manifest.lock */,
 				C997DEDD255A38E300880166 /* Sources */,
 				C997DEDE255A38E300880166 /* Frameworks */,
 				C997DEDF255A38E300880166 /* Resources */,
+				533F535E53E1E8543FF7C86E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -203,13 +250,33 @@
 			productReference = C997DEE1255A38E300880166 /* TRACETests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		C9C4E6E225691D0100880166 /* TRACEUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9C4E6EC25691D0100880166 /* Build configuration list for PBXNativeTarget "TRACEUITests" */;
+			buildPhases = (
+				E206C8807D5C9F0890527745 /* [CP] Check Pods Manifest.lock */,
+				C9C4E6DF25691D0100880166 /* Sources */,
+				C9C4E6E025691D0100880166 /* Frameworks */,
+				C9C4E6E125691D0100880166 /* Resources */,
+				E768747527BEAFC6D66103DD /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C9C4E6E925691D0100880166 /* PBXTargetDependency */,
+			);
+			name = TRACEUITests;
+			productName = TRACEUITests;
+			productReference = C9C4E6E325691D0100880166 /* TRACEUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		C9665A8E2541053700880166 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1210;
+				LastSwiftUpdateCheck = 1220;
 				LastUpgradeCheck = 1200;
 				TargetAttributes = {
 					C9665A952541053700880166 = {
@@ -217,6 +284,10 @@
 					};
 					C997DEE0255A38E300880166 = {
 						CreatedOnToolsVersion = 12.1;
+						TestTargetID = C9665A952541053700880166;
+					};
+					C9C4E6E225691D0100880166 = {
+						CreatedOnToolsVersion = 12.2;
 						TestTargetID = C9665A952541053700880166;
 					};
 				};
@@ -236,6 +307,7 @@
 			targets = (
 				C9665A952541053700880166 /* TRACE */,
 				C997DEE0255A38E300880166 /* TRACETests */,
+				C9C4E6E225691D0100880166 /* TRACEUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -259,9 +331,94 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9C4E6E125691D0100880166 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		33F6C685AB132E86401FD141 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TRACETests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		533F535E53E1E8543FF7C86E /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TRACETests/Pods-TRACETests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TRACETests/Pods-TRACETests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TRACETests/Pods-TRACETests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E206C8807D5C9F0890527745 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TRACEUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E768747527BEAFC6D66103DD /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TRACEUITests/Pods-TRACEUITests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TRACEUITests/Pods-TRACEUITests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TRACEUITests/Pods-TRACEUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		EE8624481B4BA8718D799A25 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -331,6 +488,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9C4E6DF25691D0100880166 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9C4E6E625691D0100880166 /* TRACEUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -338,6 +503,11 @@
 			isa = PBXTargetDependency;
 			target = C9665A952541053700880166 /* TRACE */;
 			targetProxy = C997DEE6255A38E300880166 /* PBXContainerItemProxy */;
+		};
+		C9C4E6E925691D0100880166 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9665A952541053700880166 /* TRACE */;
+			targetProxy = C9C4E6E825691D0100880166 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -466,6 +636,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TRACE/TRACE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1.3;
 				DEVELOPMENT_ASSET_PATHS = "\"TRACE/Preview Content\"";
 				DEVELOPMENT_TEAM = GC6FJWA2CX;
 				ENABLE_PREVIEWS = YES;
@@ -490,6 +661,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TRACE/TRACE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1.3;
 				DEVELOPMENT_ASSET_PATHS = "\"TRACE/Preview Content\"";
 				DEVELOPMENT_TEAM = GC6FJWA2CX;
 				ENABLE_PREVIEWS = YES;
@@ -508,6 +680,7 @@
 		};
 		C997DEE8255A38E300880166 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4388DE61D42AC24B9BCCDE42 /* Pods-TRACETests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -529,6 +702,7 @@
 		};
 		C997DEE9255A38E300880166 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D08BA28BB97E74F02E45204E /* Pods-TRACETests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -545,6 +719,48 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TRACE.app/TRACE";
+			};
+			name = Release;
+		};
+		C9C4E6EA25691D0100880166 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DB821FB4D8040F8B1CD7BBFA /* Pods-TRACEUITests.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = GC6FJWA2CX;
+				INFOPLIST_FILE = TRACEUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Matt.TRACEUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TRACE;
+			};
+			name = Debug;
+		};
+		C9C4E6EB25691D0100880166 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D964EEDE7B9375E330252501 /* Pods-TRACEUITests.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = GC6FJWA2CX;
+				INFOPLIST_FILE = TRACEUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Matt.TRACEUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TRACE;
 			};
 			name = Release;
 		};
@@ -574,6 +790,15 @@
 			buildConfigurations = (
 				C997DEE8255A38E300880166 /* Debug */,
 				C997DEE9255A38E300880166 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C9C4E6EC25691D0100880166 /* Build configuration list for PBXNativeTarget "TRACEUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9C4E6EA25691D0100880166 /* Debug */,
+				C9C4E6EB25691D0100880166 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

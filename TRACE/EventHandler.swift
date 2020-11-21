@@ -169,8 +169,23 @@ struct EventHandler: View {
                                 } //Editing else statement
                                 
                             }
-                        CircleView.getEvents(email: self.data.parsedEmail)
-                        CircleView.allocateAngles()
+                        // CircleView.getEvents(email: self.data.parsedEmail)
+                        // CircleView.allocateAngles()
+                        //same stuff as whats in contentview for notifications this is just for when the user adds a new notification so the system doesnt have to grab from the db
+                        var now = Date()
+                        let interval = attr.selectedDate.timeIntervalSince(now)
+                        now.addTimeInterval(interval)
+                        let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: now)
+                        let targetYear = components.year ?? 0
+                        let targetMonth = components.month ?? 0
+                        let targetDay = components.day ?? 0
+                        let targetHour = components.hour ?? 0
+                        let targetMinute = components.minute ?? 0
+                        let targetSecond = components.second ?? 0
+                        data.notificationManager.notifications = [Notification(ident: "event-\(attr.idcounter)",desc: self.attr.description, datetimes: DateComponents(calendar: Calendar.current, year: targetYear, month: targetMonth, day: targetDay, hour: targetHour, minute: targetMinute, second: targetSecond))]
+                        attr.idcounter += 1
+                        data.notificationManager.schedule()
+                        data.updateEventsFromDB()
                     }) {
                         ZStack {
                             Circle()
@@ -201,4 +216,3 @@ struct EventHandler_Previews: PreviewProvider {
         ContentView()
     }
 }
-

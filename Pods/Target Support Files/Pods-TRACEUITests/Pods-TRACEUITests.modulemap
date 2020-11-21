@@ -1,0 +1,6 @@
+module Pods_TRACEUITests {
+  umbrella header "Pods-TRACEUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
