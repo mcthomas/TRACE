@@ -1,7 +1,7 @@
 # add the Firebase pod for Google Analytics
 target 'TRACE' do
 platform :ios, '14.1'
-workspace '/Users/tony/documents/repos/t2/trace'
+workspace '/Users/tony/documents/transfer zone/TRACE'
 
 pod 'Firebase'
 pod 'FirebaseUI'

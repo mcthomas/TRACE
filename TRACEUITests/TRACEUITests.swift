@@ -1,9 +1,9 @@
 //
 //  TRACEUITests.swift
 //  TRACEUITests
-//  Note: some tests will have to be run manually to verify that the displays look how we want them to.
-//  Created by Tony S on 11/16/20.
 //
+//  Created by Tony S on 11/18/20.
+//  Note - the UI tests will fail if you don't use your own email and sign in on the simulated iphone
 
 import XCTest
 
@@ -11,6 +11,7 @@ class TRACEUITests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
+
         // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
 
@@ -35,7 +36,7 @@ class TRACEUITests: XCTestCase {
         app.buttons["Line Mode"].tap()
         app.buttons["Line Mode"].tap()
         app.buttons["Line Mode"].tap()
-
+        app.terminate()
         
     }
     
@@ -49,6 +50,10 @@ class TRACEUITests: XCTestCase {
         app.buttons["Dark Mode"].tap()
         app.buttons["Dark Mode"].tap()
         app.buttons["Dark Mode"].tap()
+        app.terminate()
+        
+        
+        
 
     }
     
@@ -62,8 +67,30 @@ class TRACEUITests: XCTestCase {
         app.buttons["24 Hour Format"].tap()
         app.buttons["24 Hour Format"].tap()
         app.buttons["24 Hour Format"].tap()
-
+        app.terminate()
     }
+    
+//    func testEditEvent()throws{
+////        let app = XCUIApplication()
+////        app.launch()
+////        app.textFields["Email"].tap()
+////        app.textFields["Email"].typeText("tonytonys123@gmail.com")
+////        app.buttons["Send Sign In Link / Login"].tap()
+//
+//        let app = XCUIApplication()
+//        app.staticTexts["Next:\nWork Shift"].tap()
+//        app.buttons["Send Sign In Link / Login"].tap()
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//    }
 
     
 }

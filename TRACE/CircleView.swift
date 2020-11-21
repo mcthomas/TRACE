@@ -11,7 +11,7 @@ import Firebase
  
 //Only instantiate ONCE
 class CircleView {
-    static var tasks = [Event]()
+    static var tasks = [Task]()
     static var taskAngles = [[Angle]]()
     static var alerts = [Alert]()
     static var cues = [Cue]()
@@ -25,7 +25,7 @@ class CircleView {
             dateFormatter.locale = Locale(identifier: "en_US_POSIX") // set locale to reliable US_POSIX
             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
             ref.child(finalEmail).observeSingleEvent(of: .value, with: { (snapshot) in
-                CircleView.tasks = [Event]()
+                CircleView.tasks = [Task]()
                 for child in snapshot.children {
                     let snap = child as! DataSnapshot
                     let name = snap.key
@@ -56,12 +56,9 @@ class CircleView {
                         let minutes = calendar.component(.minute, from: endDate)
                         endTime = hourInMinutes + minutes as Int
                     }
-     
- 
-     
                     
                     if (type == "task"){
-                        let newTask = Event(subject: "Subject", start_time: startTime, end_time: endTime, color: color, type: type)
+                        let newTask = Task(subject: "Subject", start_time: startTime, end_time: endTime, color: color, type: type)
                         CircleView.tasks.append(newTask)
                     }
                     else if(type == "alert"){
@@ -79,7 +76,7 @@ class CircleView {
  
     
     
-    static func arrangeChrono () {
+    func arrangeChrono () {
         CircleView.tasks.sort {
             $0.start_time < $1.start_time
         }
@@ -91,7 +88,7 @@ class CircleView {
         }
     }
     
-    static func assignColors () {
+    func assignColors () {
         for i in CircleView.tasks {
             i.set_color(by: "blue")
         }

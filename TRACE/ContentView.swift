@@ -19,6 +19,7 @@ let SETTINGS = ["Dark Mode", "24 Hour Format", "Colorblind Mode", "Line Mode"]
 let SETTINGS_ICONS = ["darkmode_icon", "24hr_icon", "colorblind_icon", "linemode_icon"]
 let HOURS = 24;
 
+
 import SwiftUI
 import Firebase
 import GoogleSignIn
@@ -29,7 +30,7 @@ import UserNotifications
 // Class to hold all environment objects
 class Model : ObservableObject {
     // Will be a list of event objects
-    @Published var events : [Event] = []
+    @Published var events : [Task] = []
     @Published var settings : Dictionary<String, Bool>
     @Published var views : Dictionary<String, Bool>
     @Published var areNotifications : Bool
@@ -149,6 +150,7 @@ class EventAttributes : ObservableObject {
         }
     }
 }
+
 //Struct to hold the elements needed to push a notification
 struct Notification {
     var id: String
@@ -162,9 +164,6 @@ struct Notification {
   
 }
 class UserNotifications {
-    @EnvironmentObject var data: Model
-    @EnvironmentObject var attr: EventAttributes
-
 //Keeps track of the unique id for each event in the database
     @State var idcounter = 0
 //Holds the notifications to be scheduled
@@ -173,7 +172,7 @@ class UserNotifications {
     private func registerForLocalNotifications() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
 //if authorization is given and notifications are enabled then schedule the notifications
-            if granted == true && error == nil && self.data.notificationsToggle == true{
+            if granted == true && error == nil{
                 self.scheduleNotifications()
             }
         }
@@ -234,55 +233,41 @@ class UserNotifications {
                 events.removeFirst()
 //Loops through all the events to parse the start date for each one
                 for event in events {
-//if the event is empty assigns defaults values
-                    if event == "" {
-                        self.attr.index = 0
-                        self.attr.description = ""
-                        self.attr.selectedDate = Date()
-                    } else {
-//creates a snapshot of the dataabase to acquire the startdate and description
+//creates a snapshot of the database to acquire the startdate and description
                         ref.child("\(userEmail)").child("\(event)").observeSingleEvent(of: .value, with: { [self] (snapshot) in
-                            let value = snapshot.value as? NSDictionary
+                        let value = snapshot.value as? NSDictionary
 //grabs the start date as a string as thats how it is stored in Firebase
-                            let start = value?["Start Date"] as? String ?? ""
+                        let start = value?["Start Date"] as? String ?? ""
 //These format the start date string back to the Date type
-                            let dateFormatterOrig = DateFormatter()
-                            dateFormatterOrig.locale = Locale(identifier: "en_US_POSIX")
-                            dateFormatterOrig.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+                        let dateFormatterOrig = DateFormatter()
+                        dateFormatterOrig.locale = Locale(identifier: "en_US_POSIX")
+                        dateFormatterOrig.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
 //selecteddate is of the right type to schedule for notifications
-                            let selectedDate = dateFormatterOrig.date(from: start)!
-              //              print("original selected date \(selectedDate)")
+                        let selectedDate = dateFormatterOrig.date(from: start)!
 //figures out how much time (in seconds) is inbetween the selected date and now
-                                let interval = selectedDate.timeIntervalSince(now)
-              //                  print("interval \(interval)")
+                        let interval = selectedDate.timeIntervalSince(now)
 //adds the difference between the two dates to allow the system to know when to prompt the user
-                                now.addTimeInterval(interval)
+                        now.addTimeInterval(interval)
               //                 print("now \(now)")
 //Parses the Date object to individual ints
-                                let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: now)
-              //                  print("components: \(components)")
-                                let targetYear = components.year ?? 0
-                                let targetMonth = components.month ?? 0
-                                let targetDay = components.day ?? 0
-                //                print("day \(targetDay)")
-                                let targetHour = components.hour ?? 0
-                                let targetMinute = components.minute ?? 0
-                                let targetSecond = components.second ?? 0
+                        let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: now)
+                        let targetYear = components.year ?? 0
+                        let targetMonth = components.month ?? 0
+                        let targetDay = components.day ?? 0
+                        let targetHour = components.hour ?? 0
+                        let targetMinute = components.minute ?? 0
+                        let targetSecond = components.second ?? 0
 //increments the id for the next notification
 //populates the notifications array with the current notifications
-                            let notificationHolder = Notification(ident: "event-\(self.idcounter)",desc: event, datetimes: DateComponents(calendar: Calendar.current, year: targetYear, month: targetMonth, day: targetDay, hour: targetHour, minute: targetMinute, second: targetSecond))
-                                notifications.append(notificationHolder)
-       //                     notifications.append(Notification(ident: "event-\(self.idcounter)",desc: event, datetimes: DateComponents(calendar: Calendar.current, year: targetYear, month: targetMonth, day: targetDay, hour: targetHour, minute: targetMinute, second: targetSecond)))
+                        let notificationHolder = Notification(ident: "event-\(self.idcounter)",desc: event, datetimes: DateComponents(calendar: Calendar.current, year: targetYear, month: targetMonth, day: targetDay, hour: targetHour, minute: targetMinute, second: targetSecond))
+                        notifications.append(notificationHolder)
 //schedules the notifcation grabbed from the database
-                                scheduleNotifications()
-                                self.idcounter += 1
+                        scheduleNotifications()
+                        self.idcounter += 1
                         })
-                    }
-        //            data.events =
                 }
             }
         })
-//        EditView.getEventList(    )
     }
 }
 //if user.isLoggedIn {
@@ -426,10 +411,12 @@ struct ContentView: View {
                         message: Text(alert.message)
                     )
                 }
-                
                 .onDisappear {
                     CircleView.getEvents(email: self.data.email)
                     CircleView.allocateAngles()
+                    LineView.getEvents(email: self.data.email)
+                    LineView.allocateLengths()
+                    //print(LineView.taskLengths[0])
                 }
             } // end of if statement
         }
@@ -752,7 +739,7 @@ struct HomePage: View {
                             // ZStack containing both circular display and linear display
                             ZStack {
                                 if self.data.settings["lineMode"]! {
-                                    // Linear Timeline 
+                                    // Linear Timeline
                                     VStack(spacing: 80) {
                                         Text("")
                                         GeometryReader { fullView in
@@ -780,24 +767,31 @@ struct HomePage: View {
                                                                         
                                                 // HStack with placeholder icons and timeline segments
                                                 HStack() {
-                                                    Rectangle()
-                                                        .fill(Color(rgb: RED))
-                                                        .frame(width: UIScreen.main.bounds.size.width*1.5, height: 5)
+                                                    ForEach(LineView.taskLengths, id: \.self) {
+                                                        Rectangle()
+                                                            .fill(Color(rgb: RED))
+                                                            .frame(width: CGFloat($0), height: 5)
+                                                    }
+                                                    //Rectangle()
+                                                      //  .fill(Color(rgb: RED))
+                                                        //.frame(width: UIScreen.main.bounds.size.width*1.5, height: 5)
                                                     Image("24hr_icon")
                                                         .resizable()
                                                         .frame(width: 25, height: 25)
                                                         .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
-                                                    Rectangle()
-                                                        .fill(Color(rgb: ORANGE))
-                                                        .frame(width: UIScreen.main.bounds.size.width*1.5, height: 5)
+                                                    //Rectangle()
+                                                     //   .fill(Color(rgb: ORANGE))
+                                                       // .frame(width: UIScreen.main.bounds.size.width*1.5, height: 5)
                                                     Image("close_icon")
                                                         .resizable()
                                                         .frame(width: 25, height: 25)
                                                         .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
-                                                    Rectangle()
-                                                        .fill(Color(rgb: BLUE))
-                                                        .frame(width: UIScreen.main.bounds.size.width*2, height: 5)
+                                                    //Rectangle()
+                                                      //  .fill(Color(rgb: BLUE))
+                                                       // .frame(width: UIScreen.main.bounds.size.width*2, height: 5)
+                                                        
                                                 }.frame(width: UIScreen.main.bounds.size.width*6, height: 20)
+                                                
                                                                         
                                                 // HStack with bottom measurement indicators
                                                 HStack() {
