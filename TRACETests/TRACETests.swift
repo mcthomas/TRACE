@@ -24,12 +24,12 @@ class TRACETests: XCTestCase {
     }
  
 //Tests for Task
-    func testEventInitAndGetters() throws {
-        let testEvent: Event = Event(subject: "subject", start_time: 1, end_time: 2, color: "blue", type: "task")
-        XCTAssertEqual(testEvent.get_subject(), "subject")
-        XCTAssertEqual(testEvent.get_start_time(), 1)
-        XCTAssertEqual(testEvent.get_end_time(), 2)
-        XCTAssertEqual(testEvent.get_color(), "blue")
+    func testTaskInitAndGetters() throws {
+        let testTask: Task = Task(subject: "subject", start_time: 1, end_time: 2, color: "blue", type: "task")
+        XCTAssertEqual(testTask.get_subject(), "subject")
+        XCTAssertEqual(testTask.get_start_time(), 1)
+        XCTAssertEqual(testTask.get_end_time(), 2)
+        XCTAssertEqual(testTask.get_color(), "blue")
        
     }
    
@@ -55,9 +55,9 @@ class TRACETests: XCTestCase {
     
     func testCircleViewArrangeChrono(){
         let testCircle: CircleView = CircleView()
-        CircleView.tasks.append(Event(subject: "subject1", start_time: 10, end_time: 20, color: "blue", type: "task"))
-        CircleView.tasks.append(Event(subject: "subject2", start_time: 1, end_time: 2, color: "blue", type: "task"))
-        CircleView.tasks.append(Event(subject: "subject3", start_time: 5, end_time: 15, color: "blue", type: "task"))
+        CircleView.tasks.append(Task(subject: "subject1", start_time: 10, end_time: 20, color: "blue", type: "task"))
+        CircleView.tasks.append(Task(subject: "subject2", start_time: 1, end_time: 2, color: "blue", type: "task"))
+        CircleView.tasks.append(Task(subject: "subject3", start_time: 5, end_time: 15, color: "blue", type: "task"))
         
         CircleView.alerts.append(Alert(fromSubject: "subject1", fromStart_time: 10, fromEnd_time: 20, fromColor: "blue", fromTask_name: "name1"))
         CircleView.alerts.append(Alert(fromSubject: "subject2", fromStart_time: 1, fromEnd_time: 2, fromColor: "blue", fromTask_name: "name2"))
@@ -86,8 +86,8 @@ class TRACETests: XCTestCase {
     
     func testCircleViewAssignColors() {
         let testCircle: CircleView = CircleView()
-        CircleView.tasks.append(Event(subject: "subject1", start_time: 10, end_time: 20, color: "red", type: "task"))
-        CircleView.tasks.append(Event(subject: "subject1", start_time: 10, end_time: 20, color: "red", type: "task"))
+        CircleView.tasks.append(Task(subject: "subject1", start_time: 10, end_time: 20, color: "red", type: "task"))
+        CircleView.tasks.append(Task(subject: "subject1", start_time: 10, end_time: 20, color: "red", type: "task"))
         
         CircleView.alerts.append(Alert(fromSubject: "subject", fromStart_time: 10, fromEnd_time: 20, fromColor: "green", fromTask_name: "name1"))
         CircleView.alerts.append(Alert(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColor: "green", fromTask_name: "name2"))
@@ -106,9 +106,9 @@ class TRACETests: XCTestCase {
     
     func testLineViewArrangeChrono(){
         //let testLine: LineView = LineView()
-        LineView.tasks.append(Event(subject: "subject1", start_time: 10, end_time: 20, color: "blue", type: "task"))
-        LineView.tasks.append(Event(subject: "subject2", start_time: 1, end_time: 2, color: "blue", type: "task"))
-        LineView.tasks.append(Event(subject: "subject3", start_time: 5, end_time: 15, color: "blue", type: "task"))
+        LineView.tasks.append(Task(subject: "subject1", start_time: 10, end_time: 20, color: "blue", type: "task"))
+        LineView.tasks.append(Task(subject: "subject2", start_time: 1, end_time: 2, color: "blue", type: "task"))
+        LineView.tasks.append(Task(subject: "subject3", start_time: 5, end_time: 15, color: "blue", type: "task"))
         
         LineView.alerts.append(Alert(fromSubject: "subject1", fromStart_time: 10, fromEnd_time: 20, fromColor: "blue", fromTask_name: "name1"))
         LineView.alerts.append(Alert(fromSubject: "subject2", fromStart_time: 1, fromEnd_time: 2, fromColor: "blue", fromTask_name: "name2"))
@@ -137,8 +137,8 @@ class TRACETests: XCTestCase {
     
     func testLineViewAssignColors() {
         let testLine: LineView = LineView()
-        LineView.tasks.append(Event(subject: "subject1", start_time: 10, end_time: 20, color: "blue", type: "task"))
-        LineView.tasks.append(Event(subject: "subject1", start_time: 10, end_time: 20, color: "blue", type: "task"))
+        LineView.tasks.append(Task(subject: "subject1", start_time: 10, end_time: 20, color: "blue", type: "task"))
+        LineView.tasks.append(Task(subject: "subject1", start_time: 10, end_time: 20, color: "blue", type: "task"))
         
         LineView.alerts.append(Alert(fromSubject: "subject", fromStart_time: 10, fromEnd_time: 20, fromColor: "green", fromTask_name: "name1"))
         LineView.alerts.append(Alert(fromSubject: "subject", fromStart_time: 1, fromEnd_time: 2, fromColor: "green", fromTask_name: "name2"))

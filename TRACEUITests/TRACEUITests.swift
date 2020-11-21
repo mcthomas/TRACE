@@ -36,7 +36,7 @@ class TRACEUITests: XCTestCase {
         app.buttons["Line Mode"].tap()
         app.buttons["Line Mode"].tap()
         app.buttons["Line Mode"].tap()
-        app.terminate()
+        //app.terminate()
         
     }
     
@@ -50,7 +50,7 @@ class TRACEUITests: XCTestCase {
         app.buttons["Dark Mode"].tap()
         app.buttons["Dark Mode"].tap()
         app.buttons["Dark Mode"].tap()
-        app.terminate()
+        //app.terminate()
         
         
         
@@ -67,7 +67,7 @@ class TRACEUITests: XCTestCase {
         app.buttons["24 Hour Format"].tap()
         app.buttons["24 Hour Format"].tap()
         app.buttons["24 Hour Format"].tap()
-        app.terminate()
+        //app.terminate()
     }
     
 //    func testEditEvent()throws{
