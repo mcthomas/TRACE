@@ -9,7 +9,7 @@ import Foundation
 
 //Instantiate as needed
 // USED TO BE TASK.SWIFT, for this branch going to use this for environment object
-class Event : Identifiable {
+class Task : Identifiable {
     var uid = UUID()
     var subject: String         // description
     var start_time: Date         // starting time

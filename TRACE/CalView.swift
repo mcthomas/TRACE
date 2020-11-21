@@ -9,7 +9,7 @@ import Foundation
 
 //Only instantiate ONCE
 class CalView {
-    var tasks = [Event]()
+    var tasks = [Task]()
     var alerts = [Alert]()
     var cues = [Cue]()
 }
