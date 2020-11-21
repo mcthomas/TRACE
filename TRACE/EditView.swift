@@ -61,6 +61,7 @@ struct EditView : View {
                             if self.index >= self.eventStrings.count {
                                 self.index = self.eventStrings.count - 1
                             }
+                            self.data.updateEventsFromDB()
                             print("After remove, size is \(self.eventStrings.count)")
                         }
                         self.amountDragged = .zero

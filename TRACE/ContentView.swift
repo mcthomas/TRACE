@@ -64,6 +64,7 @@ class Model : ObservableObject {
     
     // Updates Event list,
     func updateEventsFromDB(){
+        var eventList = [Event]()
         // for each key, get values and append to Event list
         ref.child("\(self.parsedEmail)").observeSingleEvent(of: .value, with: { (snapshot) in
             for child in snapshot.children {
@@ -85,22 +86,28 @@ class Model : ObservableObject {
                     
                     startDate = dateFormatter.date(from: start)!
                     endDate = dateFormatter.date(from: end)!
-                    self.events.append(Event(subject: "\(key)", start_time: startDate, end_time: endDate, color: color, type: type))
-                    
+                    eventList.append(Event(subject: "\(key)", start_time: startDate, end_time: endDate, color: color, type: type))
+                    self.events = eventList
                 })
             }
         })
     }
     
-    func calcAngles(start: Date, end: Date) -> [Angle] {
-        var newTaskAngles = [Angle]()
+    func calcAngles(start: Date, end: Date) -> [Double] {
+        var newTaskAngles = [Double]()
         let startOffset = Calendar.current.dateComponents([.minute], from: Date(), to: start)
         let minutesFromStart = Int(startOffset.minute!)
         let endOffset = Calendar.current.dateComponents([.minute], from: Date(), to: end)
         let minutesFromEnd = Int(endOffset.minute!)
-            
-        newTaskAngles.append(Angle.degrees(Double(360*minutesFromStart/1440)))
-        newTaskAngles.append(Angle.degrees(Double(360*minutesFromEnd/1440)))
+        var startInput = Double(360*minutesFromStart/1440)
+        var endInput = Double(360*minutesFromEnd/1440)
+        
+        if startInput < 0 || startInput > 360 { startInput = 0 }
+        if endInput < 0 || endInput > 360 { endInput = 0 }
+        
+        // Returns list of 2 (for alert & cue, only start is looked at)
+        newTaskAngles.append(startInput)
+        newTaskAngles.append(endInput)
         return newTaskAngles
     }
 }
@@ -455,10 +462,9 @@ struct ContentView: View {
                 }
                 
                 .onDisappear {
-                    print("circleviewcalledhere")
                     data.updateEventsFromDB()
-                    CircleView.getEvents(email: self.data.email)
-                    CircleView.allocateAngles()
+                    // CircleView.getEvents(email: self.data.email)
+                    // CircleView.allocateAngles()
                 }
             } // end of if statement
         }
@@ -663,6 +669,9 @@ struct HomePage: View {
                  Timer.scheduledTimer(withTimeInterval: 1, repeats: true,
                                       block: {_ in
                                         self.data.currentDate = Date()
+                                        if self.data.parsedEmail != "" && self.data.loggedIn {
+                                            self.data.updateEventsFromDB()
+                                        }
                                        })
     }
     
@@ -674,8 +683,8 @@ struct HomePage: View {
         
         func path(in rect: CGRect) -> Path {
             let rotationAdjustment = Angle.degrees(90)
-            let modifiedStart = startAngle - rotationAdjustment
-            let modifiedEnd = endAngle - rotationAdjustment
+            let modifiedStart = -startAngle - rotationAdjustment
+            let modifiedEnd = -endAngle - rotationAdjustment
             
             var path = Path()
             path.addArc(center: CGPoint(x: rect.midX, y: rect.midY), radius: rect.width / 2.05, startAngle: modifiedStart, endAngle: modifiedEnd, clockwise: !clockwise)
@@ -855,20 +864,24 @@ struct HomePage: View {
                         } else {
                             // Circular Timeline
                             // Orbital Circle
-                            // Should rotate with the time
-                            // Should have colored arcs for separate events
+                            // Should rotate with the time -- DONE
+                            // Should have colored arcs for separate events -- DONE
+                            // Should have icons for alerts and cues
                             Circle()
                                 .strokeBorder(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY, alpha: 0.9), lineWidth: 8)
                                 .frame(width: UIScreen.main.bounds.size.width / 1.1)
                                 
                             // Arcs
                             // Should also rotate with time
-                            ForEach(0 ..< self.data.events.count, id: \.self) { i in
-                                let interval = data.calcAngles(start: data.events[i].get_start_time(), end: data.events[i].get_end_time())
-                                
-                                Arc(startAngle: .degrees(360), endAngle: .degrees(110), clockwise: true)
-                                    .stroke(Color(rgb: InfoView.translateColor(color: data.events[i].get_color())), lineWidth: 8)
-                                    .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
+                            ZStack {
+                                ForEach(0 ..< self.data.events.count, id: \.self) { i in
+                                    let interval = data.calcAngles(start: data.events[i].get_start_time(), end: data.events[i].get_end_time())
+                                    if data.events[i].get_type() == "task" {
+                                        Arc(startAngle: .degrees(interval[0]), endAngle: .degrees(interval[1]), clockwise: false)
+                                            .stroke(Color(rgb: InfoView.translateColor(color: data.events[i].get_color())), lineWidth: 8)
+                                            .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
+                                    }
+                                }
                             }
                                             
                             // Inner circle
@@ -887,6 +900,14 @@ struct HomePage: View {
                                 .multilineTextAlignment(.center)
                                 .fixedSize()
                                 .offset(y: 5)
+                            
+                            // Pointer
+                            Image("menu_arrow")
+                                .resizable()
+                                .foregroundColor(self.data.settings["darkMode"]! ? .white : Color(rgb: DARK_GREY))
+                                .frame(width: 30, height: 25)
+                                .offset(y: -UIScreen.main.bounds.width / 2.15)
+                                //.offset(y: -175)
                         }
                     }
  
