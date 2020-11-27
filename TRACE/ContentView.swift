@@ -474,6 +474,12 @@ struct ContentView: View {
     private func sendSignInLink() {
         var validEmail = true
         var validAcct = false
+        
+        let actionCodeSettings = ActionCodeSettings()
+        actionCodeSettings.url = URL(string: "https://matt.page.link/vAA2")
+        actionCodeSettings.handleCodeInApp = true
+        actionCodeSettings.setIOSBundleID(Bundle.main.bundleIdentifier!)
+        
         self.pEmail = self.data.email.replacingOccurrences(of: "@", with: "", options: NSString.CompareOptions.literal, range: nil)
         self.pEmail = pEmail.replacingOccurrences(of: ".", with: "", options: NSString.CompareOptions.literal, range: nil)
         
@@ -483,37 +489,34 @@ struct ContentView: View {
             
             if snapshot.exists() {
                     validAcct = true
-                self.data.loggedIn = true
+                    self.data.loggedIn = true
             }
-        }
-            
-        
-        
-        let actionCodeSettings = ActionCodeSettings()
-        actionCodeSettings.url = URL(string: "https://matt.page.link/vAA2")
-        actionCodeSettings.handleCodeInApp = true
-        actionCodeSettings.setIOSBundleID(Bundle.main.bundleIdentifier!)
-        
-        Auth.auth().sendSignInLink(toEmail: self.data.email, actionCodeSettings: actionCodeSettings) { error in
-          if let error = error {
-            alertItem = AlertItem(
-              title: "The sign in link could not be sent.",
-              message: error.localizedDescription
-            )
-            validEmail = false
-          }
-            if(validEmail) {
-                
-                if(!validAcct) {
-                    //ref.child(pEmail).setValue(1)
+            else {
+                if(validAcct == false) {
+                Auth.auth().sendSignInLink(toEmail: self.data.email, actionCodeSettings: actionCodeSettings) { error in
+                  if let error = error {
+                    alertItem = AlertItem(
+                      title: "The sign in link could not be sent.",
+                      message: error.localizedDescription
+                    )
+                    validEmail = false
+                  }
+                    if(validEmail) {
+                        
+                        if(!validAcct) {
+                            //ref.child(pEmail).setValue(1)
+                        }
+                        EventHandler(editEvent: "")
+                            .environmentObject(data)
+                            .environmentObject(attr)
+                        //POPULATE OBJECTS
+                    }
                 }
-                EventHandler(editEvent: "")
-                    .environmentObject(data)
-                    .environmentObject(attr)
-                //POPULATE OBJECTS
+                }
             }
-          
         }
+        
+        
       }
     
     
