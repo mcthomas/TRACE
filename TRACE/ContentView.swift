@@ -129,8 +129,8 @@ class EventAttributes : ObservableObject {
     @Published var selectedEndDate : Date
     @Published var idcounter: Int
     init() {
-        index = 0
-        alertToggled = false
+        index = 000
+        alertToggled = true
         cueToggled = false
         taskToggled = false
         colorSelected = "RED"

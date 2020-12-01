@@ -43,10 +43,12 @@ struct EventHandler: View {
     
     // Func used to return the proper color for the add button depending on whether the description has been entered
     func getButtonColor() -> Color{
-        if(self.attr.description.isEmpty){
+        if(!(self.attr.alertToggled || self.attr.cueToggled || self.attr.taskToggled)){
+            return Color(rgb: DARK_GREY)        }
+        else if(self.attr.description.isEmpty){
             return Color(rgb: DARK_GREY)
         }
-        else{
+        else {
             return Color(rgb: RED)
         }
     }
@@ -220,7 +222,7 @@ struct EventHandler: View {
                                 .scaleEffect(1.8)
                         }//ZStack
                     }//End of add button
-                    .disabled(self.attr.description.isEmpty)
+                    .disabled(self.attr.description.isEmpty && !(self.attr.taskToggled || self.attr.alertToggled || self.attr.cueToggled))
                     Spacer()
                 }//HStack
             }.background(self.data.settings["darkMode"]! ? Color(rgb: DARK_GREY) : Color.white)
