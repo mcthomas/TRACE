@@ -31,11 +31,31 @@ struct EventHandler: View {
     @State var selectedEndDate = Date(timeIntervalSinceReferenceDate: 0)
  */
     
+    // Func used to get the border widths for the color buttons
+    func getBorderWidth(color: String) -> CGFloat{
+        if(color == $attr.colorSelected.wrappedValue){
+            return 4
+        }
+        else{
+            return 2
+        }
+    }
+    
+    // Func used to return the proper color for the add button depending on whether the description has been entered
+    func getButtonColor() -> Color{
+        if(self.attr.description.isEmpty){
+            return Color(rgb: DARK_GREY)
+        }
+        else{
+            return Color(rgb: RED)
+        }
+    }
     var body : some View {
 //ZStack contains all elements in the add view
         GeometryReader { geo in
         ZStack {
-            Color.black
+            // Sets background color depending on the darkmode setting
+            self.data.settings["darkMode"]! ? Color(rgb: DARK_GREY) : Color.white
 //VStack wrapped in ZStack to get correct formatting
             VStack {
 //Alert, Cue, and Task toggable buttons
@@ -45,12 +65,15 @@ struct EventHandler: View {
                     let cueToggled = Binding<Bool>(get: { self.attr.cueToggled }, set: { self.attr.alertToggled = false; self.attr.cueToggled = $0; self.attr.taskToggled = false })
                     let taskToggled = Binding<Bool>(get: { self.attr.taskToggled }, set: { self.attr.alertToggled = false; self.attr.cueToggled = false; self.attr.taskToggled = $0 })
                     Toggle("Alert event", isOn: alertToggled)
+                        .padding(25)
                     Divider()
                     Toggle("Cue event", isOn: cueToggled)
+                        .padding(25)
                     Divider()
                     Toggle("Task event", isOn: taskToggled)
+                        .padding(25)
                     Divider()
-                } //VStack
+                }.padding(.top) //VStack
 //Description of the event field
                 VStack(){
                     Text("Description of your event")
@@ -76,7 +99,7 @@ struct EventHandler: View {
                            .padding()
                            .foregroundColor(.red)
                            .background(Color.red)
-                           .border(Color.black, width:2)
+                    .border(Color.black, width:getBorderWidth(color: "RED"))
                     Button(action: {self.attr.colorSelected="BLUE"})
                         {
                         Text("Blue")
@@ -85,7 +108,7 @@ struct EventHandler: View {
                            .padding()
                            .foregroundColor(.blue)
                            .background(Color.blue)
-                           .border(Color.black, width:2)
+                           .border(Color.black, width:getBorderWidth(color: "BLUE"))
                     Button(action: {self.attr.colorSelected="GREEN"})
                         {
                         Text("Green")
@@ -94,7 +117,7 @@ struct EventHandler: View {
                            .padding()
                            .foregroundColor(.green)
                            .background(Color.green)
-                           .border(Color.black, width:2)
+                           .border(Color.black, width:getBorderWidth(color: "GREEN"))
                     Button(action: {self.attr.colorSelected="YELLOW"})
                         {
                         Text("Yellow")
@@ -103,7 +126,7 @@ struct EventHandler: View {
                            .padding()
                            .foregroundColor(.yellow)
                            .background(Color.yellow)
-                           .border(Color.black, width:2)
+                           .border(Color.black, width:getBorderWidth(color: "YELLOW"))
                     Button(action: {self.attr.colorSelected="ORANGE"})
                         {
                         Text("Orange")
@@ -112,7 +135,7 @@ struct EventHandler: View {
                            .padding()
                            .foregroundColor(.orange)
                            .background(Color.orange)
-                           .border(Color.black, width:2)
+                           .border(Color.black, width:getBorderWidth(color: "ORANGE"))
                 }//HStack
                 
                 Divider()
@@ -190,21 +213,22 @@ struct EventHandler: View {
                         ZStack {
                             Circle()
                                 .strokeBorder(Color(rgb: WHITE), lineWidth: 3)
-                                .background(Circle().foregroundColor(Color(rgb: RED)))
+                                .background(Circle().foregroundColor(getButtonColor()))
                                 .frame(width: UIScreen.main.bounds.width / 4, height: UIScreen.main.bounds.width / 4)
                             Image("add_icon")
                                 .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                                 .scaleEffect(1.8)
                         }//ZStack
                     }//End of add button
+                    .disabled(self.attr.description.isEmpty)
                     Spacer()
                 }//HStack
-            }.background(Color.black)
+            }.background(self.data.settings["darkMode"]! ? Color(rgb: DARK_GREY) : Color.white)
             .onAppear(perform: {
                 self.attr.presetValuesOnEdit(email: self.data.parsedEmail, event: self.editEvent)
                 print("Event: \(self.editEvent)")
             }) //Vstack
-        }.background(Color.black)
+        }.background(self.data.settings["darkMode"]! ? Color(rgb: DARK_GREY) : Color.white)
         //ZStack
         }
     }//Varbody
