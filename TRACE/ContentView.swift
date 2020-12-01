@@ -501,6 +501,13 @@ struct ContentView: View {
                     )
                     validEmail = false
                   }
+                  else {
+                    alertItem = AlertItem(
+                      title: "Sign in link sent!",
+                      message: "Please check your inbox for a link to authenticate your account."
+                    )
+                  }
+
                     if(validEmail) {
                         
                         if(!validAcct) {
@@ -657,9 +664,9 @@ struct HomePage: View {
         
         let formatter = DateFormatter()
         if !self.data.settings["time24hr"]! {
-            formatter.dateFormat = "h:mm a"
+            formatter.dateFormat = "hh:mm a"
         } else {
-            formatter.dateFormat = "HH:mm"
+            formatter.dateFormat = "HH:mm a"
         }
         return formatter
     }
@@ -697,6 +704,13 @@ struct HomePage: View {
         }
         
     }
+    
+    func is24Hour() -> Bool {
+        let dateFormat = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: Locale.current)!
+
+        return dateFormat.firstIndex(of: "a") == nil
+    }
+    
     @ViewBuilder
     var body: some View {
 
@@ -733,10 +747,7 @@ struct HomePage: View {
                                 Spacer()
                                 // Digital Clock
                                 HStack {
-                                    // Time will always result in "h:mm a" format in 12hr format, therefore
-                                    // time[0] - h:mm
-                                    // time[1] - AM/PM
-                                    // Otherwise, if 24hr format, only time[0]
+
                                     let time = timeToString(date: self.data.currentDate).components(separatedBy: " ")
                                     
                                     Text("\(time[0])")
@@ -746,7 +757,7 @@ struct HomePage: View {
                                     .font(Font.custom("Comfortaa-Light", size: 60))
                                         .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                     
-                                    if !self.data.settings["time24hr"]! {
+                                    if !is24Hour() {
                                         Text("\(time[1].lowercased())")
                                             .font(Font.custom("Comfortaa-Light", size: 20))
                                             .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
