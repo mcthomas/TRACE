@@ -43,6 +43,7 @@ struct EditView : View {
                 var events = eventNames.components(separatedBy: "|")
                 events.removeFirst()
                 self.eventStrings = events
+
             }
         })
     }
@@ -63,6 +64,15 @@ struct EditView : View {
                             }
                             self.data.updateEventsFromDB()
                             print("After remove, size is \(self.eventStrings.count)")
+                            var counter = 0
+                            ref.child("\(self.data.parsedEmail)").observeSingleEvent(of: .value, with: { (snapshot) in
+                                for child in snapshot.children {
+                                    counter += 1
+                                }
+                            })
+                            if(counter == 0) {
+                                ref.child("\(self.data.parsedEmail)").setValue(1)
+                            }
                         }
                         self.amountDragged = .zero
                     }
@@ -129,7 +139,8 @@ struct EditView : View {
                                 .scaleEffect(1.8)
                         }
                     }
-                } // End of VStack
+                }
+                // End of VStack
                 
                 if self.data.views["eventMode"]! && self.data.views["editMode"]! {
                     EventHandler(editEvent: self.eventStrings[self.index])
@@ -138,6 +149,7 @@ struct EditView : View {
                 }
             }.onAppear(perform: {
                 self.getEventList()
+
             })// End of ZStack
         }
     }

@@ -530,6 +530,7 @@ struct ContentView: View {
           } else {
             print("✔ Authentication was successful.")
             completion(.success(result?.user))
+            ref.child(pEmail).setValue(1)
           }
         }
       }
