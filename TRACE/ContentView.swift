@@ -15,7 +15,7 @@ let BLUE = [76,223,252]
 let YELLOW = [255,249,51]
 let PURPLE = [129,79,255]
 let HOT_PINK = [250,75,212]
-let SETTINGS = ["Dark Mode", "Toggle Format", "Colorblind Mode", "Line Mode"]
+let SETTINGS = ["Toggle Theme", "Toggle Format", "Toggle Colorblind", "Toggle View"]
 let SETTINGS_ICONS = ["darkmode_icon", "24hr_icon", "colorblind_icon", "linemode_icon"]
 let HOURS = 24;
 
