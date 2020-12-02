@@ -15,7 +15,7 @@ let BLUE = [76,223,252]
 let YELLOW = [255,249,51]
 let PURPLE = [129,79,255]
 let HOT_PINK = [250,75,212]
-let SETTINGS = ["Dark Mode", "24 Hour Format", "Colorblind Mode", "Line Mode"]
+let SETTINGS = ["Dark Mode", "Toggle Format", "Colorblind Mode", "Line Mode"]
 let SETTINGS_ICONS = ["darkmode_icon", "24hr_icon", "colorblind_icon", "linemode_icon"]
 let HOURS = 24;
 
@@ -663,9 +663,21 @@ struct HomePage: View {
 
         
         let formatter = DateFormatter()
-        if !self.data.settings["time24hr"]! {
-            formatter.dateFormat = "hh:mm a"
-        } else {
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        //if sys time is 12hr and app time is 12hr
+        if (!self.data.settings["time24hr"]! && !is24Hour()) {
+            formatter.dateFormat = "h:mm a"
+        }
+        //if sys time is 24hr and app time is 24hr
+        else if (self.data.settings["time24hr"]! && is24Hour()) {
+            formatter.dateFormat = "h:mm a"
+        }
+        //if sys time is 24hr and app time is 12hr
+        else if (!self.data.settings["time24hr"]! && is24Hour()) {
+            formatter.dateFormat = "HH:mm a"
+        }
+        //if sys time is 12hr and app time is 24hr
+        else {
             formatter.dateFormat = "HH:mm a"
         }
         return formatter
