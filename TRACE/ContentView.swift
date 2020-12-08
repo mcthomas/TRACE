@@ -12,7 +12,7 @@ let ORANGE = [247, 202, 89]
 let RED = [252, 76, 93]
 let GREEN = [114,224,110]
 let BLUE = [76,223,252]
-let YELLOW = [255,249,51]
+let YELLOW = [241,246,86]
 let PURPLE = [129,79,255]
 let HOT_PINK = [250,75,212]
 let SETTINGS = ["Toggle Theme", "Toggle Format", "Toggle Colorblind", "Toggle View"]
@@ -70,6 +70,7 @@ class Model : ObservableObject {
     func updateEventsFromDB(){
         var eventList = [Event]()
         // for each key, get values and append to Event list
+        print("parsedemailhere: \(self.parsedEmail)")
         ref.child("\(self.parsedEmail)").observeSingleEvent(of: .value, with: { (snapshot) in
             for child in snapshot.children {
                 let snap = child as! DataSnapshot
@@ -113,21 +114,24 @@ class Model : ObservableObject {
             return -1
         }
         var index = self.events.count / 2
-        while index > 0 || index < self.events.count - 1 {
+        while index > 0 && index < self.events.count {
             
             // if index date is larger than current date
             if (self.events[index].get_type() != "task" ? self.events[index].get_start_time() : self.events[index].get_end_time()) > self.currentDate {
                 // if the previous one is still larger, decrement index
-                if self.events[index - 1].get_end_time() > self.currentDate {
+                if index - 1 >= 0 && (self.events[index - 1].get_type() != "task" ? self.events[index - 1].get_start_time() : self.events[index - 1].get_end_time()) > self.currentDate {
                     index -= 1
                 } else {
                     return index
                 }
             } else { // if index date is in the past
                 // if next event is still in the past, increment index
-                if (self.events[index + 1].get_type() != "task" ? self.events[index + 1].get_start_time() : self.events[index + 1].get_end_time()) < self.currentDate {
+                if index + 1 < self.events.count && (self.events[index + 1].get_type() != "task" ? self.events[index + 1].get_start_time() : self.events[index + 1].get_end_time()) < self.currentDate {
                     index += 1
                 } else { // if not, stop there
+                    if index == self.events.count - 1 {
+                        return index
+                    }
                     return index + 1
                 }
             }
@@ -143,7 +147,7 @@ class Model : ObservableObject {
     
     // Returns index of next event (this may be currentEvent if currentEvent isn't happening now)
     func getNextEvent() -> Int {
-        let current = self.getCurrentEvent()
+        let current = self.currentEvent
         // if no current event/no events or bad input
         if current < 0 || current >= self.events.count {
             return -1
@@ -158,7 +162,12 @@ class Model : ObservableObject {
                 return -1
             }
         } else { // if 'currentEvent' has not happened yet, return the same index
-            return current
+            // if this current event still takes place in the past, then we have no current event
+            if (self.events[current].get_type() != "task" ? self.events[current].get_start_time() : self.events[current].get_end_time()) < self.currentDate {
+                return -1
+            } else {
+                return current
+            }
         }
         
     }
@@ -170,7 +179,7 @@ class Model : ObservableObject {
         }
         let event = self.events[index]
         if event.get_type() != "task" {
-            if event.get_start_time() <= self.currentDate || event.get_start_time().addingTimeInterval(60) >= self.currentDate {
+            if event.get_start_time() <= self.currentDate && event.get_start_time().addingTimeInterval(60) >= self.currentDate {
                 return true
             } else {
                 return false
@@ -784,10 +793,14 @@ struct HomePage: View {
                                         if self.data.parsedEmail != "" && self.data.loggedIn {
                                             // self.data.updateEventsFromDB()
                                         }
-                                        if self.data.currentEvent > 0 && (self.data.events[data.currentEvent].get_type() != "task" ? self.data.events[data.currentEvent].get_start_time().addingTimeInterval(60) : self.data.events[data.currentEvent].get_end_time()) == self.data.currentDate {
-                                            self.data.currentEvent = self.data.getCurrentEvent()
+                                        self.data.currentEvent = self.data.getCurrentEvent()
+                                        if self.data.currentEvent >= 0 && (self.data.events[data.currentEvent].get_type() != "task" ? self.data.events[data.currentEvent].get_start_time() : self.data.events[data.currentEvent].get_end_time()) == self.data.currentDate {
                                             self.data.nextEvent = self.data.getNextEvent()
                                         }
+                                        if self.data.nextEvent != self.data.getNextEvent() {
+                                            self.data.nextEvent = self.data.getNextEvent()
+                                        }
+                                        
                                        })
     }
     
@@ -1007,7 +1020,7 @@ struct HomePage: View {
                             // Inner circle
                             // Color of the current task
                             Circle()
-                                .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 && self.data.isHappeningNow(index: data.currentEvent) ? self.data.events[self.data.currentEvent].get_color() : "WHITE")))
+                                .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 && self.data.isHappeningNow(index: data.currentEvent) ? self.data.events[self.data.currentEvent].get_color() : (self.data.settings["darkMode"]! ? "DARK_GREY" : "WHITE"))))
                                 .frame(width: UIScreen.main.bounds.size.width / 1.4)
                                 
                             // Subject Text
@@ -1034,11 +1047,11 @@ struct HomePage: View {
                             // TO-DO: Peek Next Event
                             ZStack {
                                 RoundedRectangle(cornerRadius: 15.0)
-                                    .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.nextEvent >= 0 ? self.data.events[self.data.nextEvent].get_color() : "WHITE")))
+                                    .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.nextEvent >= 0 && !self.data.isHappeningNow(index: data.nextEvent) ? self.data.events[self.data.nextEvent].get_color() : "WHITE")))
                                     .padding()
                                     .frame(width: UIScreen.main.bounds.size.width * 0.88, height: 125, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                                 VStack{
-                                    Text(self.data.nextEvent >= 0 ? self.data.events[self.data.nextEvent].get_subject() : "Nothing up ahead!")
+                                    Text(self.data.nextEvent >= 0 && !self.data.isHappeningNow(index: data.nextEvent) ? self.data.events[self.data.nextEvent].get_subject() : "Nothing up ahead!")
                                         .font(Font.custom("Comfortaa-Regular", size: 18))
                                         .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                                         .multilineTextAlignment(.center)
@@ -1146,7 +1159,7 @@ struct Menu : View {
                         Image("menu_arrow")
                             .resizable()
                             .frame(width: 10, height: 10)
-                            .foregroundColor(.white)
+                            .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 ? "WHITE" : "DARK_GREY")))
                             .offset(x: 2, y: 52)
                             .rotationEffect(Angle(degrees: 90), anchor: .bottomLeading)
                     }
