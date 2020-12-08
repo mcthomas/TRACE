@@ -30,6 +30,8 @@ import UserNotifications
 class Model : ObservableObject {
     // Will be a list of event objects
     @Published var events : [Event]
+    @Published var currentEvent : Int
+    @Published var nextEvent : Int
     @Published var settings : Dictionary<String, Bool>
     @Published var views : Dictionary<String, Bool>
     @Published var areNotifications : Bool
@@ -43,6 +45,8 @@ class Model : ObservableObject {
     @Published var notificationsToggle : Bool
     init() {
         self.events = [Event]()
+        self.currentEvent = -1
+        self.nextEvent = -1
         self.settings = [
             "time24hr": false,
             "darkMode": true,
@@ -88,9 +92,94 @@ class Model : ObservableObject {
                     endDate = dateFormatter.date(from: end)!
                     eventList.append(Event(subject: "\(key)", start_time: startDate, end_time: endDate, color: color, type: type))
                     self.events = eventList
+                    self.sortEvents()
+                    self.currentEvent = self.getCurrentEvent()
+                    self.nextEvent = self.getNextEvent()
                 })
             }
         })
+    }
+    
+    // Sorts events array by past -> future end date
+    func sortEvents() -> Void {
+        let sorted = self.events.sorted(by: { $0.get_start_time().compare($1.get_start_time()) == .orderedAscending })
+        self.events = sorted
+    }
+    
+    // Returns index of 'current' event (doesn't necessarily have to start now, but just has to be the first event NOT in the past)
+    // returns -1 if called on empty events list or all events take place in the past
+    func getCurrentEvent() -> Int {
+        if self.events.count == 0 {
+            return -1
+        }
+        var index = self.events.count / 2
+        while index > 0 || index < self.events.count - 1 {
+            
+            // if index date is larger than current date
+            if (self.events[index].get_type() != "task" ? self.events[index].get_start_time() : self.events[index].get_end_time()) > self.currentDate {
+                // if the previous one is still larger, decrement index
+                if self.events[index - 1].get_end_time() > self.currentDate {
+                    index -= 1
+                } else {
+                    return index
+                }
+            } else { // if index date is in the past
+                // if next event is still in the past, increment index
+                if (self.events[index + 1].get_type() != "task" ? self.events[index + 1].get_start_time() : self.events[index + 1].get_end_time()) < self.currentDate {
+                    index += 1
+                } else { // if not, stop there
+                    return index + 1
+                }
+            }
+        }
+        
+        // if this current event still takes place in the past, then we have no current event
+        if (self.events[index].get_type() != "task" ? self.events[index].get_start_time() : self.events[index].get_end_time()) < self.currentDate {
+            return -1
+        }
+        
+        return index
+    }
+    
+    // Returns index of next event (this may be currentEvent if currentEvent isn't happening now)
+    func getNextEvent() -> Int {
+        let current = self.getCurrentEvent()
+        // if no current event/no events or bad input
+        if current < 0 || current >= self.events.count {
+            return -1
+        }
+        
+        // if happening now
+        if isHappeningNow(index: current) {
+            // if there is a next event, return next index
+            if current + 1 < self.events.count {
+                return current + 1
+            } else { // if there is no next event, return -1
+                return -1
+            }
+        } else { // if 'currentEvent' has not happened yet, return the same index
+            return current
+        }
+        
+    }
+    
+    // Checks if event of some index is happening right now (True = yes, False = no)
+    func isHappeningNow(index: Int) -> Bool {
+        if index >= self.events.count || index < 0 {
+            return false
+        }
+        let event = self.events[index]
+        if event.get_type() != "task" {
+            if event.get_start_time() <= self.currentDate || event.get_start_time().addingTimeInterval(60) >= self.currentDate {
+                return true
+            } else {
+                return false
+            }
+        }
+        if event.get_start_time() <= self.currentDate && event.get_end_time() >= self.currentDate {
+            return true
+        }
+        return false
     }
     
     func calcAngles(start: Date, end: Date) -> [Double] {
@@ -693,7 +782,11 @@ struct HomePage: View {
                                       block: {_ in
                                         self.data.currentDate = Date()
                                         if self.data.parsedEmail != "" && self.data.loggedIn {
-                                            self.data.updateEventsFromDB()
+                                            // self.data.updateEventsFromDB()
+                                        }
+                                        if self.data.currentEvent > 0 && (self.data.events[data.currentEvent].get_type() != "task" ? self.data.events[data.currentEvent].get_start_time().addingTimeInterval(60) : self.data.events[data.currentEvent].get_end_time()) == self.data.currentDate {
+                                            self.data.currentEvent = self.data.getCurrentEvent()
+                                            self.data.nextEvent = self.data.getNextEvent()
                                         }
                                        })
     }
@@ -914,12 +1007,12 @@ struct HomePage: View {
                             // Inner circle
                             // Color of the current task
                             Circle()
-                                .foregroundColor(Color(rgb: ORANGE))
+                                .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 && self.data.isHappeningNow(index: data.currentEvent) ? self.data.events[self.data.currentEvent].get_color() : "WHITE")))
                                 .frame(width: UIScreen.main.bounds.size.width / 1.4)
                                 
                             // Subject Text
                             // Bounded to not overflow inner circle dimensions
-                            Text("CS 506")
+                            Text(self.data.currentEvent >= 0 && self.data.isHappeningNow(index: data.currentEvent) ? self.data.events[self.data.currentEvent].get_subject() : "")
                                 .font(Font.custom("Comfortaa-Light", size: 40))
                                 .padding()
                                 .foregroundColor(Color(rgb: DARK_GREY))
@@ -941,11 +1034,11 @@ struct HomePage: View {
                             // TO-DO: Peek Next Event
                             ZStack {
                                 RoundedRectangle(cornerRadius: 15.0)
-                                    .foregroundColor(Color(rgb: RED))
+                                    .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.nextEvent >= 0 ? self.data.events[self.data.nextEvent].get_color() : "WHITE")))
                                     .padding()
                                     .frame(width: UIScreen.main.bounds.size.width * 0.88, height: 125, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                                 VStack{
-                                    Text("Next:\nWork Shift")
+                                    Text(self.data.nextEvent >= 0 ? self.data.events[self.data.nextEvent].get_subject() : "Nothing up ahead!")
                                         .font(Font.custom("Comfortaa-Regular", size: 18))
                                         .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                                         .multilineTextAlignment(.center)
@@ -967,7 +1060,7 @@ struct HomePage: View {
                                 Button(action: {withAnimation{self.data.views["eventMode"]!.toggle() }}) {
                                     ZStack {
                                         Circle()
-                                            .foregroundColor(Color(rgb: ORANGE))
+                                            .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 ? self.data.events[self.data.currentEvent].get_color() : "WHITE")))
                                             .frame(width: UIScreen.main.bounds.size.width / 4, height: UIScreen.main.bounds.size.width / 4, alignment: .center)
                                         Text("+")
                                             .font(Font.custom("Comfortaa-Regular", size: 70))
@@ -987,7 +1080,7 @@ struct HomePage: View {
                                     } }}) {
                                     ZStack {
                                         Circle()
-                                            .foregroundColor(Color(rgb: ORANGE))
+                                            .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 ? self.data.events[self.data.currentEvent].get_color() : "WHITE")))
                                             .frame(width: UIScreen.main.bounds.size.width / 4, height: UIScreen.main.bounds.size.width / 4, alignment: .center)
                                         Image("edit_icon")
                                             .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
@@ -1039,7 +1132,7 @@ struct Menu : View {
             Button(action: {withAnimation {self.data.views["showMenu"]!.toggle()}}) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 15.0)
-                        .foregroundColor(Color(rgb: RED))
+                        .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 ? self.data.events[self.data.currentEvent].get_color() : "WHITE")))
                         .frame(width: UIScreen.main.bounds.size.width / 4, height: 165, alignment: .leading)
                         .overlay(RoundedRectangle(cornerRadius: 15.0).stroke(Color.black.opacity(0.2), lineWidth: 2).shadow(radius: 3))
 
@@ -1047,7 +1140,7 @@ struct Menu : View {
                         Image("menu_icon")
                             .resizable()
                             .frame(width: 30, height: 40)
-                            .foregroundColor(.white)
+                            .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 ? "WHITE" : "DARK_GREY")))
                             .offset(x: 0, y: 13)
 
                         Image("menu_arrow")
@@ -1070,7 +1163,7 @@ struct Menu : View {
                             Image("\(SETTINGS_ICONS[set])")
                                 .resizable()
                                 .frame(width: UIScreen.main.bounds.width / 6, height: UIScreen.main.bounds.width / 6)
-                                .foregroundColor(Color(rgb: RED, alpha: 0.9))
+                                .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 ? self.data.events[self.data.currentEvent].get_color() : "WHITE")))
                             Text("\(SETTINGS[set])")
                                 .font(Font.custom("Comfortaa-Regular", size: 15))
                                 .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
