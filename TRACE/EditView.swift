@@ -58,12 +58,16 @@ struct EditView : View {
                     withAnimation {
                         if self.data.events.count > 0 {
                             print("parsedemailhere: \(self.data.parsedEmail)")
-                            ref.child("\(self.data.parsedEmail)").child("\(self.data.events[self.index].subject)").removeValue()
+                            ref.child("\(self.data.parsedEmail)").child("\(self.data.events[self.index].get_subject())").removeValue()
                             self.data.events.remove(at: self.index)
+                            self.data.currentEvent = self.data.getCurrentEvent()
+                            self.data.nextEvent = self.data.getNextEvent()
+                            print("curr#: \(self.data.currentEvent)")
+                            print("next#: \(self.data.nextEvent)")
                             if self.index >= self.data.events.count {
                                 self.index = self.data.events.count - 1
                             }
-                            self.data.updateEventsFromDB()
+                            // self.data.updateEventsFromDB()
                             print("After remove, size is \(self.data.events.count)")
                             
                             if(self.index < 0) {
@@ -108,6 +112,7 @@ struct EditView : View {
                         //.offset(y: -70)
                         .animation(.easeOut)
                         .frame(height: UIScreen.main.bounds.height - 240)
+                        .onAppear(perform: {self.index = self.data.currentEvent >= 0 ? self.data.currentEvent : 0} )
                         
                     } else {
                         Spacer()
@@ -151,56 +156,31 @@ struct InfoView : View {
     @Binding var index: Int
     @State var startDate = ""
     @State var endDate = ""
-    @State var eventType = ""
     @State var startComp = [" ", " ", " "]
     @State var endComp = [" ", " ", " "]
-    @State var eventColor = "DARK_GREY"
     let eventString: String  // replace with data element from database
     let editMode = true
     
     
-    func setDates() -> Void {
-        ref.child("\(self.data.parsedEmail)").child("\(eventString)").observeSingleEvent(of: .value, with: { (snapshot) in
-            let value = snapshot.value as? NSDictionary
-            let start = value?["Start Date"] as? String ?? ""
-            let end = value?["End Date"] as? String ?? ""
-            let type = value?["Type"] as? String ?? ""
-            let color = value?["Color"] as? String ?? ""
-            let dateFormatterOrig = DateFormatter()
-            let dateFormatterPost = DateFormatter()
-            
-            dateFormatterOrig.locale = Locale(identifier: "en_US_POSIX")
-            dateFormatterOrig.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
-            
-            // if 24 hours format
-            // dateFormatterPost.dateFormat = "MM/dd/yyyy HH:mm"
-            
-            // am/pm format
-            dateFormatterPost.dateFormat = "MM/dd/yyyy hh:mm a"
-            
-            // startDate = dateFormatter.date(from:start)!
-            // endDate = dateFormatter.date(from:end)!
-            eventType = type
-            eventColor = color
-            
-            if let date = dateFormatterOrig.date(from: start) {
-                self.startDate = dateFormatterPost.string(from: date)
-                
-            } else {
-               print("There was an error decoding the string")
-            }
-            
-            if let date = dateFormatterOrig.date(from: end) {
-                self.endDate = dateFormatterPost.string(from: date)
-                
-            } else {
-               print("There was an error decoding the string")
-            }
-            
-            startComp = startDate.components(separatedBy: " ")
-            endComp = endDate.components(separatedBy: " ")
-        })
+    func setDates(index: Int) -> Void {
+        let dateFormatterPost = DateFormatter()
         
+        // if 24 hours format
+        // dateFormatterPost.dateFormat = "MM/dd/yyyy HH:mm"
+        
+        // am/pm format
+        dateFormatterPost.dateFormat = "MM/dd/yyyy hh:mm a"
+        
+        // startDate = dateFormatter.date(from:start)!
+        // endDate = dateFormatter.date(from:end)!
+        
+        if index >= 0 && index < self.data.events.count {
+            self.startDate = dateFormatterPost.string(from: self.data.events[index].get_start_time())
+            self.endDate = dateFormatterPost.string(from: self.data.events[index].get_end_time())
+        }
+        
+        startComp = startDate.components(separatedBy: " ")
+        endComp = endDate.components(separatedBy: " ")
     }
     
     static func translateColor(color: String) -> [Int] {
@@ -241,9 +221,9 @@ struct InfoView : View {
             Button(action: { self.data.views["eventMode"]!.toggle() }) {
                 ZStack {
                     Circle()
-                        .foregroundColor(Color(rgb: InfoView.translateColor(color: eventColor)))
+                        .foregroundColor(Color(rgb: InfoView.translateColor(color: (index >= 0 && index < self.data.events.count) ? self.data.events[index].get_color() : "WHITE")))
                         .frame(width: UIScreen.main.bounds.width / 1.4, height: UIScreen.main.bounds.width / 1.4)
-                        .shadow(color: Color(rgb: InfoView.translateColor(color: eventColor)), radius: 6)
+                        .shadow(color: Color(rgb: InfoView.translateColor(color: (index >= 0 && index < self.data.events.count) ? self.data.events[index].get_color() : "WHITE")), radius: 6)
                     Text("\(eventString)")
                         .font(Font.custom("Comfortaa-Light", size: 40))
                         .padding()
@@ -261,9 +241,9 @@ struct InfoView : View {
             // Event Date & Time
             ZStack {
                 RoundedRectangle(cornerRadius: 15.0)
-                    .foregroundColor(Color(rgb: InfoView.translateColor(color: eventColor)))
+                    .foregroundColor(Color(rgb: InfoView.translateColor(color: (index >= 0 && index < self.data.events.count) ? self.data.events[index].get_color() : "WHITE")))
                     .frame(width: UIScreen.main.bounds.size.width * 0.70, height: 80, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    .shadow(color: Color(rgb: InfoView.translateColor(color: eventColor)), radius: 3)
+                    .shadow(color: Color(rgb: InfoView.translateColor(color: (index >= 0 && index < self.data.events.count) ? self.data.events[index].get_color() : "WHITE")), radius: 3)
                
                 // start and end date strings in format MM/dd/yyyy hh:mm a (split into 3 components)
                 VStack {
@@ -272,11 +252,13 @@ struct InfoView : View {
                             .font(Font.custom("Comfortaa-Light", size: 18))
                             .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                             .multilineTextAlignment(.center)
-                        if eventType == "task" && endComp[0] != startComp[0] {
-                            Text("- \(endComp[0])")
-                                .font(Font.custom("Comfortaa-Light", size: 18))
-                                .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
-                                .multilineTextAlignment(.center)
+                        if index >= 0 && index < self.data.events.count {
+                            if self.data.events[index].get_type() == "task" && endComp[0] != startComp[0] {
+                                Text("- \(endComp[0])")
+                                    .font(Font.custom("Comfortaa-Light", size: 18))
+                                    .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
+                                    .multilineTextAlignment(.center)
+                            }
                         }
                     }
                     HStack {
@@ -285,21 +267,26 @@ struct InfoView : View {
                             .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                             .multilineTextAlignment(.center)
                             //.offset(y: 5)
-                        if eventType == "task" {
-                            Text("- \(endComp[1])\(endComp[2])")
-                                .font(Font.custom("Comfortaa-Light", size: 22))
-                                .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
-                                .multilineTextAlignment(.center)
+                        if index >= 0 && index < self.data.events.count {
+                            if self.data.events[index].get_type() == "task" {
+                                Text("- \(endComp[1])\(endComp[2])")
+                                    .font(Font.custom("Comfortaa-Light", size: 22))
+                                    .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
+                                    .multilineTextAlignment(.center)
+                            }
                         }
                     }
                 }
             }
             
         }.onAppear(perform: {
-            self.setDates()
+            self.setDates(index: self.index)
+        })
+        .onChange(of: self.index, perform: { value in
+            self.setDates(index: self.index)
         })
         .onChange(of: self.data.views["eventMode"]!, perform: { value in
-            self.setDates()
+            self.setDates(index: self.index)
         })
         // end of VStack
         
