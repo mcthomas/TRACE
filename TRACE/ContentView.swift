@@ -1077,10 +1077,11 @@ struct HomePage: View {
                                     .padding()
                                     .frame(width: UIScreen.main.bounds.size.width * 0.88, height: 125, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                                 VStack{
-
-                                        .font(Font.custom("Comfortaa-Regular", size: 18))
-                                        .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
-                                        .multilineTextAlignment(.center)
+                                                                    Text(self.data.nextEvent >= 0 && !self.data.isHappeningNow(index: data.nextEvent) ? self.data.events[self.data.nextEvent].get_subject() : "Nothing up ahead!")
+                                                                        .font(Font.custom("Comfortaa-Regular", size: 18))
+                                                                        .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
+                                                                        .multilineTextAlignment(.center)
+                                                                        .multilineTextAlignment(.center)
                                     
                                     Text("8:30pm - 10:30pm")
                                         .font(Font.custom("Comfortaa-Regular", size: 16))
