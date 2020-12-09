@@ -56,21 +56,17 @@ struct EditView : View {
             .onEnded {
                 if $0.translation.height < -100 {
                     withAnimation {
-                        if self.eventStrings.count > 0 {
-                            ref.child("\(self.data.parsedEmail)").child("\(self.eventStrings[self.index])").removeValue()
-                            self.eventStrings.remove(at: self.index)
-                            if self.index >= self.eventStrings.count {
-                                self.index = self.eventStrings.count - 1
+                        if self.data.events.count > 0 {
+                            print("parsedemailhere: \(self.data.parsedEmail)")
+                            ref.child("\(self.data.parsedEmail)").child("\(self.data.events[self.index].subject)").removeValue()
+                            self.data.events.remove(at: self.index)
+                            if self.index >= self.data.events.count {
+                                self.index = self.data.events.count - 1
                             }
                             self.data.updateEventsFromDB()
-                            print("After remove, size is \(self.eventStrings.count)")
-                            var counter = 0
-                            ref.child("\(self.data.parsedEmail)").observeSingleEvent(of: .value, with: { (snapshot) in
-                                for child in snapshot.children {
-                                    counter += 1
-                                }
-                            })
-                            if(counter == 0) {
+                            print("After remove, size is \(self.data.events.count)")
+                            
+                            if(self.index < 0) {
                                 ref.child("\(self.data.parsedEmail)").setValue(1)
                             }
                         }
@@ -94,11 +90,11 @@ struct EditView : View {
                         .multilineTextAlignment(.center)
                         .offset(y: 30)
                     
-                    if self.eventStrings.count > 0 {
+                    if self.data.events.count > 0 {
                         // Events List
                         TabView(selection: self.$index) {
-                            ForEach(0..<self.eventStrings.count, id: \.self) {item in
-                                InfoView(index: self.$index, eventString: self.eventStrings[item])
+                            ForEach(0..<self.data.events.count, id: \.self) {item in
+                                InfoView(index: self.$index, eventString: self.data.events[item].subject)
                                     .padding(.horizontal, 5)
                                     .scaleEffect(self.index == item ? 1.0 : 0.3)
                                     .offset(y: amountDragged.height < 0 ? 10 + amountDragged.height : 10)
@@ -112,9 +108,6 @@ struct EditView : View {
                         //.offset(y: -70)
                         .animation(.easeOut)
                         .frame(height: UIScreen.main.bounds.height - 240)
-                        .onChange(of: self.data.views["eventMode"]!, perform: { value in
-                            self.getEventList()
-                        })
                         
                     } else {
                         Spacer()
@@ -143,14 +136,11 @@ struct EditView : View {
                 // End of VStack
                 
                 if self.data.views["eventMode"]! && self.data.views["editMode"]! {
-                    EventHandler(editEvent: self.eventStrings[self.index])
+                    EventHandler(editEvent: self.data.events[self.index].subject)
                         .environmentObject(data)
                         .environmentObject(attr)
                 }
-            }.onAppear(perform: {
-                self.getEventList()
-
-            })// End of ZStack
+            }// End of ZStack
         }
     }
 }
