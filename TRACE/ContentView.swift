@@ -110,6 +110,28 @@ class Model : ObservableObject {
         newTaskAngles.append(endInput)
         return newTaskAngles
     }
+    
+    func calcLengths(start: Date, end: Date) -> [Double] {
+        var newTaskLengths = [Double]()
+        let startOffset = Calendar.current.dateComponents([.minute], from: Date(), to: start)
+        let minutesFromStart = Int(startOffset.minute!)
+        let endOffset = Calendar.current.dateComponents([.minute], from: Date(), to: end)
+        let minutesFromEnd = Int(endOffset.minute!)
+        var startInput = Double(360*minutesFromStart/1440)
+        var endInput = Double(360*minutesFromEnd/1440)
+        
+        if startInput < 0 || startInput > 360 { startInput = 0 }
+        if endInput < 0 || endInput > 360 { endInput = 0 }
+        
+        // Returns list of 2 (for alert & cue, only start is looked at)
+        newTaskLengths.append(startInput)
+        newTaskLengths.append(endInput)
+        print("SEASHORE: ")
+        print(CGFloat(newTaskLengths[0]))
+        print(CGFloat(newTaskLengths[1]))
+        return newTaskLengths
+    }
+
 }
 
 class EventAttributes : ObservableObject {
@@ -845,27 +867,31 @@ struct HomePage: View {
                                                         Spacer().frame(width: UIScreen.main.bounds.size.width/4)
                                                     }
                                                 }
-                                                                        
+                                                
                                                 // HStack with placeholder icons and timeline segments
                                                 HStack() {
-                                                    Rectangle()
-                                                        .fill(Color(rgb: RED))
-                                                        .frame(width: UIScreen.main.bounds.size.width*1.5, height: 5)
-                                                    Image("24hr_icon")
-                                                        .resizable()
-                                                        .frame(width: 25, height: 25)
-                                                        .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
-                                                    Rectangle()
-                                                        .fill(Color(rgb: ORANGE))
-                                                        .frame(width: UIScreen.main.bounds.size.width*1.5, height: 5)
-                                                    Image("close_icon")
-                                                        .resizable()
-                                                        .frame(width: 25, height: 25)
-                                                        .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
-                                                    Rectangle()
-                                                        .fill(Color(rgb: BLUE))
-                                                        .frame(width: UIScreen.main.bounds.size.width*2, height: 5)
+                                                    ForEach(0 ..< self.data.events.count, id: \.self) { i in
+                                                        let interval = data.calcLengths(start: data.events[i].get_start_time(), end: data.events[i].get_end_time())
+                                                        if data.events[i].get_type() == "task" {
+                                                            Rectangle()
+                                                                .fill(Color(rgb: InfoView.translateColor(color: data.events[i].get_color())))
+                                                                .frame(width: CGFloat(CGFloat(interval[1] - interval[0]))*10, height: 5)
+                                                        }
+                                                    }
+   
                                                 }.frame(width: UIScreen.main.bounds.size.width*6, height: 20)
+
+                                                    
+                                                // Subject Text
+                                                // Bounded to not overflow inner circle dimensions
+                                                Text("CS 506")
+                                                    .font(Font.custom("Comfortaa-Light", size: 40))
+                                                    .padding()
+                                                    .foregroundColor(Color(rgb: DARK_GREY))
+                                                    .frame(width: UIScreen.main.bounds.size.width - 145, height: UIScreen.main.bounds.size.width - 160, alignment: .center)
+                                                    .multilineTextAlignment(.center)
+                                                    .fixedSize()
+                                                    .offset(y: 5)
                                                                         
                                                 // HStack with bottom measurement indicators
                                                 HStack() {
@@ -945,6 +971,15 @@ struct HomePage: View {
                                     .padding()
                                     .frame(width: UIScreen.main.bounds.size.width * 0.88, height: 125, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                                 VStack{
+                                    ForEach(0 ..< self.data.events.count, id: \.self) { i in
+                                    
+//                                        if(Int(data.events[i].get_start_time()) > 5) {
+//                                            
+//                                            break
+//                                        }
+                                    
+                                    }
+                                    
                                     Text("Next:\nWork Shift")
                                         .font(Font.custom("Comfortaa-Regular", size: 18))
                                         .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
@@ -1072,7 +1107,7 @@ struct Menu : View {
                                 .frame(width: UIScreen.main.bounds.width / 6, height: UIScreen.main.bounds.width / 6)
                                 .foregroundColor(Color(rgb: RED, alpha: 0.9))
                             Text("\(SETTINGS[set])")
-                                .font(Font.custom("Comfortaa-Regular", size: 15))
+                                .font(Font.custom("Lato", size: 14))
                                 .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                 .frame(width: 100, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                                 .multilineTextAlignment(.center)
