@@ -117,20 +117,29 @@ class Model : ObservableObject {
         while index > 0 && index < self.events.count {
             
             // if index date is larger than current date
-            if (self.events[index].get_type() != "task" ? self.events[index].get_start_time() : self.events[index].get_end_time()) > self.currentDate {
+            if (self.events[index].get_type() != "task" ? self.events[index].get_start_time().addingTimeInterval(60) : self.events[index].get_end_time()) > self.currentDate {
                 // if the previous one is still larger, decrement index
-                if index - 1 >= 0 && (self.events[index - 1].get_type() != "task" ? self.events[index - 1].get_start_time() : self.events[index - 1].get_end_time()) > self.currentDate {
+                if index - 1 >= 0 && (self.events[index - 1].get_type() != "task" ? self.events[index - 1].get_start_time().addingTimeInterval(60) : self.events[index - 1].get_end_time()) > self.currentDate {
                     index -= 1
                 } else {
+                    if (self.events[index].get_type() != "task" ? self.events[index].get_start_time().addingTimeInterval(60) : self.events[index].get_end_time()) < self.currentDate {
+                        return -1
+                    }
                     return index
                 }
             } else { // if index date is in the past
                 // if next event is still in the past, increment index
-                if index + 1 < self.events.count && (self.events[index + 1].get_type() != "task" ? self.events[index + 1].get_start_time() : self.events[index + 1].get_end_time()) < self.currentDate {
+                if index + 1 < self.events.count && (self.events[index + 1].get_type() != "task" ? self.events[index + 1].get_start_time().addingTimeInterval(60) : self.events[index + 1].get_end_time()) < self.currentDate {
                     index += 1
                 } else { // if not, stop there
                     if index == self.events.count - 1 {
+                        if (self.events[index].get_type() != "task" ? self.events[index].get_start_time().addingTimeInterval(60) : self.events[index].get_end_time()) < self.currentDate {
+                            return -1
+                        }
                         return index
+                    }
+                    if (self.events[index + 1].get_type() != "task" ? self.events[index + 1].get_start_time().addingTimeInterval(60) : self.events[index + 1].get_end_time()) < self.currentDate {
+                        return -1
                     }
                     return index + 1
                 }
@@ -138,7 +147,7 @@ class Model : ObservableObject {
         }
         
         // if this current event still takes place in the past, then we have no current event
-        if (self.events[index].get_type() != "task" ? self.events[index].get_start_time() : self.events[index].get_end_time()) < self.currentDate {
+        if (self.events[index].get_type() != "task" ? self.events[index].get_start_time().addingTimeInterval(60) : self.events[index].get_end_time()) < self.currentDate {
             return -1
         }
         
@@ -162,12 +171,7 @@ class Model : ObservableObject {
                 return -1
             }
         } else { // if 'currentEvent' has not happened yet, return the same index
-            // if this current event still takes place in the past, then we have no current event
-            if (self.events[current].get_type() != "task" ? self.events[current].get_start_time() : self.events[current].get_end_time()) < self.currentDate {
-                return -1
-            } else {
-                return current
-            }
+            return current
         }
         
     }
@@ -794,7 +798,7 @@ struct HomePage: View {
                                             // self.data.updateEventsFromDB()
                                         }
                                         self.data.currentEvent = self.data.getCurrentEvent()
-                                        if self.data.currentEvent >= 0 && (self.data.events[data.currentEvent].get_type() != "task" ? self.data.events[data.currentEvent].get_start_time() : self.data.events[data.currentEvent].get_end_time()) == self.data.currentDate {
+                                        if self.data.currentEvent >= 0 && (self.data.events[data.currentEvent].get_type() != "task" ? self.data.events[data.currentEvent].get_start_time().addingTimeInterval(60) : self.data.events[data.currentEvent].get_end_time()) == self.data.currentDate {
                                             self.data.nextEvent = self.data.getNextEvent()
                                         }
                                         if self.data.nextEvent != self.data.getNextEvent() {
@@ -1176,7 +1180,7 @@ struct Menu : View {
                             Image("\(SETTINGS_ICONS[set])")
                                 .resizable()
                                 .frame(width: UIScreen.main.bounds.width / 6, height: UIScreen.main.bounds.width / 6)
-                                .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 ? self.data.events[self.data.currentEvent].get_color() : "WHITE")))
+                                .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 ? self.data.events[self.data.currentEvent].get_color() : (self.data.settings["darkMode"]! ? "WHITE" : "DARK_GREY"))))
                             Text("\(SETTINGS[set])")
                                 .font(Font.custom("Comfortaa-Regular", size: 15))
                                 .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))

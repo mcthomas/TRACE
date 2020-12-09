@@ -192,7 +192,8 @@ struct EventHandler: View {
                                         ref?.child(self.data.parsedEmail).child(editEvent).updateChildValues(["Color": "\(attr.colorSelected)"])
                                     }
                                 } //Editing else statement
-                                
+                                self.data.currentEvent = self.data.getCurrentEvent()
+                                self.data.nextEvent = self.data.getNextEvent()
                             }
                         // CircleView.getEvents(email: self.data.parsedEmail)
                         // CircleView.allocateAngles()
