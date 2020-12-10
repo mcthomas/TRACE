@@ -228,9 +228,6 @@ class Model : ObservableObject {
         // Returns list of 2 (for alert & cue, only start is looked at)
         newTaskLengths.append(startInput)
         newTaskLengths.append(endInput)
-        print("SEASHORE: ")
-        print(CGFloat(newTaskLengths[0]))
-        print(CGFloat(newTaskLengths[1]))
         return newTaskLengths
     }
 
@@ -987,11 +984,28 @@ struct HomePage: View {
                                                                 .fill(Color(rgb: InfoView.translateColor(color: data.events[i].get_color())))
                                                                 .frame(width: CGFloat(CGFloat(interval[1] - interval[0]))*10, height: 5)
                                                         }
+                                                        if data.events[i].get_type() == "alert" {
+                                                            Text("⏰")
+                                                        }
+                                                        if data.events[i].get_type() == "cue" {
+                                                            Rectangle()
+                                                            Text("🔔")
+                                                        }
                                                     }
    
                                                 }.frame(width: UIScreen.main.bounds.size.width*6, height: 20)
 
-                                                    
+                                                // HStack with bottom measurement indicators
+                                                HStack() {
+                                                    ForEach (0 ..< HOURS) { i in
+                                                        Rectangle()
+                                                            .fill(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
+                                                        .frame(width: 1, height: 15)
+                                                        .offset(y: 15)
+                                                    Spacer().frame(width: UIScreen.main.bounds.size.width/4)
+                                                }
+                                            }
+                                                
                                                 // Subject Text
                                                 // Bounded to not overflow inner circle dimensions
                                                 Text("CS 506")
@@ -1003,16 +1017,7 @@ struct HomePage: View {
                                                     .fixedSize()
                                                     .offset(y: 5)
                                                                         
-                                                // HStack with bottom measurement indicators
-                                                HStack() {
-                                                    ForEach (0 ..< HOURS) { i in
-                                                        Rectangle()
-                                                            .fill(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
-                                                        .frame(width: 1, height: 30)
-                                                        .offset(y: 15)
-                                                    Spacer().frame(width: UIScreen.main.bounds.size.width/4)
-                                                }
-                                            }
+                                                
                                         }
                                                                     
                                         // Bottom Arrow for indicating position on timeline
