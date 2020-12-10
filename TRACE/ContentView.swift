@@ -988,7 +988,6 @@ struct HomePage: View {
                                                             Text("⏰")
                                                         }
                                                         if data.events[i].get_type() == "cue" {
-                                                            Rectangle()
                                                             Text("🔔")
                                                         }
                                                     }
