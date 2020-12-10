@@ -195,6 +195,14 @@ class Model : ObservableObject {
         return false
     }
     
+    func relativeDate(date: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        let relativeDate = formatter.localizedString(for: date, relativeTo: self.currentDate)
+        return relativeDate
+        
+    }
+    
     func calcAngles(start: Date, end: Date) -> [Double] {
         var newTaskAngles = [Double]()
         let startOffset = Calendar.current.dateComponents([.minute], from: Date(), to: start)
@@ -230,7 +238,6 @@ class Model : ObservableObject {
         newTaskLengths.append(endInput)
         return newTaskLengths
     }
-
 }
 
 class EventAttributes : ObservableObject {
@@ -1085,17 +1092,19 @@ struct HomePage: View {
                                     .padding()
                                     .frame(width: UIScreen.main.bounds.size.width * 0.88, height: 125, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                                 VStack{
-                                                                    Text(self.data.nextEvent >= 0 && !self.data.isHappeningNow(index: data.nextEvent) ? self.data.events[self.data.nextEvent].get_subject() : "Nothing up ahead!")
-                                                                        .font(Font.custom("Comfortaa-Regular", size: 18))
-                                                                        .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
-                                                                        .multilineTextAlignment(.center)
-                                                                        .multilineTextAlignment(.center)
-                                    
-                                    Text("8:30pm - 10:30pm")
-                                        .font(Font.custom("Comfortaa-Regular", size: 16))
-                                        .foregroundColor(Color(rgb: DARK_GREY))
+                                    Text(self.data.nextEvent >= 0 && !self.data.isHappeningNow(index: data.nextEvent) ? self.data.events[self.data.nextEvent].get_subject() : "Nothing up ahead!")
+                                        .font(Font.custom("Comfortaa-Regular", size: 18))
+                                        .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                                         .multilineTextAlignment(.center)
-                                        .padding(.top, 1)
+                                        .multilineTextAlignment(.center)
+                                    
+                                    if self.data.nextEvent >= 0 && !self.data.isHappeningNow(index: data.nextEvent) {
+                                        Text(self.data.relativeDate(date: self.data.events[self.data.nextEvent].get_start_time()))
+                                            .font(Font.custom("Comfortaa-Regular", size: 16))
+                                            .foregroundColor(Color(rgb: DARK_GREY))
+                                            .multilineTextAlignment(.center)
+                                            .padding(.top, 1)
+                                    }
                                         
                                 }.frame(width: UIScreen.main.bounds.size.width * 0.75, height: 80, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                             }.padding()

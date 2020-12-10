@@ -160,6 +160,7 @@ struct InfoView : View {
     @State var endComp = [" ", " ", " "]
     let eventString: String  // replace with data element from database
     let editMode = true
+    let baseDate = Date(timeIntervalSinceReferenceDate: 0) // probably terrible practice
     
     
     func setDates(index: Int) -> Void {
@@ -285,9 +286,12 @@ struct InfoView : View {
         .onChange(of: self.index, perform: { value in
             self.setDates(index: self.index)
         })
-        .onChange(of: self.data.views["eventMode"]!, perform: { value in
+        .onChange(of: (self.index >= 0 && self.index < self.data.events.count) ? self.data.events[self.index].get_start_time() : baseDate) { value in
             self.setDates(index: self.index)
-        })
+        }
+        .onChange(of: (self.index >= 0 && self.index < self.data.events.count) ? self.data.events[self.index].get_end_time() : baseDate) { value in
+            self.setDates(index: self.index)
+        }
         // end of VStack
         
     }
