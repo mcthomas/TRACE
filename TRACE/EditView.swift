@@ -89,7 +89,7 @@ struct EditView : View {
                 // Vertical structure
                 VStack {
                     Text("Tap the Circle to edit\nSwipe up to delete.")
-                        .font(Font.custom("Comfortaa-Regular", size: 18))
+                        .font(Font.custom("Lato-Light", size: 18))
                         .foregroundColor(Color(rgb: WHITE))
                         .multilineTextAlignment(.center)
                         .offset(y: 30)
@@ -117,7 +117,7 @@ struct EditView : View {
                     } else {
                         Spacer()
                         Text("No scheduled events yet.\nMake one by using the + button on the homepage!")
-                            .font(Font.custom("Comfortaa-Regular", size: 22))
+                            .font(Font.custom("Lato-Light", size: 22))
                             .foregroundColor(Color(rgb: WHITE))
                             .multilineTextAlignment(.center)
                             .frame(width: UIScreen.main.bounds.width / 1.3)
@@ -226,7 +226,7 @@ struct InfoView : View {
                         .frame(width: UIScreen.main.bounds.width / 1.4, height: UIScreen.main.bounds.width / 1.4)
                         .shadow(color: Color(rgb: InfoView.translateColor(color: (index >= 0 && index < self.data.events.count) ? self.data.events[index].get_color() : "WHITE")), radius: 6)
                     Text("\(eventString)")
-                        .font(Font.custom("Comfortaa-Light", size: 40))
+                        .font(Font.custom("Lato-Light", size: 40))
                         .padding()
                         .foregroundColor(Color(rgb: DARK_GREY))
                         .frame(width: UIScreen.main.bounds.size.width - 145, height: UIScreen.main.bounds.size.width - 160, alignment: .center)
@@ -250,13 +250,13 @@ struct InfoView : View {
                 VStack {
                     HStack {
                         Text("\(startComp[0])")
-                            .font(Font.custom("Comfortaa-Light", size: 18))
+                            .font(Font.custom("Lato-Light", size: 18))
                             .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                             .multilineTextAlignment(.center)
                         if index >= 0 && index < self.data.events.count {
                             if self.data.events[index].get_type() == "task" && endComp[0] != startComp[0] {
                                 Text("- \(endComp[0])")
-                                    .font(Font.custom("Comfortaa-Light", size: 18))
+                                    .font(Font.custom("Lato-Light", size: 18))
                                     .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                                     .multilineTextAlignment(.center)
                             }
@@ -264,14 +264,14 @@ struct InfoView : View {
                     }
                     HStack {
                         Text("\(startComp[1])\(startComp[2])")
-                            .font(Font.custom("Comfortaa-Light", size: 22))
+                            .font(Font.custom("Lato-Light", size: 22))
                             .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                             .multilineTextAlignment(.center)
                             //.offset(y: 5)
                         if index >= 0 && index < self.data.events.count {
                             if self.data.events[index].get_type() == "task" {
                                 Text("- \(endComp[1])\(endComp[2])")
-                                    .font(Font.custom("Comfortaa-Light", size: 22))
+                                    .font(Font.custom("Lato-Light", size: 22))
                                     .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                                     .multilineTextAlignment(.center)
                             }

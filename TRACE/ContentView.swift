@@ -530,6 +530,8 @@ struct ContentView: View {
                         Spacer()
                         Text("Authenticate with your email:")
                           .padding(.bottom, 60)
+                            .font(Font.custom("Lato-Light", size: 20))
+                            
                         CustomStyledTextField(placeholder: "Email", symbolName: "person.circle.fill"
                             //if()
                         
@@ -544,7 +546,6 @@ struct ContentView: View {
 //                        })
                         
                         ).environmentObject(data)
-
                         CustomStyledButton(title: "Send Sign In Link / Login", action: {
                             sendSignInLink()
                             data.notificationManager.retrieveFromDB(email: data.parsedEmail)
@@ -554,7 +555,8 @@ struct ContentView: View {
                         Spacer()
                       }
                       .padding()
-                      .navigationBarTitle("Passwordless Login")
+                      .navigationBarTitle("Login")
+                      .font(Font.custom("Lato-Light", fixedSize: 18))
                     }
                 
                     .onOpenURL { url in
@@ -692,8 +694,9 @@ struct CustomStyledTextField: View {
 
             TextField(placeholder, text: $data.email)
             .padding(.vertical)
-            .accentColor(.orange)
+            .accentColor(.blue)
             .autocapitalization(.none)
+                .font(Font.custom("Lato-Light", fixedSize: 14))
         }
         .background(
           RoundedRectangle(cornerRadius: 16.0, style: .circular)
@@ -718,7 +721,7 @@ struct CustomStyledButton: View {
         Spacer()
       }
     }
-    .background(Color.orange)
+    .background(Color.purple)
     .cornerRadius(16.0)
   }
 }
@@ -731,13 +734,14 @@ struct SuccessView: View {
     /// The first view in this `ZStack` is a `Color` view that expands
     /// to set the background color of the `SucessView`.
     ZStack {
-      Color.orange
+      Color.purple
         .edgesIgnoringSafeArea(.all)
 
       VStack(alignment: .leading) {
         Group {
           Text("Welcome")
             .font(.largeTitle)
+            .font(Font.custom("Lato-Light", size: 20))
             .fontWeight(.semibold)
 
           Text(email.lowercased())
@@ -802,11 +806,11 @@ struct HomePage: View {
         }
         //if sys time is 24hr and app time is 12hr
         else if (!self.data.settings["time24hr"]! && is24Hour()) {
-            formatter.dateFormat = "HH:mm"
+            formatter.dateFormat = "HH:mm a"
         }
         //if sys time is 12hr and app time is 24hr
         else {
-            formatter.dateFormat = "HH:mm"
+            formatter.dateFormat = "HH:mm a"
         }
         return formatter
     }
@@ -903,12 +907,12 @@ struct HomePage: View {
                                         .onAppear(perform: {
                                             let _ = self.updateTimer
                                         })
-                                    .font(Font.custom("Comfortaa-Light", size: 60))
+                                    .font(Font.custom("Lato-Light", size: 60))
                                         .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                     
                                     if !is24Hour() {
                                         Text("\(time[1].lowercased())")
-                                            .font(Font.custom("Comfortaa-Light", size: 20))
+                                            .font(Font.custom("Lato-Light", size: 20))
                                             .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                             .offset(x: -7, y: 10)
                                     }
@@ -1016,7 +1020,7 @@ struct HomePage: View {
                                                 // Subject Text
                                                 // Bounded to not overflow inner circle dimensions
                                                 Text("CS 506")
-                                                    .font(Font.custom("Comfortaa-Light", size: 40))
+                                                    .font(Font.custom("Lato-Light", size: 40))
                                                     .padding()
                                                     .foregroundColor(Color(rgb: DARK_GREY))
                                                     .frame(width: UIScreen.main.bounds.size.width - 145, height: UIScreen.main.bounds.size.width - 160, alignment: .center)
@@ -1079,7 +1083,7 @@ struct HomePage: View {
                             // Subject Text
                             // Bounded to not overflow inner circle dimensions
                             Text(self.data.currentEvent >= 0 && self.data.isHappeningNow(index: data.currentEvent) ? self.data.events[self.data.currentEvent].get_subject() : "")
-                                .font(Font.custom("Comfortaa-Light", size: 40))
+                                .font(Font.custom("Lato-Light", size: 40))
                                 .padding()
                                 .foregroundColor(Color(rgb: DARK_GREY))
                                 .frame(width: UIScreen.main.bounds.size.width - 145, height: UIScreen.main.bounds.size.width - 160, alignment: .center)
@@ -1092,7 +1096,7 @@ struct HomePage: View {
                                 .resizable()
                                 .foregroundColor(self.data.settings["darkMode"]! ? .white : Color(rgb: DARK_GREY))
                                 .frame(width: 30, height: 25)
-                                .offset(y: -UIScreen.main.bounds.width / 2.15)
+                                .offset(y: -UIScreen.main.bounds.width / 2)
                                 //.offset(y: -175)
                         }
                     }
@@ -1105,14 +1109,14 @@ struct HomePage: View {
                                     .frame(width: UIScreen.main.bounds.size.width * 0.88, height: 125, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                                 VStack{
                                     Text(self.data.nextEvent >= 0 && !self.data.isHappeningNow(index: data.nextEvent) ? self.data.events[self.data.nextEvent].get_subject() : "Nothing up ahead!")
-                                        .font(Font.custom("Comfortaa-Regular", size: 18))
+                                        .font(Font.custom("Lato-Light", size: 18))
                                         .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
                                         .multilineTextAlignment(.center)
                                         .multilineTextAlignment(.center)
                                     
                                     if self.data.nextEvent >= 0 && !self.data.isHappeningNow(index: data.nextEvent) {
                                         Text(self.data.relativeDate(date: self.data.events[self.data.nextEvent].get_start_time()))
-                                            .font(Font.custom("Comfortaa-Regular", size: 16))
+                                            .font(Font.custom("Lato-Light", size: 16))
                                             .foregroundColor(Color(rgb: DARK_GREY))
                                             .multilineTextAlignment(.center)
                                             .padding(.top, 1)
@@ -1132,9 +1136,9 @@ struct HomePage: View {
                                             .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 ? self.data.events[self.data.currentEvent].get_color() : "WHITE")))
                                             .frame(width: UIScreen.main.bounds.size.width / 4, height: UIScreen.main.bounds.size.width / 4, alignment: .center)
                                         Text("+")
-                                            .font(Font.custom("Comfortaa-Regular", size: 70))
+                                            .font(Font.custom("Lato-Light", size: 70))
                                             .foregroundColor(Color(rgb: DARK_GREY, alpha: 0.9))
-                                            .offset(y: 5)
+                                            .offset(y: 0)
                                     }
                                 }.padding(.horizontal, 50)
                                 
@@ -1234,7 +1238,7 @@ struct Menu : View {
                                 .frame(width: UIScreen.main.bounds.width / 6, height: UIScreen.main.bounds.width / 6)
                                 .foregroundColor(Color(rgb: InfoView.translateColor(color: self.data.currentEvent >= 0 ? self.data.events[self.data.currentEvent].get_color() : (self.data.settings["darkMode"]! ? "WHITE" : "DARK_GREY"))))
                             Text("\(SETTINGS[set])")
-                                .font(Font.custom("Lato", size: 14))
+                                .font(Font.custom("Lato-light", size: 14))
                                 .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                 .frame(width: 100, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                                 .multilineTextAlignment(.center)

@@ -10,6 +10,9 @@
 		0E9E31A5254C8D50002DB7CD /* EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9E31A4254C8D50002DB7CD /* EventHandler.swift */; };
 		6051CD7425461791005DEBDB /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6051CD7325461791005DEBDB /* Settings.swift */; };
 		C36DF8EE25B85782103EFC08 /* libPods-TRACE.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D7645146B0F83F9BD6CAF85 /* libPods-TRACE.a */; };
+		C93B369A2583D8EA0075F898 /* Lato-Hairline.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C93B36972583D8E90075F898 /* Lato-Hairline.ttf */; };
+		C93B369B2583D8EA0075F898 /* Lato-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C93B36982583D8E90075F898 /* Lato-Thin.ttf */; };
+		C93B369C2583D8EA0075F898 /* Lato-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C93B36992583D8EA0075F898 /* Lato-Light.ttf */; };
 		C95478D42544F6BA00880166 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C95478D32544F6BA00880166 /* GoogleService-Info.plist */; };
 		C9665A9A2541053700880166 /* TRACEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9665A992541053700880166 /* TRACEApp.swift */; };
 		C9665A9C2541053700880166 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9665A9B2541053700880166 /* ContentView.swift */; };
@@ -61,6 +64,9 @@
 		99F6BAE6563EA19CD3CF5D03 /* Pods-TRACEUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRACEUITests.debug.xcconfig"; path = "Target Support Files/Pods-TRACEUITests/Pods-TRACEUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		A27C24BAE1B8FFF8C269488D /* Pods-TRACEUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRACEUITests.release.xcconfig"; path = "Target Support Files/Pods-TRACEUITests/Pods-TRACEUITests.release.xcconfig"; sourceTree = "<group>"; };
 		C93B36882583644F0075F898 /* TRACE-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TRACE-Bridging-Header.h"; sourceTree = "<group>"; };
+		C93B36972583D8E90075F898 /* Lato-Hairline.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Hairline.ttf"; sourceTree = "<group>"; };
+		C93B36982583D8E90075F898 /* Lato-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Thin.ttf"; sourceTree = "<group>"; };
+		C93B36992583D8EA0075F898 /* Lato-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Light.ttf"; sourceTree = "<group>"; };
 		C95478D32544F6BA00880166 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C9665A962541053700880166 /* TRACE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TRACE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9665A992541053700880166 /* TRACEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TRACEApp.swift; sourceTree = "<group>"; };
@@ -138,6 +144,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		C93B36962583D8840075F898 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				C93B36972583D8E90075F898 /* Lato-Hairline.ttf */,
+				C93B36992583D8EA0075F898 /* Lato-Light.ttf */,
+				C93B36982583D8E90075F898 /* Lato-Thin.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		C9665A8D2541053700880166 = {
 			isa = PBXGroup;
 			children = (
@@ -177,6 +193,7 @@
 				C9899C932548C17900880166 /* CalView.swift */,
 				C9899C962548C18400880166 /* Overlays.swift */,
 				C9665A9D2541053800880166 /* Assets.xcassets */,
+				C93B36962583D8840075F898 /* Fonts */,
 				C9665AA22541053800880166 /* Info.plist */,
 				C97A13E22568BA9000880166 /* trace_icon.png */,
 				C9665A9F2541053800880166 /* Preview Content */,
@@ -325,9 +342,12 @@
 			files = (
 				C9665AA12541053800880166 /* Preview Assets.xcassets in Resources */,
 				C9C4D089254B321A00880166 /* credentials.plist in Resources */,
+				C93B369B2583D8EA0075F898 /* Lato-Thin.ttf in Resources */,
+				C93B369A2583D8EA0075F898 /* Lato-Hairline.ttf in Resources */,
 				C97A13E32568BA9000880166 /* trace_icon.png in Resources */,
 				C9665A9E2541053800880166 /* Assets.xcassets in Resources */,
 				C95478D42544F6BA00880166 /* GoogleService-Info.plist in Resources */,
+				C93B369C2583D8EA0075F898 /* Lato-Light.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
