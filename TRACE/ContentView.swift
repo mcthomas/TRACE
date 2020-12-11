@@ -802,11 +802,11 @@ struct HomePage: View {
         }
         //if sys time is 24hr and app time is 12hr
         else if (!self.data.settings["time24hr"]! && is24Hour()) {
-            formatter.dateFormat = "HH:mm a"
+            formatter.dateFormat = "HH:mm"
         }
         //if sys time is 12hr and app time is 24hr
         else {
-            formatter.dateFormat = "HH:mm a"
+            formatter.dateFormat = "HH:mm"
         }
         return formatter
     }
