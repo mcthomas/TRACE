@@ -1040,7 +1040,7 @@ struct HomePage: View {
                                                 
                                                 // Subject Text
                                                 // Bounded to not overflow inner circle dimensions
-                                                Text("CS 506")
+                                                Text("")
                                                     .font(Font.custom("Lato-Light", size: 40))
                                                     .padding()
                                                     .foregroundColor(Color(rgb: DARK_GREY))
