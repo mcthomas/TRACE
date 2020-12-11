@@ -205,15 +205,18 @@ class Model : ObservableObject {
     
     func calcAngles(start: Date, end: Date) -> [Double] {
         var newTaskAngles = [Double]()
-        let startOffset = Calendar.current.dateComponents([.minute], from: Date(), to: start)
+        let startOffset = Calendar.current.dateComponents([.minute, .second], from: Date(), to: start)
         let minutesFromStart = Int(startOffset.minute!)
-        let endOffset = Calendar.current.dateComponents([.minute], from: Date(), to: end)
+        let endOffset = Calendar.current.dateComponents([.minute, .second], from: Date(), to: end)
         let minutesFromEnd = Int(endOffset.minute!)
+        let secondsEnd = Int(endOffset.second!)
         var startInput = Double(360*minutesFromStart/1440)
-        var endInput = Double(360*minutesFromEnd/1440)
+        var endInput = Double(360*minutesFromEnd/1440) // + Double(6*secondsEnd/1440) -- Don't want to risk error message on impulse change
         
-        if startInput < 0 || startInput > 360 { startInput = 0 }
-        if endInput < 0 || endInput > 360 { endInput = 0 }
+        
+        
+        if startInput < 0.0 || startInput > 360.0 { startInput = 0 }
+        if endInput < 0.0 || endInput > 360.0 { endInput = 0 }
         
         // Returns list of 2 (for alert & cue, only start is looked at)
         newTaskAngles.append(startInput)
@@ -856,6 +859,24 @@ struct HomePage: View {
         }
         
     }
+    
+    struct subArc: Shape {
+        var startAngle: Angle
+        var endAngle: Angle
+        var clockwise: Bool
+        var inset: CGFloat = 0
+        
+        func path(in rect: CGRect) -> Path {
+            let rotationAdjustment = Angle.degrees(90)
+            let modifiedStart = -startAngle - rotationAdjustment
+            let modifiedEnd = -endAngle - rotationAdjustment
+            
+            var path = Path()
+            path.addArc(center: CGPoint(x: rect.midX, y: rect.midY), radius: rect.width / 2.30, startAngle: modifiedStart, endAngle: modifiedEnd, clockwise: !clockwise)
+            return path
+        }
+        
+    }
 
 
     func is24Hour() -> Bool {
@@ -895,7 +916,7 @@ struct HomePage: View {
                                                 .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                                 .offset(x: -12, y: 6)
                                                 .rotationEffect(Angle(degrees: 270), anchor: .bottomLeading)
-                                    }
+                                    }.offset(y: -5)
                                 }
                                 Spacer()
                                 // Digital Clock
@@ -910,13 +931,13 @@ struct HomePage: View {
                                     .font(Font.custom("Lato-Light", size: 60))
                                         .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
                                     
-                                    if !is24Hour() {
+                                    if !self.data.settings["time24hr"]! {
                                         Text("\(time[1].lowercased())")
                                             .font(Font.custom("Lato-Light", size: 20))
                                             .foregroundColor(self.data.settings["darkMode"]! ? Color.white : Color(rgb: DARK_GREY))
-                                            .offset(x: -7, y: 10)
+                                            .offset(x: -7, y: 15)
                                     }
-                                }.offset(x: (self.data.settings["time24hr"]!) ? -35 : -23, y: 16)
+                                }.offset(x: (self.data.settings["time24hr"]!) ? -39 : -23, y: 5)
                                 .padding(.horizontal, 10)
                                 .frame(width: 230, height: 55)
                                 .fixedSize()
@@ -1054,21 +1075,26 @@ struct HomePage: View {
                             // Should also rotate with time
                             ZStack {
                                 ForEach(0 ..< self.data.events.count, id: \.self) { i in
-                                    let interval = data.calcAngles(start: data.events[i].get_start_time(), end: data.events[i].get_end_time())
+                                    
                                     if data.events[i].get_type() == "task" {
+                                        let interval = data.calcAngles(start: data.events[i].get_start_time(), end: data.events[i].get_end_time())
                                         Arc(startAngle: .degrees(interval[0]), endAngle: .degrees(interval[1]), clockwise: false)
                                             .stroke(Color(rgb: InfoView.translateColor(color: data.events[i].get_color())), lineWidth: 8)
                                             .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
                                     }
                                     
-                                    if data.events[i].get_type() == "cue" {
-                                        Arc(startAngle: .degrees(interval[0]), endAngle: .degrees(interval[0]+2), clockwise: false)
-                                            .stroke(Color(rgb: InfoView.translateColor(color: data.events[i].get_color())), lineWidth: 18)
-                                            .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
+                                    else if data.events[i].get_type() == "cue" {
+                                        let interval = data.calcAngles(start: data.events[i].get_start_time(), end: data.events[i].get_start_time().addingTimeInterval(60))
+                                        ZStack{
+                                            subArc(startAngle: .degrees(interval[0]), endAngle: .degrees(interval[1] > 0 ? interval[0] + 3 : 0), clockwise: false)
+                                                .stroke(Color(rgb: InfoView.translateColor(color: data.events[i].get_color())), lineWidth: 8)
+                                                .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
+                                        }
                                     }
-                                    if data.events[i].get_type() == "alert" {
-                                        Arc(startAngle: .degrees(interval[0]), endAngle: .degrees(interval[0]+6), clockwise: false)
-                                            .stroke(Color(rgb: InfoView.translateColor(color: data.events[i].get_color())), lineWidth: 18)
+                                    else {
+                                        let interval = data.calcAngles(start: data.events[i].get_start_time(), end: data.events[i].get_start_time().addingTimeInterval(60))
+                                        subArc(startAngle: .degrees(interval[0]), endAngle: .degrees(interval[1] > 0 ? interval[0] + 3 : 0), clockwise: false)
+                                            .stroke(Color(rgb: InfoView.translateColor(color: data.events[i].get_color())), lineWidth: 8)
                                             .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
                                     }
                                 }
@@ -1096,8 +1122,9 @@ struct HomePage: View {
                                 .resizable()
                                 .foregroundColor(self.data.settings["darkMode"]! ? .white : Color(rgb: DARK_GREY))
                                 .frame(width: 30, height: 25)
-                                .offset(y: -UIScreen.main.bounds.width / 2)
+                                .offset(y: -UIScreen.main.bounds.width / 2.05)
                                 //.offset(y: -175)
+
                         }
                     }
  
