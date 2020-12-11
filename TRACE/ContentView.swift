@@ -852,7 +852,8 @@ struct HomePage: View {
         }
         
     }
-    
+
+
     func is24Hour() -> Bool {
         let dateFormat = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: Locale.current)!
 
@@ -1053,6 +1054,17 @@ struct HomePage: View {
                                     if data.events[i].get_type() == "task" {
                                         Arc(startAngle: .degrees(interval[0]), endAngle: .degrees(interval[1]), clockwise: false)
                                             .stroke(Color(rgb: InfoView.translateColor(color: data.events[i].get_color())), lineWidth: 8)
+                                            .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
+                                    }
+                                    
+                                    if data.events[i].get_type() == "cue" {
+                                        Arc(startAngle: .degrees(interval[0]), endAngle: .degrees(interval[0]+2), clockwise: false)
+                                            .stroke(Color(rgb: InfoView.translateColor(color: data.events[i].get_color())), lineWidth: 18)
+                                            .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
+                                    }
+                                    if data.events[i].get_type() == "alert" {
+                                        Arc(startAngle: .degrees(interval[0]), endAngle: .degrees(interval[0]+6), clockwise: false)
+                                            .stroke(Color(rgb: InfoView.translateColor(color: data.events[i].get_color())), lineWidth: 18)
                                             .frame(width: UIScreen.main.bounds.size.width/1.1, height: UIScreen.main.bounds.size.width/1.1, alignment: .center)
                                     }
                                 }
