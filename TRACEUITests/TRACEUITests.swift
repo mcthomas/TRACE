@@ -11,7 +11,13 @@ class TRACEUITests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-
+        
+//        let app = XCUIApplication()
+//        app.launch()
+//        app.textFields["Email"].tap()
+//        app.textFields["Email"].typeText("tonytonys123@gmail.com")
+//        app.buttons["Send Sign In Link / Login"].tap()
+        
         // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
 
@@ -33,9 +39,10 @@ class TRACEUITests: XCTestCase {
         app.textFields["Email"].typeText("tonytonys123@gmail.com")
         app.buttons["Send Sign In Link / Login"].tap()
         app.buttons["menu_icon, menu_arrow"].tap()
-        app.buttons["Line Mode"].tap()
-        app.buttons["Line Mode"].tap()
-        app.buttons["Line Mode"].tap()
+        app.buttons["Toggle View"].tap()
+        app.buttons["Toggle View"].tap()
+        app.buttons["Toggle View"].tap()
+
         app.terminate()
         
     }
@@ -47,9 +54,9 @@ class TRACEUITests: XCTestCase {
         app.textFields["Email"].typeText("tonytonys123@gmail.com")
         app.buttons["Send Sign In Link / Login"].tap()
         app.buttons["menu_icon, menu_arrow"].tap()
-        app.buttons["Dark Mode"].tap()
-        app.buttons["Dark Mode"].tap()
-        app.buttons["Dark Mode"].tap()
+        app.buttons["Toggle Theme"].tap()
+        app.buttons["Toggle Theme"].tap()
+        app.buttons["Toggle Theme"].tap()
         app.terminate()
         
         
@@ -64,33 +71,51 @@ class TRACEUITests: XCTestCase {
         app.textFields["Email"].typeText("tonytonys123@gmail.com")
         app.buttons["Send Sign In Link / Login"].tap()
         app.buttons["menu_icon, menu_arrow"].tap()
-        app.buttons["24 Hour Format"].tap()
-        app.buttons["24 Hour Format"].tap()
-        app.buttons["24 Hour Format"].tap()
+        app.buttons["Toggle Format"].tap()
+        app.buttons["Toggle Format"].tap()
+        app.buttons["Toggle Format"].tap()
         app.terminate()
     }
     
-//    func testEditEvent()throws{
-////        let app = XCUIApplication()
-////        app.launch()
-////        app.textFields["Email"].tap()
-////        app.textFields["Email"].typeText("tonytonys123@gmail.com")
-////        app.buttons["Send Sign In Link / Login"].tap()
-//
-//        let app = XCUIApplication()
-//        app.staticTexts["Next:\nWork Shift"].tap()
-//        app.buttons["Send Sign In Link / Login"].tap()
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//    }
+    func testCreateEvent() throws{
+        let app = XCUIApplication()
+        app.launch()
+        
+        //let app = XCUIApplication()
+        app.textFields["Email"].tap()
+        app.textFields["Email"].typeText("tonytonys123@gmail.com")
+        app.buttons["Send Sign In Link / Login"].tap()
+        
+        
+        
+        app.buttons["+"].tap()
+        app.switches["Alert event"].tap()
+        
+        let enterTheDescriptionTextField = app.textFields["Enter the description.."]
+        enterTheDescriptionTextField.tap()
+        enterTheDescriptionTextField.tap()
+        app.buttons["edit_icon"].tap()
+        
+        
+        
+        
+    }
+    
+    func testEditEvent() throws{
+        let app = XCUIApplication()
+        app.launch()
+        
+        app.textFields["Email"].tap()
+        app.textFields["Email"].typeText("tonytonys123@gmail.com")
+        app.buttons["Send Sign In Link / Login"].tap()
+        
+        
+        app.buttons["edit_icon"].tap()
+        
+        
+    }
+    
+
 
     
 }
