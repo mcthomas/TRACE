@@ -1,8 +1,41 @@
 # TRACE
+## Design and Planning Document
 
 <img src="trace.png"/>
 
 ### Contents
+
+#### 1. System Architecture
+
+1.1. Overview
+1.2. Event-Based architecture 
+1.3. Notification Service
+1.4. Alternate architectural Design
+1.5. Design Risks
+
+#### 2. Design Details
+
+2.1. iOS Backend Design
+2.2. iOS User Interface Design 
+2.3. Notifications Design
+2.4. UI View Details
+
+#### 3. Implementation Plan
+
+3.1. Dependencies
+3.2. Iteration 1
+3.3. Iteration 2
+3.4. Iteration 3
+
+#### 4. Testing Plan
+
+4.1. Unit Testing
+4.2. Integration Testing
+4.3. System Testing
+4.4. Performance Testing 
+4.5. Compatibility Testing 
+4.6. Regression Testing 
+4.7. Beta Testing
 
   - [Problem Description](#Problem-Description "Problem Description")
   - [The Customer](#The-Customer "The Customer")
@@ -11,20 +44,21 @@
   - [Feasibility](#Feasibility "Feasibility")
   - [Concept Images](#Concept-Images "Concept Images")
 
-## Problem Description: 
-During a time when our workflow is entirely digital, self-organization is a necessity to best manage our time and to maintain our sanity. Most of us favor our mobile devices for scheduling events, reminders, and alarms. We’ve adapted with heavy use of respective native iOS and Android apps, as well as with third-party replacements. I would like to improve on this model with respect to (1) decreasing time spent hopping between these apps and (2) visually minimizing our mental view of our workflow. Swiping between pages of apps, with multiple accounts, between multiple storage mediums is not ideal. Rummaging through their notifications is not ideal. Opening your calendar and seeing all your personal and scholarly events stacked together is not ideal. In fact, it’s overwhelming, and many of these functions are managed by third-parties. Self-managing the personal events, alerts, and alarms that matter most to you, in one place, is ideal. Being able to trace your days, one step at a time, as one would read a line of text would be ideal. Aggregating time-management tools into a single app is not unheard of, but doing so gracefully and with a single- dimensional nuance would be novel.
+### System Architecture
 
-## The Customer: 
-Friends and other students struggling to mono-task and focus, i.e. my roommates. With their own needs in mind, they can supply a consistent flow of suggestions for refinement and improvement of the system.
+#### 1.1 Overview
 
-## System Description: 
-The system will aim to aggregate three personal time- management tools, presented with a single-dimensional user interface. Trace would phrase alarms as alerts, reminders as cues, and calendar events as tasks. Intended to help the user focus on their present objectives, minimalism is a must. Instances of these three items can be expanded for access to their three fields, but otherwise the user scales and scrolls along a linear time line. Trace eliminates the need for three separate apps for the majority of a user’s needs. The primary attraction of Trace is the user interface, geared towards those seeking an increased focus on productivity.
+The Trace application will use an Event-Based Software Architecture. We chose this architecture over others because minimalism is the core foundation of the creation of this app. To fuel efficiency within our app, we plan to not need a server at all. Trace is very individual, a basic tool for the user to be able to plan and execute their daily routine, while accommodating outside factors (Unknown plans or events). This means having an application that is meant to mostly display data to the user, while allowing them to trigger specific events to occur, events such as adding specific tasks, cues and alerts.
 
-## Testing and Demoing: 
-The system would be tested frequently amongst a consistent group of users most interested in its concept. At this point, these users would consist of my roommates and another friend. Apart from the testing group, others could be recruited for more diverse feedback. In this case, the target users are not differentiated from the “customers.” Demoing the system at all stages demands a development flow that begins with the UI and scrolling, such that the that the visual is a consistent component available for critique. Then the tools would be incrementally introduced, one at a time, at varying levels of functionality. Stage one could be insertions, (of blank alerts, cues, and tasks) followed by implementing component input fields, and finally I/O functions such as outputting sounds, settings, etc.
+#### 1.2 Event-Based Architecture
 
-## Feasibility: 
-Luckily, the concept of Trace primarily consists of back-end functionality, as the UI would be maximally minimal, and there aren’t any original graphics or assets required of it. Furthermore, development in Xcode with Swift won’t present any extraneous challenges beyond the inclusion of optional libraries to ease the development timeline. More than half the team could focus on the breakdown of algorithms and APIs for implementing the three primary tools for Trace, while the rest could be tasked with implementing and refining the application’s I/O and quality control for the user. Prototypes can be continuously deployed from Xcode on a designated iOS device for the purpose of demoing. Users’ own devices can also host the prototypes for multi-day trial feedback.
+##### 1.2.1 Events
+
+An event is any significant change that affects the software or hardware of the application. In the case of Trace, an event could come from the user, by adding or removing tasks, alerts, or cues from their timelines, changing any of the Notifications settings for Tasks, Cues or Alerts, or altering the Options for the application as a whole. Events could also come from the application itself in the form of notifications being sent to the users device regarding specific events that the user has set up to be notified about.
+
+##### 1.2.2 User Interface Architecture
+
+The IOS application interface, Xcode, serves as the view for this application. The user interface is developed completely in Swift. The individual screens and functionality of the UI can be described with the Action Sequence Flow pictured below. Each individual screen is depicted by a light green oval, initially the timeline will be displayed to the user. This is where the user will be able to see their Tasks, Alerts and Cues that they have set up to be displayed previously. From there, the user has the option to go to the Notification Settings screen. This screen will consist of tabs for Tasks, Alert and Cues that will drop down into specific settings such as time and frequency of notifications. From the Display Timeline screen, the user will also be able to add Tasks, Alerts and Cues, by pressing the add button, which will present a pop up allowing them to set the description and time of the tool they selected. The user will also be able to delete a tool by pressing the delete button, which will present a pop up listing the tools they already have set in place. Finally, from the Display Timeline screen, the user will be able to navigate to the Options screen by pressing the Options button, which will allow them to select the display type, toggle color blind mode, toggle dark mode and choose their time format.
 
 ## Concept Images:
 ⃞♢ = cues
