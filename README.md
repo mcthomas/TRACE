@@ -1,6 +1,6 @@
 # TRACE
 
-TRACE is an iOS application which aims to aggregate the use of calendar events, alarms, and reminders- with single-dimensional UI naunces.  In practice, TRACE decreases the time spent hopping between native apps and visually simplifies your mental view of your workflow.  Development on TRACE began in academia with the intent of demonstrating principles of Software Engineering & UX best practices.  This readme comprises our original Design & Planning Documentation.  
+TRACE is an iOS application which aims to aggregate the use of calendar events, alarms, and reminders- with single-dimensional UI naunces.  In practice, TRACE decreases the time spent hopping between native apps and visually simplifies your mental view of your daily flow.  Development on TRACE began in academia with the intent of demonstrating principles of Software Engineering & UX best practices.  This readme comprises our original Design & Planning Documentation.  
 
 Contributors:
 
@@ -40,6 +40,8 @@ Contributors:
     - 4.5. Compatibility Testing 
     - 4.6. Regression Testing 
     - 4.7. Beta Testing
+
+- [5. Prototype Presentations](#Prototype-Presentations "Prototype Presentations")
 
 ## System Architecture
 
@@ -445,3 +447,8 @@ These tests will be carried out using Xcode’s built-in testing library for Swi
 ### 4.7 Acceptance Testing
 
 Our acceptance testing phase will be similar to the compatibility testing in that we’ll be giving the app to clients to test and focusing on their feedback. However, this phase will be much more in-depth and rigorous and will be significantly more goal-oriented in that the users/clients will be given several specific tasks/tests to perform (similar to the ones we used for system testing) instead of simpler, single-task tests. Additionally, it will be longer than compatibility testing since it will act as the final catch-all for any bugs or places of potential improvement for the application.
+
+## Prototype Presentations
+
+[Outcomes & Lessons Learned](https://docs.google.com/presentation/d/1mkiLrE_Y4m-BxrdZtNkzTKlOhgWy8F83mibcpEV_k_Y/edit?usp=sharing)
+[Demo & Alterations](https://docs.google.com/presentation/d/1Ycf6brHXwIALsQh29PEC2ojF3QADSSLOCcnN3VKM4a0/edit?usp=sharing)
