@@ -1,3 +1,5 @@
+<img src="readme images/icon.png" width="200"/>
+
 # TRACE
 
 TRACE is an iOS application which aims to aggregate the use of calendar events, alarms, and reminders- with single-dimensional UI naunces.  In practice, TRACE decreases the time spent hopping between native apps and visually simplifies your mental view of your daily flow.  Development on TRACE began in academia with the intent of demonstrating principles of Software Engineering & UX best practices.  This readme comprises our original Design & Planning Documentation.  
@@ -59,6 +61,8 @@ An event is any significant change that affects the software or hardware of the 
 
 The IOS application interface, Xcode, serves as the view for this application. The user interface is developed completely in Swift. The individual screens and functionality of the UI can be described with the Action Sequence Flow pictured below. Each individual screen is depicted by a light green oval, initially the timeline will be displayed to the user. This is where the user will be able to see their Tasks, Alerts and Cues that they have set up to be displayed previously. From there, the user has the option to go to the Notification Settings screen. This screen will consist of tabs for Tasks, Alert and Cues that will drop down into specific settings such as time and frequency of notifications. From the Display Timeline screen, the user will also be able to add Tasks, Alerts and Cues, by pressing the add button, which will present a pop up allowing them to set the description and time of the tool they selected. The user will also be able to delete a tool by pressing the delete button, which will present a pop up listing the tools they already have set in place. Finally, from the Display Timeline screen, the user will be able to navigate to the Options screen by pressing the Options button, which will allow them to select the display type, toggle color blind mode, toggle dark mode and choose their time format.
 
+<img src="readme images/action-sequence-flow.png" width="600"/>
+
 ### 1.3 Notification Service
 
 The application will make use of the Apple Push Notification service for the notification purposes. As described in the 1.2.1, notifications would be sent to the user by the system based on the settings and preferences that the user has set for each of the Tasks, Alerts and Cues they have set.
@@ -73,7 +77,9 @@ The design risks of our implementation of Event-Based architecture are few to no
 
 ## Design Details
 
-### 2.1 IOS Backend Design
+### 2.1 iOS Backend Design
+
+<img src="readme images/backend-design.png" width="600"/>
 
 #### 2.1.1 Class Descriptions
 This class diagram only shows the core classes in our application and how they relate to each other. In section 2.2 we go over the upper level classes such as AppDelegate, ContentView, and UIapplication.  
@@ -206,6 +212,8 @@ We are considering implementing a hybrid approach for the lower levels which may
 
 ###### Top-Level Event Driven Visual: (Class Diagram):
 
+<img src="readme images/class-diagram.png" width="800"/>
+
 #### Class/Var/Method Breakdown
 
 ###### App
@@ -329,7 +337,11 @@ Displays respective UI components for unit ticks over the Circle or Line timelin
 
 ###### Simplified Model-View-Controller Visual, to operate below ApplicationUI():
 
+<img src="readme images/mvc.png" width="400"/>
+
 ###### User Model Sequence Diagram:
+
+<img src="readme images/ums.png" width="800"/>
 
 ###### UI Risks
 
@@ -351,15 +363,29 @@ When the user inputs the description, time and date for the notification, it wou
 
 #### 2.4.1 Homepage: Starting page on application launch
 
+<img src="readme images/home-screen-table.png" width="600"/>
+
 #### 2.4.2 Delete Event Page: Page requests the user to delete the desired tasks/cues/alerts
+
+<img src="readme images/delete-screen-table.png" width="600"/>
 
 #### 2.4.3 Add Event Page: Requests user input to create a new event
 
+<img src="readme images/add-event-screen-table.png" width="600"/>
+
 #### 2.4.4 Menu Tab: Displays all additional options
+
+<img src="readme images/menu-tab-screen-table.png" width="600"/>
 
 #### 2.4.5 Notifications Tab: Displays all notifications relating to upcoming tasks/cues/alerts
 
+<img src="readme images/notifications-tab-screen-table.png" width="600"/>
+
 #### 2.4.6 Calendar View: Displays a more shallow, but broader view of events throughout the span of a month
+
+<img src="readme images/calendar-screen-table.png" width="600"/>
+
+## Implementation Plan
 
 ### 3.1 Dependencies:
 
@@ -374,7 +400,7 @@ The back-end, front-end, and testing development can easily be done in conjuncti
 
 In the initial development phase, we plan to start with the most barebones functionality in the backend and the frontend, such as adding/deleting events to the timeline and implementing the UI design. Additional functionality that’s not completely necessary such as the menu tab’s additional features, like color-blind mode or data export, will be delayed until the basic functionality is implemented.
 
-## 4. Testing Plan
+## Testing Plan
 
 ### 4.1 Unit Testing
 
@@ -451,4 +477,5 @@ Our acceptance testing phase will be similar to the compatibility testing in tha
 ## Prototype Presentations
 
 [Outcomes & Lessons Learned](https://docs.google.com/presentation/d/1mkiLrE_Y4m-BxrdZtNkzTKlOhgWy8F83mibcpEV_k_Y/edit?usp=sharing)
+
 [Demo & Alterations](https://docs.google.com/presentation/d/1Ycf6brHXwIALsQh29PEC2ojF3QADSSLOCcnN3VKM4a0/edit?usp=sharing)
