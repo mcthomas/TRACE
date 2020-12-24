@@ -1,4 +1,4 @@
-<img src="readme images/logo.png" width="600"/>
+<img src="readme images/icon.png" width="600"/>
 
 # TRACE
 
@@ -212,7 +212,7 @@ We are considering implementing a hybrid approach for the lower levels which may
 
 ###### Top-Level Event Driven Visual: (Class Diagram):
 
-<img src="readme images/class-diagram.png" width="600"/>
+<img src="readme images/class-diagram.png" width="800"/>
 
 #### Class/Var/Method Breakdown
 
@@ -337,11 +337,11 @@ Displays respective UI components for unit ticks over the Circle or Line timelin
 
 ###### Simplified Model-View-Controller Visual, to operate below ApplicationUI():
 
-<img src="readme images/mvc.png" width="600"/>
+<img src="readme images/mvc.png" width="400"/>
 
 ###### User Model Sequence Diagram:
 
-<img src="readme images/ums.png" width="600"/>
+<img src="readme images/ums.png" width="800"/>
 
 ###### UI Risks
 
