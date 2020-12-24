@@ -1,4 +1,4 @@
-<img src="readme images/icon.png" width="600"/>
+<img src="readme images/icon.png" width="200"/>
 
 # TRACE
 
