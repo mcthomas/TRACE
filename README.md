@@ -49,31 +49,31 @@ Contributors:
 
 ### 1.1 Overview
 
-The Trace application will use an Event-Based Software Architecture. We chose this architecture over others because minimalism is the core foundation of the creation of this app. To fuel efficiency within our app, we plan to not need a server at all. Trace is very individual, a basic tool for the user to be able to plan and execute their daily routine, while accommodating outside factors (Unknown plans or events). This means having an application that is meant to mostly display data to the user, while allowing them to trigger specific events to occur, events such as adding specific tasks, cues and alerts.
+The Trace application will use an Event-Based Software Architecture. We chose this architecture over others because minimalism is the core foundation of the design for this app. Trace is curated for the individual, a basic tool for the user to be able to plan and execute their daily routine, while accommodating outside factors (unknown plans or events). This means having an application that is meant to mostly display data to the user, while allowing them to trigger specific events to occur, such as adding specific tasks, cues and alerts.
 
 ### 1.2 Event-Based Architecture
 
 #### 1.2.1 Events
 
-An event is any significant change that affects the software or hardware of the application. In the case of Trace, an event could come from the user, by adding or removing tasks, alerts, or cues from their timelines, changing any of the Notifications settings for Tasks, Cues or Alerts, or altering the Options for the application as a whole. Events could also come from the application itself in the form of notifications being sent to the users device regarding specific events that the user has set up to be notified about.
+An event is any significant change that affects the software or hardware of the application. In the case of Trace, an event could come from the user, by adding or removing tasks, alerts, or cues from their timelines, changing any of the notifications settings for Tasks, Cues or Alerts, or altering the preferences for the application as a whole. Events could also come from the application itself in the form of notifications being sent to the users device regarding specific events that the user has set up to be notified of.
 
 #### 1.2.2 User Interface Architecture
 
-The IOS application interface, Xcode, serves as the view for this application. The user interface is developed completely in Swift. The individual screens and functionality of the UI can be described with the Action Sequence Flow pictured below. Each individual screen is depicted by a light green oval, initially the timeline will be displayed to the user. This is where the user will be able to see their Tasks, Alerts and Cues that they have set up to be displayed previously. From there, the user has the option to go to the Notification Settings screen. This screen will consist of tabs for Tasks, Alert and Cues that will drop down into specific settings such as time and frequency of notifications. From the Display Timeline screen, the user will also be able to add Tasks, Alerts and Cues, by pressing the add button, which will present a pop up allowing them to set the description and time of the tool they selected. The user will also be able to delete a tool by pressing the delete button, which will present a pop up listing the tools they already have set in place. Finally, from the Display Timeline screen, the user will be able to navigate to the Options screen by pressing the Options button, which will allow them to select the display type, toggle color blind mode, toggle dark mode and choose their time format.
+The iOS application interface IDE, Xcode, serves as the dev view for this application. The user interface is developed completely in Swift. The individual screens and functions of the UI can be accomodated with the Action Sequence Flow pictured below. Each individual screen is depicted by a light green oval, though initially the timeline home screen will be displayed to the user. This is where the user will be able to see their Tasks, Alerts and Cues that they have set up to be displayed prior. From there, the user has the option to go to the Notification Settings screen. This screen will consist of tabs for Tasks, Alert and Cues that will drop down into specific settings such as time and frequency of notifications. From the Display Timeline screen, the user will also be able to add Tasks, Alerts and Cues, by pressing the add button, which will present a pop up allowing them to set the description and time of the tool they selected. The user will also be able to delete a tool by pressing the delete button, which will present a pop-up menu overlay listing the tools they already have set in place. Finally, from the Display Timeline screen, the user will be able to navigate to the Options screen by pressing the Options button, which will allow them to select the display type, toggle color blind mode, toggle dark mode, and choose their time format.
 
 <img src="readme images/action-sequence-flow.png" width="600"/>
 
 ### 1.3 Notification Service
 
-The application will make use of the Apple Push Notification service for the notification purposes. As described in the 1.2.1, notifications would be sent to the user by the system based on the settings and preferences that the user has set for each of the Tasks, Alerts and Cues they have set.
+The application will make use of the Apple Push Notification service for the notification purposes. As described in the 1.2.1, notifications would be sent to the user by the system based on the settings and preferences that the user has set for each of the Tasks, Alerts and Cues they have created.
 
 ### 1.4 Alternate Architecture Design
 
-An alternative architecture design for our application would be using passing information between the User and the application through a server. We reject this design because for this app specifically, using a server would add unnecessary steps in our application’s processes, defeating the concept of minimalism that we are trying to provide the user and achieve within the development of our application. Using a server would also add unnecessary risks when it comes to data retrieval and updates. These risks mainly revolve around the possibility of the server crashing while the user is in the application, or depending on a notification. A server crash while the User is attempting to update the features in their app would cause frustration and render the application useless at that point in time. Additionally, a server crash while the application is meant to notify the user about a potentially important event could cause the users to miss deadlines or events, effectively making the user’s life more difficult and adding stress, which is the opposite of the goal for our application.
+An alternative architecture design for our application would be using passing information between the user and the application through a server. We have implemented server-side data via Firebase for those that want to access their data through an account, to improve accessibility between separate devices.
 
 ### 1.5 Design Risks
 
-The design risks of our implementation of Event-Based architecture are few to none. One risk of this design would be if a user were to lose or damage the device that contains the application. We will combat this risk by potentially setting up a database/server that the user could choose to use if they wanted to back up their data. 
+The design risks of our implementation of Event-Based architecture are few to none. One risk of this design would be if a user were to lose or damage the device that contains the application, if they have not opted to store their data server-side. 
 
 ## Design Details
 
@@ -82,7 +82,8 @@ The design risks of our implementation of Event-Based architecture are few to no
 <img src="readme images/backend-design.png" width="600"/>
 
 #### 2.1.1 Class Descriptions
-This class diagram only shows the core classes in our application and how they relate to each other. In section 2.2 we go over the upper level classes such as AppDelegate, ContentView, and UIapplication.  
+
+This class diagram only shows the core classes in our application and how they relate to each other on a highly-abstracted level. In section 2.2 we go over the upper level classes such as AppDelegate, ContentView, and UIapplication.  
 
 #### 2.1.1.1 Alert/Task/Cue
 
@@ -345,19 +346,19 @@ Displays respective UI components for unit ticks over the Circle or Line timelin
 
 ###### UI Risks
 
-We must ensure that our application excludes any and all depreciated library classes, structs, and functions.  These may disqualify our app from being approved by Apple for deployment on the iOS App Store.  We must also ensure that there is continuity and cohesiveness across our visual design in order to ensure that it looks presentable and meets their standards.  Another risk for rejection is the existence of exploits or significant similarities to other existing apps on their store.  The former won’t be a concern since we are using native frameworks and keeping user data almost or entirely offline.  The latter is addressed with our unique visual approach and consolidation techniques, which we are prepared to defend as being novel.
+We must ensure that our application excludes any and all depreciated library classes, structs, and functions.  These may disqualify our app from being approved by Apple for deployment on the iOS App Store.  We must also ensure that there is continuity and cohesiveness across our visual design in order to ensure that it looks presentable and meets their standards.  Another risk for rejection is the existence of exploits or significant similarities to other existing apps on their store.  The former won’t be a concern since we are using native frameworks and disclosing data privacy notices for users that choose to keep their data server-side.  The latter is addressed with our unique visual approach and consolidation techniques, which we are prepared to defend as being novel.
 
 ### 2.3 Notifications Design
 
-Our notification system currently relies on the Apple Local Notification system to be manipulated by our Driver class. IOS Development in Xcode provides a multitude of Classes and Objects for our Driver to create new notifications and request to remove current notifications that the user has already created. removePendingNotificationRequests method provided in the UNUserNotificationCenter class, and provide it with the Notification content and triggers.
+Our notification system currently relies on the Apple Local Notification system to be manipulated by our Driver class. IOS Development in Xcode provides a multitude of classes and objects for our driver to create new notifications and request to remove current notifications that the user has already created. E.g. the removePendingNotificationRequests method, provided in the UNUserNotificationCenter class, provided with the Notification content and triggers.
 
 #### 2.3.1 Client Side Notification Handling
 
 To set up notifications, the client would only need to provide the description of the Event/Notification and the time and date they want it delivered. To remove existing notifications, the user would simply select an already present Event/Notification that they had already created and press delete.
 
-#### 2.3.2 Driver Side Notification Handling
+#### 2.3.2 Driver-Side Notification Handling
 
-When the user inputs the description, time and date for the notification, it would be the driver’s responsibility to access the UNMutableNotificationContent, UNCalendarNotificationTrigger, UNNotificationRequest and UNUserNotificationCenter objects, which use the data inputted to create a new notification request, or possibly delete an existing one if that is what the user chose to do.
+When the user inputs the description, time, and date for the notification, it would be the driver’s responsibility to access the UNMutableNotificationContent, UNCalendarNotificationTrigger, UNNotificationRequest, and UNUserNotificationCenter objects, which use the data inputted to create a new notification request, or possibly delete an existing one if that is what the user opted to do.
 
 ### 2.4 UI View Details
 
@@ -392,13 +393,13 @@ When the user inputs the description, time and date for the notification, it wou
 The development process of this phase is split into key major components:
 
 - iOS client development
-- Back-end local database: Scheduling on a certain time/date, different functionality between types of events
+- Back-end local & remote database: Scheduling on a certain time/date, different functionality between types of events
 - Front-end User Interface: Overall design, homepage, event creation page, event deletion page, menu tab
 - Testing (Section 4)
 
-The back-end, front-end, and testing development can easily be done in conjunction with each other. The front-end UI design can be implemented completely independent from the back-end, and a simple linking of functions to UI is all that’s needed to have a functional application. This linking is the one part where the front-end is dependent on the backend development, but the time this will take isn’t significant.
+The back-end, front-end, and testing development can easily be done in conjunction with one another. The front-end UI design can be implemented completely independent from the back-end, and a simple linking of functions to UI is all that’s needed. This linking is the one part where the front-end is dependent on the backend status, but the time this will take isn’t significant.
 
-In the initial development phase, we plan to start with the most barebones functionality in the backend and the frontend, such as adding/deleting events to the timeline and implementing the UI design. Additional functionality that’s not completely necessary such as the menu tab’s additional features, like color-blind mode or data export, will be delayed until the basic functionality is implemented.
+In the initial development phase, we plan to start with the most barebones functionality in the backend and the frontend, such as adding/deleting events to the timeline and implementing the UI design. Additional functionality that’s not completely necessary, such as the menu tab’s additional features- like color-blind mode or data export- will be delayed until the basic functionality is implemented and present.
 
 ## Testing Plan
 
@@ -419,7 +420,7 @@ In the initial development phase, we plan to start with the most barebones funct
 - Various Views
 - These can be done with XCTests as well - Xcode has a UI testing platform built-in
 
-The goal here is to ensure that all the basic parts work on their own and do what we expect them to do. This is often the most straightforward step in the testing process but strong coverage is critical to avoiding certain issues down the line
+The goal here is to ensure that all the basic parts work on their own and do what we expect them to do. This is often the most straightforward step in the testing process, but strong coverage is critical to avoiding various issues down the line.
 
 These tests will be carried out using Xcode’s built-in testing library for Swift, XCTests.
 
@@ -432,12 +433,12 @@ Our integration testing will cover the following:
 - Database functionality with each class
     - Ensure that database holds all of these classes and any relevant information about linked objects
 - UI/backend integration
-    - Do actions on the UI initiate the proper commands in the backend?
+    - Complete actions on the UI to initiate the proper commands in the backend
         - e.g. ‘add task’ flow in UI results in a new task in database
-    - Does changing/updating information in the backend result in the proper changes in the UI?
+    - Changing/updating information in the backend resulting in the proper changes in the UI
         - e.g. changing data for a task object results in the new data being shown in the UI
 
-Here we are looking to guarantee that all of the pieces of our project communicate with each other as expected. These tests will be more involved and will likely require more coordination between QA devs and the backend/UI devs, as well as meeting which include all three roles.
+Here we are looking to guarantee that all of the pieces of our dev project communicate with each other as expected. These tests will be more involved and will likely require more coordination between QA devs and the backend/UI devs, as well as meetings which include all three role groups.
 
 These tests will be carried out using Xcode’s built-in testing library for Swift, XCTests.
 
@@ -446,33 +447,33 @@ These tests will be carried out using Xcode’s built-in testing library for Swi
 Our system tests will focus on the program as a whole, extending on the integration tests and analyzing full-flow cases, such as:
 - A user adding several tasks/events/cues, deleting some, adding more
 - More in-depth testing of the UI: is there any button or series of buttons that can break our app?
-- Adding dozens of objects, linking/unlinking, editing, and deleting - all in one test
+- Adding dozens of objects, linking/unlinking, editing, and deleting - all in a single test
 
-With these tests, we can begin examining more realistic use cases which involve more or all of the application. This will prepare us for compatibility and acceptance testing, in which users will be directly interfacing with the app.
+With these tests, we can begin examining more realistic use cases which involve more or all of the application's functions. This will prepare us for compatibility and acceptance testing, in which users will be directly interfacing with the app.
 
-These tests will be carried out using Xcode’s built-in testing library for Swift, XCTests, as well as some testing of the UI through the iOS simulator app, an Apple developer tool which allows us to test our app on a virtual iOS device.
+These tests will be carried out using Xcode’s built-in testing library for Swift, XCTests, as well as some testing of the UI through the iOS simulator app, an Apple developer tool which allows us to test our app on a virtual iOS device emulator.
 	
 ### 4.4 Performance Testing
 
-For performance testing, we will mainly be focused on the number of tasks/cues/alerts, as well as how they are linked, with regard to the runtime of various key operations of the application. Our performance testing will likely begin as early as the unit tests, but will continue throughout development. These will be directed primarily at our database and measure the change in runtime of add/search/delete functions as the size of the DB changes. We will also run performance tests on the UI to ensure that adding graphic elements does not significantly inhibit the ‘smoothness’ of the application - no freezing/skipping.
+For performance testing, we will mainly be focused on the number of tasks/cues/alerts, as well as how they are linked, with regard to the runtime of various key operations of the application. Our performance testing will likely begin as early as the unit tests, but will continue throughout development. These will be directed primarily at our database and measure the change in runtime of add/search/delete functions as the size of the DB changes. We will also run performance tests on the UI to ensure that adding graphic elements does not significantly inhibit the ‘smoothness’ of the application - no freezing/frame skipping.
 
 These tests will be carried out using Xcode’s built-in testing library for Swift, XCTests.
 
 ### 4.5 Compatibility Testing
 
-Our compatibility testing will mostly be centered on the UI/UE - seeing how users feel about their overall experience while working with the app. If we did our other testing well, there should not be any significant involvement of anything like performance, integration, or system testing. There should be no errors occuring at this stage, but we hope to find any if they exist. 
+Our compatibility testing will mostly be centered on the UI/UX - seeing how users feel about their overall experience while working with the app. If we did our previous testing well enough, there should not be any significant concern for areas including performance, integration, or system testing. There should be few errors present at this stage, but we hope to find any if they exist. 
 
-These tests will be carried out using the iOS simulator app, an Apple developer tool which allows us to test our app on a virtual iOS device.
+These tests will be carried out using the iOS Simulator.
 
 ### 4.6 Regression Testing
 
 This will primarily focus on reiterating and redefining our unit/integration/performance tests as we continue to develop features and functionality. It will be an ongoing process throughout development with the goal of ensuring that new changes aren’t interfering with the execution and performance of existing code. 
 
-These tests will be carried out using Xcode’s built-in testing library for Swift, XCTests, as well as some testing of the UI through the iOS simulator app, an Apple developer tool which allows us to test our app on a virtual iOS device.
+These tests will be carried out using Xcode’s built-in testing library for Swift, XCTests, as well as some testing of the UI through the iOS Simulator.
 
 ### 4.7 Acceptance Testing
 
-Our acceptance testing phase will be similar to the compatibility testing in that we’ll be giving the app to clients to test and focusing on their feedback. However, this phase will be much more in-depth and rigorous and will be significantly more goal-oriented in that the users/clients will be given several specific tasks/tests to perform (similar to the ones we used for system testing) instead of simpler, single-task tests. Additionally, it will be longer than compatibility testing since it will act as the final catch-all for any bugs or places of potential improvement for the application.
+Our acceptance testing phase will be similar to the compatibility testing in that we’ll be giving the app to clients to test, in order to refocus on their feedback. However, this phase will be much more in-depth and rigorous and will be significantly more goal-oriented, in that the users/clients will be given several specific tasks/tests to perform (similar to the ones we used for system testing) instead of simpler, mono-task tests. Additionally, it will be longer than the compatibility testing phase since it will act as the final catch-all for any bugs or places of potential improvement for the application.
 
 ## Prototype Presentations
 
