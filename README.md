@@ -6,47 +6,30 @@ Design and Planning Document
 
 ## Contents
 
-  - [1. System Architecture](#System-Architecture "System Architecture")
+- [1. System Architecture](#System-Architecture "System Architecture")
+    - 1.1. Overview
+    - 1.2. Event-Based architecture 
+    - 1.3. Notification Service
+    - 1.4. Alternate architectural Design
+    - 1.5. Design Risks
 
-1.1. Overview
+- [2. Design Details](#Design-Details "Design Details")
+    - 2.1. iOS Backend Design
+    - 2.2. iOS User Interface Design 
+    - 2.3. Notifications Design
+    - 2.4. UI View Details
 
-1.2. Event-Based architecture 
+- [3. Implementation Plan](#Implementation-Plan "Implementation Plan")
+    - 3.1. Dependencies
 
-1.3. Notification Service
-
-1.4. Alternate architectural Design
-
-1.5. Design Risks
-
-  - [2. Design Details](#Design-Details "Design Details")
-
-2.1. iOS Backend Design
-
-2.2. iOS User Interface Design 
-
-2.3. Notifications Design
-
-2.4. UI View Details
-
-  - [3. Implementation Plan](#Implementation-Plan "Implementation Plan")
-
-3.1. Dependencies
-
-  - [4. Testing Plan](#Testing-Plan "Testing Plan")
-
-4.1. Unit Testing
-
-4.2. Integration Testing
-
-4.3. System Testing
-
-4.4. Performance Testing 
-
-4.5. Compatibility Testing 
-
-4.6. Regression Testing 
-
-4.7. Beta Testing
+- [4. Testing Plan](#Testing-Plan "Testing Plan")
+    - 4.1. Unit Testing
+    - 4.2. Integration Testing
+    - 4.3. System Testing
+    - 4.4. Performance Testing 
+    - 4.5. Compatibility Testing 
+    - 4.6. Regression Testing 
+    - 4.7. Beta Testing
 
 ## System Architecture
 
