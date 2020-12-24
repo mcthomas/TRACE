@@ -9,33 +9,43 @@ Design and Planning Document
   - [1. System Architecture](#System-Architecture "System Architecture")
 
 1.1. Overview
+
 1.2. Event-Based architecture 
+
 1.3. Notification Service
+
 1.4. Alternate architectural Design
+
 1.5. Design Risks
 
   - [2. Design Details](#Design-Details "Design Details")
 
 2.1. iOS Backend Design
+
 2.2. iOS User Interface Design 
+
 2.3. Notifications Design
+
 2.4. UI View Details
 
   - [3. Implementation Plan](#Implementation-Plan "Implementation Plan")
 
 3.1. Dependencies
-3.2. Iteration 1
-3.3. Iteration 2
-3.4. Iteration 3
 
   - [4. Testing Plan](#Testing-Plan "Testing Plan")
 
 4.1. Unit Testing
+
 4.2. Integration Testing
+
 4.3. System Testing
+
 4.4. Performance Testing 
+
 4.5. Compatibility Testing 
+
 4.6. Regression Testing 
+
 4.7. Beta Testing
 
 ## System Architecture
@@ -187,3 +197,258 @@ This variable will keep track and store all of the events that are created on ou
 
 selected_event: String
 The selected_event variable will keep track of an event that the user has clicked on. This would be used in the delete method and for fine tuning of a specific event. 
+
+### 2.2 iOS User Interface Design
+
+#### Model
+
+The iOS user interface will be designed with a top-level controller instance, ApplicationUI(), which would call ContentView() after it is initialized by AppDelegate() via AppDelegate()’s call to @main.  The main structural logic of the application will be a series of event-driven calls to update the structs and UI components whenever they request such, relying on ApplicationUI() to listen accordingly.  In this way, AppDelegate() will initialize the application with its main reference, though it will then hand control to ApplicationUI() so that it can drive the application’s updates.  
+
+#### View/Controller
+
+We are considering implementing a hybrid approach for the lower levels which may best accommodate UI components, if ContentView() serves the “View” role and ApplicationUI() acts as a ghost “Controller” for the user, accommodating all of their inputs.  The “Model” would be decentralized amongst calls outbound from ApplicationUI(), to conform to the higher-level event-driven approach. 
+
+
+###### Top-Level Event Driven Visual: (Class Diagram):
+
+#### Class/Var/Method Breakdown
+
+###### App
+
+ApplicationUI():
+Enables the UIApplication instance and the launch options for initialization.
+
+Struct App:
+Intializes ContentView() to compose a Scene object.
+
+###### UIApplication
+
+applicationState:
+The app’s current state, or that of its most active scene.
+
+connectedScenes:
+The app's currently connected scenes.
+
+openSessions:
+The sessions whose scenes are either currently active or archived by the system.
+
+requestSceneSessionActivation():
+Asks the system to activate an existing scene, or create a new scene and associate it with your app.
+
+requestSceneSessionDestruction():
+Asks the system to dismiss an existing scene and remove it from the app switcher.
+
+requestSceneSessionRefresh():
+Asks the system to update any system UI associated with the specified scene.
+
+applicationIconBadgeNumber:
+The number currently set as the badge of the app icon in Springboard.
+
+userInterfaceLayoutDirectionUI:
+Returns the layout direction of the user interface.
+
+UIUserInterfaceLayoutDirection:
+Enum which specifies the directional flow of the user interface.
+
+sendEvent(UIEvent):
+Dispatches an event to the appropriate responder objects in the app.
+
+sendACtion(to, from, for):
+Sends an action message identified by selector to a specified target.
+
+###### ContentView
+
+lightMode:
+A boolean to indicate whether the colors should be inverted, as toggled with input to the respective settings overlay
+
+Imperial:
+A boolean to indicate whether the unit  ticks along either of the timeline UIs should display in imperial or metric units
+
+isCircle:
+A boolean to determine whether to display the circle timeline ui or the linear line
+
+showCal:
+A boolean to indicate whether the calendar UI should be rotated into view to allow the user a broader view of their schedule.
+
+curCircle:
+Maintains the instance of the Circle UI object instantiated, to be read from or manipulated.
+
+curLine:
+Maintains the instance of the Line UI object instantiated, to be read from or manipulated.
+
+curCalView:
+Maintains the instance of the CalView UI object instantiated, to be read from or manipulated.
+
+Body:
+Maintains finer details of the current view for assembly and updates.
+
+###### CircleView
+
+Tasks:
+An array of Task instances maintained.
+
+Alerts:
+An array of Alert instances maintained.
+
+Cues:
+An array of Cue instances maintained.
+
+arrangeChrono(tasks, alerts, cues):
+Orders the related instances in chronological order.
+
+allocateAngles(task, alerts, cues):
+Method to accordingly bound the color arcs according to the instance durations/time stamps.
+
+assignColors(tasks, alerts, cues):
+Chooses hex values to assign to the color segments.
+
+scale(int):
+Tracks the value with which to scale the unit ticks.
+
+Line (ident to above, considering inheritance)
+
+CalView (inherits first 5 specs from above)
+
+printObjects(tasks, alerts, cues):
+Prints respective info about data tied to the Task/Alert/Cue instances.
+
+###### Overlays
+
+masterAdd():
+Correlates to UI button “+” to add (instantiate) a Task, Alert, or Cue.
+
+masterRemove():
+Correlates to UI button “-” to add (instantiate) a Task, Alert, or Cue.
+
+viewCal():
+Assembles respective UI components w/ data from the Task/Alert/Cue instances.
+
+viewSettings():
+Displays respective UI components for personalization toggles, referenced by ContentView() booleans.
+
+viewNotifications():
+Displays respective UI components for active notification listings, tied to instances of Task/Alert/Cue.
+
+viewTicks(Int):
+Displays respective UI components for unit ticks over the Circle or Line timeline, with reference to the scale factor Int.
+
+###### Simplified Model-View-Controller Visual, to operate below ApplicationUI():
+
+###### User Model Sequence Diagram:
+
+###### UI Risks
+
+We must ensure that our application excludes any and all depreciated library classes, structs, and functions.  These may disqualify our app from being approved by Apple for deployment on the iOS App Store.  We must also ensure that there is continuity and cohesiveness across our visual design in order to ensure that it looks presentable and meets their standards.  Another risk for rejection is the existence of exploits or significant similarities to other existing apps on their store.  The former won’t be a concern since we are using native frameworks and keeping user data almost or entirely offline.  The latter is addressed with our unique visual approach and consolidation techniques, which we are prepared to defend as being novel.
+
+### 2.3 Notifications Design
+
+Our notification system currently relies on the Apple Local Notification system to be manipulated by our Driver class. IOS Development in Xcode provides a multitude of Classes and Objects for our Driver to create new notifications and request to remove current notifications that the user has already created. removePendingNotificationRequests method provided in the UNUserNotificationCenter class, and provide it with the Notification content and triggers.
+
+#### 2.3.1 Client Side Notification Handling
+
+To set up notifications, the client would only need to provide the description of the Event/Notification and the time and date they want it delivered. To remove existing notifications, the user would simply select an already present Event/Notification that they had already created and press delete.
+
+#### 2.3.2 Driver Side Notification Handling
+
+When the user inputs the description, time and date for the notification, it would be the driver’s responsibility to access the UNMutableNotificationContent, UNCalendarNotificationTrigger, UNNotificationRequest and UNUserNotificationCenter objects, which use the data inputted to create a new notification request, or possibly delete an existing one if that is what the user chose to do.
+
+### 2.4 UI View Details
+
+#### 2.4.1 Homepage: Starting page on application launch
+
+#### 2.4.2 Delete Event Page: Page requests the user to delete the desired tasks/cues/alerts
+
+#### 2.4.3 Add Event Page: Requests user input to create a new event
+
+#### 2.4.4 Menu Tab: Displays all additional options
+
+#### 2.4.5 Notifications Tab: Displays all notifications relating to upcoming tasks/cues/alerts
+
+#### 2.4.6 Calendar View: Displays a more shallow, but broader view of events throughout the span of a month
+
+### 3.1 Dependencies:
+
+The development process of this phase is split into key major components:
+
+- iOS client development
+- Back-end local database: Scheduling on a certain time/date, different functionality between types of events
+- Front-end User Interface: Overall design, homepage, event creation page, event deletion page, menu tab
+- Testing (Section 4)
+
+The back-end, front-end, and testing development can easily be done in conjunction with each other. The front-end UI design can be implemented completely independent from the back-end, and a simple linking of functions to UI is all that’s needed to have a functional application. This linking is the one part where the front-end is dependent on the backend development, but the time this will take isn’t significant.
+
+In the initial development phase, we plan to start with the most barebones functionality in the backend and the frontend, such as adding/deleting events to the timeline and implementing the UI design. Additional functionality that’s not completely necessary such as the menu tab’s additional features, like color-blind mode or data export, will be delayed until the basic functionality is implemented.
+
+## 4. Testing Plan
+
+### 4.1 Unit Testing
+
+#### Our unit testing will cover the following:
+
+###### Core class and database functions:
+
+- Task class data members and functions - constructor, get/set, etc
+- Alert class data members and functions - constructor, get/set, etc
+- Cue class data members and functions - constructor, get/set, etc
+- Database system key functions - constructor
+
+###### Basic UI testing
+
+- AppDelegate
+- Various Views
+- These can be done with XCTests as well - Xcode has a UI testing platform built-in
+
+The goal here is to ensure that all the basic parts work on their own and do what we expect them to do. This is often the most straightforward step in the testing process but strong coverage is critical to avoiding certain issues down the line
+
+These tests will be carried out using Xcode’s built-in testing library for Swift, XCTests.
+
+### 4.2 Integration Testing
+
+Our integration testing will cover the following:
+
+- Core class integration
+    - Syncing a task/alert/cue - we want users to be able to link these objects together (e.g. getting an alert for a task)
+- Database functionality with each class
+    - Ensure that database holds all of these classes and any relevant information about linked objects
+- UI/backend integration
+    - Do actions on the UI initiate the proper commands in the backend?
+        - e.g. ‘add task’ flow in UI results in a new task in database
+    - Does changing/updating information in the backend result in the proper changes in the UI?
+        - e.g. changing data for a task object results in the new data being shown in the UI
+
+Here we are looking to guarantee that all of the pieces of our project communicate with each other as expected. These tests will be more involved and will likely require more coordination between QA devs and the backend/UI devs, as well as meeting which include all three roles.
+
+These tests will be carried out using Xcode’s built-in testing library for Swift, XCTests.
+
+### 4.3 System Testing
+
+Our system tests will focus on the program as a whole, extending on the integration tests and analyzing full-flow cases, such as:
+- A user adding several tasks/events/cues, deleting some, adding more
+- More in-depth testing of the UI: is there any button or series of buttons that can break our app?
+- Adding dozens of objects, linking/unlinking, editing, and deleting - all in one test
+
+With these tests, we can begin examining more realistic use cases which involve more or all of the application. This will prepare us for compatibility and acceptance testing, in which users will be directly interfacing with the app.
+
+These tests will be carried out using Xcode’s built-in testing library for Swift, XCTests, as well as some testing of the UI through the iOS simulator app, an Apple developer tool which allows us to test our app on a virtual iOS device.
+	
+### 4.4 Performance Testing
+
+For performance testing, we will mainly be focused on the number of tasks/cues/alerts, as well as how they are linked, with regard to the runtime of various key operations of the application. Our performance testing will likely begin as early as the unit tests, but will continue throughout development. These will be directed primarily at our database and measure the change in runtime of add/search/delete functions as the size of the DB changes. We will also run performance tests on the UI to ensure that adding graphic elements does not significantly inhibit the ‘smoothness’ of the application - no freezing/skipping.
+
+These tests will be carried out using Xcode’s built-in testing library for Swift, XCTests.
+
+### 4.5 Compatibility Testing
+
+Our compatibility testing will mostly be centered on the UI/UE - seeing how users feel about their overall experience while working with the app. If we did our other testing well, there should not be any significant involvement of anything like performance, integration, or system testing. There should be no errors occuring at this stage, but we hope to find any if they exist. 
+
+These tests will be carried out using the iOS simulator app, an Apple developer tool which allows us to test our app on a virtual iOS device.
+
+### 4.6 Regression Testing
+
+This will primarily focus on reiterating and redefining our unit/integration/performance tests as we continue to develop features and functionality. It will be an ongoing process throughout development with the goal of ensuring that new changes aren’t interfering with the execution and performance of existing code. 
+
+These tests will be carried out using Xcode’s built-in testing library for Swift, XCTests, as well as some testing of the UI through the iOS simulator app, an Apple developer tool which allows us to test our app on a virtual iOS device.
+
+### 4.7 Acceptance Testing
+
+Our acceptance testing phase will be similar to the compatibility testing in that we’ll be giving the app to clients to test and focusing on their feedback. However, this phase will be much more in-depth and rigorous and will be significantly more goal-oriented in that the users/clients will be given several specific tasks/tests to perform (similar to the ones we used for system testing) instead of simpler, single-task tests. Additionally, it will be longer than compatibility testing since it will act as the final catch-all for any bugs or places of potential improvement for the application.
