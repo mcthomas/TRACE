@@ -10,8 +10,8 @@ Contributors:
 - [Matt Thomas](mailto:mcthomas4@wisc.edu) 
 - [Nathan Frank](mailto:ncfrank@wisc.edu)
 - [Stone Yang](mailto:syang477@wisc.edu)
-- [Tony](mailto:schulz22@wisc.edu)
-- [Travor](mailto:thamilton5@wisc.edu)
+- [Tony Schulz](mailto:schulz22@wisc.edu)
+- [Travor Hamilton](mailto:thamilton5@wisc.edu)
 - [Will Dominski](mailto:wdominski@wisc.edu)
 
 <img src="trace.png"/>
