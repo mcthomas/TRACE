@@ -6,7 +6,7 @@ Design and Planning Document
 
 ## Contents
 
-### 1. System Architecture
+  - [1. System Architecture](#System-Architecture "System Architecture")
 
 1.1. Overview
 1.2. Event-Based architecture 
@@ -14,21 +14,21 @@ Design and Planning Document
 1.4. Alternate architectural Design
 1.5. Design Risks
 
-### 2. Design Details
+  - [2. Design Details](#Design-Details "Design Details")
 
 2.1. iOS Backend Design
 2.2. iOS User Interface Design 
 2.3. Notifications Design
 2.4. UI View Details
 
-### 3. Implementation Plan
+  - [3. Implementation Plan](#Implementation-Plan "Implementation Plan")
 
 3.1. Dependencies
 3.2. Iteration 1
 3.3. Iteration 2
 3.4. Iteration 3
 
-### 4. Testing Plan
+  - [4. Testing Plan](#Testing-Plan "Testing Plan")
 
 4.1. Unit Testing
 4.2. Integration Testing
@@ -37,13 +37,6 @@ Design and Planning Document
 4.5. Compatibility Testing 
 4.6. Regression Testing 
 4.7. Beta Testing
-
-  - [Problem Description](#Problem-Description "Problem Description")
-  - [The Customer](#The-Customer "The Customer")
-  - [System Description](#System-Description "System Description")
-  - [Testing and Demoing](#Testing-and-Demoing "Testing and Demoing")
-  - [Feasibility](#Feasibility "Feasibility")
-  - [Concept Images](#Concept-Images "Concept Images")
 
 ## System Architecture
 
@@ -80,11 +73,12 @@ The design risks of our implementation of Event-Based architecture are few to no
 #### 2.1.1 Class Descriptions
 This class diagram only shows the core classes in our application and how they relate to each other. In section 2.2 we go over the upper level classes such as AppDelegate, ContentView, and UIapplication.  
 
-##### 2.1.1.1 Alert/Task/Cue
+#### 2.1.1.1 Alert/Task/Cue
 
 These classes serve the purpose of instantiating the different events that will go on the timeline. When the add_alert/cue/task() button is clicked then the respective class will be called and the screen will switch to a view where start_time, end_time, subject, and the colorHex will be filled out. 
 
-Methods
+###### Methods
+
 set_subject(): void
 			Sets the respective event’s subject matter.  
 get_subject(): String
@@ -101,20 +95,25 @@ set_colorHex(): void
 			Sets the respective event’s color according to the hex value.
 get_colorHex(): String
 			Retrieves the respective event’s hex color value. 
-Attributes
+###### Attributes
+
 subject: String
 This string contains the subject matter of the event.
+
 start_time: Double
 This double contains the start time for the event.
+
 end_time: Double
 This double contains the end time for the event.
+
 colorHex: String
 This string contains the color of the event in its hex value.
+
 alert/task/cue_name: String
 This string allows the user to switch the names of the Alert, Cue, or Task events.  
 
 	
-##### 2.1.1.2 Settings
+#### 2.1.1.2 Settings
 
 ###### Methods
 
@@ -141,7 +140,7 @@ This string specifies the name of the task event.
 cue_name: String
 This string specifies the name of the cue event.
 
-##### 2.1.1.3 Timeline
+#### 2.1.1.3 Timeline
 
 ###### Methods
 
