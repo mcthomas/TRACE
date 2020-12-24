@@ -1,6 +1,16 @@
 # TRACE
 
-Design and Planning Document
+TRACE is an iOS application which aims to aggregate the use of calendar events, alarms, and reminders- with single-dimensional UI naunces.  In practice, TRACE decreases the time spent hopping between native apps and visually simplifies your mental view of your workflow.  Development on TRACE began in academia with the intent of demonstrating principles of Software Engineering & UX best practices.  This readme comprises our original Design & Planning Documentation.  
+
+Contributors:
+
+- [Ethan Schnaser](mailto:schnaser@wisc.edu)
+- [Matt Thomas](mailto:mcthomas4@wisc.edu) 
+- [Nathan Frank](mailto:ncfrank@wisc.edu)
+- [Stone Yang](mailto:syang477@wisc.edu)
+- [Tony](mailto:schulz22@wisc.edu)
+- [Travor](mailto:thamilton5@wisc.edu)
+- [Will Dominski](mailto:wdominski@wisc.edu)
 
 <img src="trace.png"/>
 
