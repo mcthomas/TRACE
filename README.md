@@ -2,7 +2,7 @@
 
 # TRACE
 
-TRACE is an iOS application which aims to aggregate the use of calendar events, alarms, and reminders- with single-dimensional UI naunces.  In practice, TRACE decreases the time spent hopping between native apps and visually simplifies your mental view of your daily flow.  Development on TRACE began in academia with the intent of demonstrating principles of Software Engineering & UX best practices.  This readme comprises our original Design & Planning Documentation.  
+TRACE is an iOS application which aims to aggregate the use of calendar events, alarms, and reminders- with single-dimensional UI naunces.  In practice, TRACE decreases the time spent hopping between native apps and visually simplifies your mental view of your daily flow.  Development on TRACE began in academia at UW-Madison with the intent of demonstrating principles of Software Engineering & UX best practices.  This readme comprises our original Design & Planning Documentation.  
 
 Contributors:
 
