@@ -9,7 +9,6 @@
 import XCTest
 import Foundation
 import Firebase
-@testable import TRACE
  
 class TRACETests: XCTestCase {
  

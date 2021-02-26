@@ -14,8 +14,6 @@ Contributors:
 - [Travor Hamilton](mailto:thamilton5@wisc.edu)
 - [Will Dominski](mailto:wdominski@wisc.edu)
 
-<img src="trace.png"/>
-
 ## Contents
 
 - [1. System Architecture](#System-Architecture "System Architecture")
