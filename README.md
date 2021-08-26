@@ -475,6 +475,6 @@ Our acceptance testing phase will be similar to the compatibility testing in tha
 
 ## Prototype Presentations
 
-[Outcomes & Lessons Learned](https://docs.google.com/presentation/d/1mkiLrE_Y4m-BxrdZtNkzTKlOhgWy8F83mibcpEV_k_Y/edit?usp=sharing)
+[Outcomes & Lessons Learned](TRACE - Outcomes & Lessons Learned.pdf)
 
-[Demo & Alterations](https://docs.google.com/presentation/d/1Ycf6brHXwIALsQh29PEC2ojF3QADSSLOCcnN3VKM4a0/edit?usp=sharing)
+[Demo & Alterations](TRACE - Demo & Alterations.pdf)
