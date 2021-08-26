@@ -475,6 +475,6 @@ Our acceptance testing phase will be similar to the compatibility testing in tha
 
 ## Prototype Presentations
 
-[Outcomes & Lessons Learned](TRACE - Outcomes & Lessons Learned.pdf)
+[Outcomes & Lessons Learned](https://github.com/mcthomas/TRACE/blob/master/TRACE%20-%20Outcomes%20%26%20Lessons%20Learned.pdf)
 
-[Demo & Alterations](TRACE - Demo & Alterations.pdf)
+[Demo & Alterations](https://github.com/mcthomas/TRACE/blob/master/TRACE%20-%20Demo%20%26%20Alterations.pdf)
